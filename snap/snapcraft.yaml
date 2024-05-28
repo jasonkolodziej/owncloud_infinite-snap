@@ -103,7 +103,12 @@ apps:
       #* The configuration directory has a default location for config files, which must be on a POSIX storage:
       #*  - For container images (inside the container) => `/etc/ocis/`
       #*  - For binary releases => `$HOME/.ocis/config/`
-      OCIS_CONFIG_DIR: xx
+      # Directory for user data that is common across revisions of a snap.
+      # Unlike SNAP_USER_DATA, data present in this directory is not backed up or restored across snap refresh 
+      # and snap revert operations. The directory is suitable for large data that the application can access even 
+      # if it was made or modified by a future version of a snap. 
+      # ==> $HOME/snap/$SNAP_NAME/common
+      OCIS_CONFIG_DIR: $SNAP_USER_COMMON
       
       #* Path to system relevant data.
       #* Because Infinite Scale does not use a database for storing information like users, groups, spaces, internal data, etc., 
@@ -113,15 +118,18 @@ apps:
       #* If not otherwise defined when using S3, it is also used to store blobs using that path:
       #*   - For container images (inside the container) => `/var/lib/ocis`
       #*   - For binary releases => `$HOME/.ocis/`
+      
       #* `SNAP_DATA`
       #* Directory for system data of a snap. This directory is owned and writable by root and is meant to be used by background applications 
       #* (daemons, services). Unlike `SNAP_COMMON` this directory is backed up and restored across snap refresh and snap revert operations.
+      # ==> /var/snap/$SNAP_NAME/$SNAP_REVISION
+
       OCIS_BASE_DATA_PATH: $SNAP_DATA
       
       #* Path to blobs and metadata if POSIX is used.
       #* Derives from `OCIS_BASE_DATA_PATH` if not set otherwise.
       #* Used if `STORAGE_USERS_DRIVER` is set to ocis
-      STORAGE_USERS_OCIS_ROOT: xx
+      # STORAGE_USERS_OCIS_ROOT: xx
       
       #* Path to metadata if S3 is used.
       #* Derives from OCIS_BASE_DATA_PATH if not set otherwise.
@@ -130,7 +138,7 @@ apps:
       #*   When using S3 for storing user data (blobs), metadata must reside on POSIX. The environment variable responsible for 
       #*   storaing metadata in S3 is `STORAGE_USERS_S3NG_ROOT` and derives, if not otherwise defined, from the base directory 
       #*   `OCIS_BASE_DATA_PATH`. For more details see the section Base Data Directory above.
-      STORAGE_USERS_S3NG_ROOT: xx
+      # STORAGE_USERS_S3NG_ROOT: xx
       # GOPLAY2_CONFIG_PATH: /$SNAP_USER_DATA/.config
     plugs:
       ## Network Access
