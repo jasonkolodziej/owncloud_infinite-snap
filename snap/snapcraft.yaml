@@ -3,7 +3,7 @@
 ## The name must be unique in the Snap Store.
 ## Valid snap names consist of lower-case alphanumeric characters and hyphens.
 ## They cannot be all numbers and they also cannot start or end with a hyphen.
-name: owncloud_infinite # you probably want to 'snapcraft register <name>'
+name: owncloud-infinite # you probably want to 'snapcraft register <name>'
 ## The <base> keyword defines a special kind of snap that provides a run-time environment
 ## with a minimal set of libraries that are common to most applications.
 ## They’re transparent to users, but they need to be considered, and specified, when building a snap.
@@ -133,9 +133,10 @@ apps:
       STORAGE_USERS_S3NG_ROOT: xx
       # GOPLAY2_CONFIG_PATH: /$SNAP_USER_DATA/.config
     plugs:
-      ## Audio access
-      - audio-playback
-      - pulseaudio
       ## Network Access
-      - ptp
+      - network
       - network-bind
+      ## Removeable Devices
+      ##? removable-media allows read/write access to mounted removable storage in `/media`, `/run/media` and `/mnt`.
+      - removable-media
+      
