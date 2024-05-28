@@ -50,7 +50,10 @@ parts:
   ## The plugin field=(dump) determines how the information in specified in the source field
   ## and includes the source's contents in the snap.
   ## The source can be a local or remote zip file, deb file, or tarball.
-    # plugin: make
+    plugin: make
+    plugin: npm
+    npm-node-version: 22
+    npm-include-node: true
     plugin: go
     ## (list of strings) Features used to build optional dependencies
     build-snaps:
@@ -61,10 +64,10 @@ parts:
     ## Before building the part, the packages listed in the build-packages section
     ## need to be installed in the build environment.
     ## These are the tools and libraries that are used during the build process.
-    build-packages:
-      - make
-      - npm
-      - nodejs
+    # build-packages:
+      # - make
+      # - npm
+      # - nodejs
     #   - libfdk-aac-dev
     # stage-packages:
     #   - pulseaudio
@@ -78,7 +81,7 @@ parts:
     override-build: |
       ## install pnpm globally
       ## npm install -g @pnpm/exe
-      npm install -g pnpm
+      ## npm install -g pnpm
       ## generate assets
       make generate
       ## build the binary
