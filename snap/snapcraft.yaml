@@ -64,6 +64,7 @@ parts:
     build-packages:
       - make
       - npm
+      - nodejs
     #   - libfdk-aac-dev
     # stage-packages:
     #   - pulseaudio
@@ -76,7 +77,8 @@ parts:
     ## ref: https://snapcraft.io/docs/overrides
     override-build: |
       ## install pnpm globally
-      npm install -g @pnpm/exe
+      ## npm install -g @pnpm/exe
+      npm install -g pnpm
       ## generate assets
       make generate
       ## build the binary
