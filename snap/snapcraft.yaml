@@ -63,6 +63,7 @@ parts:
     ## These are the tools and libraries that are used during the build process.
     build-packages:
       - make
+      - npm
     #   - libfdk-aac-dev
     # stage-packages:
     #   - pulseaudio
@@ -74,6 +75,8 @@ parts:
     ## You can override and customise steps of a part’s lifecycle (pull, build, stage, and prime) using overrides;
     ## ref: https://snapcraft.io/docs/overrides
     override-build: |
+      ## install pnpm globally
+      npm install -g pnpm
       ## generate assets
       make generate
       ## build the binary
