@@ -24,7 +24,7 @@ license: MIT
 architectures:
   #- build-on: arm64
 #    build-for:
-  - build-on: amd64
+  - build-on: arm64
     build-for: arm64
 
 # SECURITY MODEL
