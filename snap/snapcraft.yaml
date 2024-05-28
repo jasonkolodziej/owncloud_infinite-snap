@@ -50,14 +50,16 @@ parts:
   ## The plugin field=(dump) determines how the information in specified in the source field
   ## and includes the source's contents in the snap.
   ## The source can be a local or remote zip file, deb file, or tarball.
-    plugin: make
-    plugin: npm
+    # plugin: make
+    # plugin: npm
     npm-node-version: 22
     npm-include-node: true
     plugin: go
     ## (list of strings) Features used to build optional dependencies
     build-snaps:
       - go
+      - make
+      - npm
     source-type: git
     source-tag: v5.0.5
     source: https://github.com/owncloud/ocis.git
@@ -66,7 +68,7 @@ parts:
     ## These are the tools and libraries that are used during the build process.
     # build-packages:
       # - make
-      # - npm
+      # - npm@22.10
       # - nodejs
     #   - libfdk-aac-dev
     # stage-packages:
