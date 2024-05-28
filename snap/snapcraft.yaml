@@ -92,6 +92,7 @@ apps:
     # https://bugs.launchpad.net/snapcraft/+bug/1820055
     # initialize a minimal oCIS configuration
     #  ./ocis/bin/ocis init
+    install-mode: disable
     command: /bin/ocis
     # daemon: simple
     environment:
