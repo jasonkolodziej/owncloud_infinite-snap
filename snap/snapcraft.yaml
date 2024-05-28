@@ -76,7 +76,7 @@ parts:
     ## ref: https://snapcraft.io/docs/overrides
     override-build: |
       ## install pnpm globally
-      npm install -g pnpm
+      npm install -g @pnpm/exe
       ## generate assets
       make generate
       ## build the binary
