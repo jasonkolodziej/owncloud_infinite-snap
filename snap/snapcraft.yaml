@@ -71,7 +71,7 @@ parts:
     ## These are the tools and libraries that are used during the build process.
     build-packages:
       - make
-      - curl
+      - wget
       - npm
       # - npm@22.10
       # - nodejs
