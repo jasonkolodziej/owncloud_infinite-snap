@@ -98,9 +98,10 @@ parts:
       # Prune older versions & Install latest node version
       n prune && n lts
       node --version
+      hash -r
       ## install pnpm globally
-      ## npm install -g @pnpm/exe
-      npm install -g pnpm
+      npm install -g @pnpm/exe
+      ## npm install -g pnpm
       ## generate assets
       make generate
       ## build the binary
