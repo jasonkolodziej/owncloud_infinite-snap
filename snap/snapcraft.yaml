@@ -61,7 +61,7 @@ parts:
     build-snaps:
       - go
       - make
-      - npm
+      - node
     source-type: git
     source-tag: v5.0.5
     source: https://github.com/owncloud/ocis.git
