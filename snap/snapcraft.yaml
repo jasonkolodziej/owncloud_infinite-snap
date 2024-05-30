@@ -48,7 +48,9 @@ parts:
   ## The parts arbitrary name
   # node:
   #   plugin: npm
-  #   source: 
+  #   source: .
+  #   npm-include-node: true
+  #   npm-node-version: 20
   ocis:
   ## The plugin field=(dump) determines how the information in specified in the source field
   ## and includes the source's contents in the snap.
@@ -90,10 +92,12 @@ parts:
       # npm cache clean -f
       # Update NPM globally
       npm update -g npm
+      npm --version
       # Install N globally
       npm install -g n
       # Prune older versions & Install latest node version
-      n prune && n latest
+      n prune && n lts
+      node --version
       ## install pnpm globally
       ## npm install -g @pnpm/exe
       npm install -g pnpm
