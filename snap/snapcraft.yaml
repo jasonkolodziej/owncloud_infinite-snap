@@ -86,16 +86,14 @@ parts:
     ## You can override and customise steps of a part’s lifecycle (pull, build, stage, and prime) using overrides;
     ## ref: https://snapcraft.io/docs/overrides
     override-build: |
+      # Clean NPM cache
+      # npm cache clean -f
       # Update NPM globally
       npm update -g npm
-      # Clean NPM cache
-      npm cache clean -f
       # Install N globally
       npm install -g n
-      # Install latest node version
-      n latest
-      # Prune older versions
-      n prune
+      # Prune older versions & Install latest node version
+      n prune && n latest
       ## install pnpm globally
       ## npm install -g @pnpm/exe
       npm install -g pnpm
