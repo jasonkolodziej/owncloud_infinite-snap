@@ -109,6 +109,17 @@ parts:
       make generate
       ## build the binary
       make -C ocis build
+      echo $SNAPCRAFT_PART_INSTALL
+      ls -al .
+      ls -al ./bin
+    override-stage: |
+      snapcraftctl stage
+      ls -al .
+    override-prime: |
+      snapcraftctl prime
+      ls -al .
+      ls -al ./ocis
+      # ./bin/ocis init
 
 # APPS
 ## ref: https://snapcraft.io/docs/snapcraft-app-and-service-metadata
