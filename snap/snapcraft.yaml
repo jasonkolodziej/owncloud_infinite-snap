@@ -111,7 +111,7 @@ parts:
       make -C ocis build
       echo $SNAPCRAFT_PART_INSTALL
       ls -al .
-      ls -al ./bin
+      ls -al ./ocis
     override-stage: |
       snapcraftctl stage
       ls -al .
