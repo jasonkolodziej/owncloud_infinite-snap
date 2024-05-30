@@ -51,8 +51,8 @@ parts:
     source: https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh
     source-type: local
     build-environment:
-      NVM_DIR: "$HOME/.nvm"
-      PATH: ${PATH}:"$NVM_DIR/nvm.sh"
+      - NVM_DIR: "$HOME/.nvm"
+      - PATH: ${PATH}:"$NVM_DIR/nvm.sh"
 # :: [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 # :: [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
     build-packages:
