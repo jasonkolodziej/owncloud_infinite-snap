@@ -45,19 +45,20 @@ grade: devel # must be 'stable' to release into candidate/stable channels
 ## Parts define what sources are needed to assemble your app.
 ## Parts can be anything: programs, libraries, or other needed assets.
 parts:
+# * A direct download for node.js to be used toward another part
   node:
     plugin: nil
-  build-packages:
-    - curl
-  override-build: |
-    # installs nvm (Node Version Manager)
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-    # download and install Node.js
-    nvm install 22
-    # verifies the right Node.js version is in the environment
-    node -v # should print `v22.2.0`
-    # verifies the right NPM version is in the environment
-    npm -v # should print `10.7.0`
+    build-packages:
+      - curl
+    override-build: |
+      # installs nvm (Node Version Manager)
+      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+      # download and install Node.js
+      nvm install 22
+      # verifies the right Node.js version is in the environment
+      node -v # should print `v22.2.0`
+      # verifies the right NPM version is in the environment
+      npm -v # should print `10.7.0`
   
   ## The parts arbitrary name
   ocis:
