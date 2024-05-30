@@ -77,15 +77,14 @@ parts:
     ## (list of strings) Features used to build optional dependencies
     build-snaps:
       - go
-      - make
     source-type: git
     source-tag: v5.0.5
     source: https://github.com/owncloud/ocis.git
     ## Before building the part, the packages listed in the build-packages section
     ## need to be installed in the build environment.
     ## These are the tools and libraries that are used during the build process.
-    # build-packages:
-      # - make
+    build-packages:
+      - make
       # - npm@22.10
       # - nodejs
     #   - libfdk-aac-dev
