@@ -47,12 +47,20 @@ grade: devel # must be 'stable' to release into candidate/stable channels
 parts:
 # * A direct download for node.js to be used toward another part
   node:
-    plugin: nil
+    plugin: dump
+    source: https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh
+    source-type: local
+    build-environment:
+      NVM_DIR: "$HOME/.nvm"
+      PATH: ${PATH}:"$NVM_DIR/nvm.sh"
+# :: [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+# :: [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
     build-packages:
       - curl
     override-build: |
+      ./install.sh
       # installs nvm (Node Version Manager)
-      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+      # curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
       # download and install Node.js
       nvm install 22
       # verifies the right Node.js version is in the environment
