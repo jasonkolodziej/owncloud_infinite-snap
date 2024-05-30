@@ -45,33 +45,11 @@ grade: devel # must be 'stable' to release into candidate/stable channels
 ## Parts define what sources are needed to assemble your app.
 ## Parts can be anything: programs, libraries, or other needed assets.
 parts:
-# * A direct download for node.js to be used toward another part
-  node:
-    plugin: dump
-    source: https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh
-    source-type: local
-    build-environment:
-      - NVM_DIR: "$HOME/.nvm"
-      - PATH: ${PATH}:"$NVM_DIR/nvm.sh"
-# :: [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-# :: [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-    build-packages:
-      - curl
-    override-build: |
-      ./install.sh
-      # installs nvm (Node Version Manager)
-      # curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-      # download and install Node.js
-      nvm install 22
-      # verifies the right Node.js version is in the environment
-      node -v # should print `v22.2.0`
-      # verifies the right NPM version is in the environment
-      npm -v # should print `10.7.0`
-  
   ## The parts arbitrary name
+  # node:
+  #   plugin: npm
+  #   source: 
   ocis:
-    after:
-      - node
   ## The plugin field=(dump) determines how the information in specified in the source field
   ## and includes the source's contents in the snap.
   ## The source can be a local or remote zip file, deb file, or tarball.
@@ -93,6 +71,7 @@ parts:
     ## These are the tools and libraries that are used during the build process.
     build-packages:
       - make
+      - npm
       # - npm@22.10
       # - nodejs
     #   - libfdk-aac-dev
@@ -106,9 +85,19 @@ parts:
     ## You can override and customise steps of a part’s lifecycle (pull, build, stage, and prime) using overrides;
     ## ref: https://snapcraft.io/docs/overrides
     override-build: |
+      # Update NPM globally
+      npm update -g npm
+      # Clean NPM cache
+      npm cache clean -f
+      # Install N globally
+      npm install -g n
+      # Install latest node version
+      n latest
+      # Prune older versions
+      n prune
       ## install pnpm globally
       ## npm install -g @pnpm/exe
-      ## npm install -g pnpm
+      npm install -g pnpm
       ## generate assets
       make generate
       ## build the binary
