@@ -49,7 +49,7 @@ jobs:
       #? A cache today is immutable and cannot be updated. But some use cases require the cache to be saved even though
       #? there was a "hit" during restore.
       #? To do so, use a key which is unique for every run and use restore-keys to restore the nearest cache. For example:
-      - uses: actions/cache/restore@v3
+      - uses: actions/cache/restore@v4
         id: cached
         # continue-on-error: true
         with:
@@ -66,8 +66,8 @@ jobs:
           # set file to be executable
           # chmod +x ./ocis
 
-      - uses: actions/cache@v4
-        if: ${{ steps.cached.outputs.cache-hit != 'true' }}
+      - uses: actions/cache/save@v4
+        if: ${{ steps.cached.outputs.cache-hit != 'true' && steps.grab.conclusion == 'success' }}
         id: cache
         with:
           path: ocis
@@ -105,6 +105,7 @@ jobs:
         with:
           architecture: ${{ matrix.platform }}
       - uses: actions/upload-artifact@v4
+        id: uploadSnapArtifact
         with:
           name: snap
           path: ${{ steps.snapcraft.outputs.snap }}
@@ -123,7 +124,7 @@ jobs:
       contents: write
     steps:
       - name: Retrieve result from build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         id: results
         with:
           name: snap
@@ -137,4 +138,4 @@ jobs:
           tag_name: v0.12
           prerelease: true
           # token: ${{ secrets.GITRELEASE_TOKEN }}
-          files: ${{ steps.results.outputs.snap }}
+          files: ${{ steps.results.outputs.download-path }}
