@@ -51,10 +51,11 @@ jobs:
         id: grab
         if: ${{ steps.cached.outcome == 'failure' }}
         run: |
-          echo ${{ steps.cached.outcome }} ${{ steps.cached.conclusion }}
+          # echo ${{ steps.cached.outcome }} ${{ steps.cached.conclusion }}
           echo "latest cached binary doesn't exist, downloading..."
           curl --fail https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-${{matrix.platform}} --output ocis
-
+          # set file to be executable
+          chmod +x ./ocis
       - name: Uploading artifact
         id: cache
         if: ${{ steps.grab.conclusion == 'success' }}
