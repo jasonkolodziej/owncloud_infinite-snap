@@ -26,6 +26,7 @@ architectures:
 #    build-for:
   - build-on: arm64
     build-for: arm64
+  # - build-on: amd64
 lint:
   ignore:
     - library
@@ -78,9 +79,9 @@ parts:
       - curl
       - wget
       - npm
-      # - npm@22.10
-      # - nodejs
-    #   - libfdk-aac-dev
+    build-environment:
+      - OCIS_CONFIG_DIR: $SNAP_USER_COMMON
+      - OCIS_BASE_DATA_PATH: $SNAP_DATA
     # stage-packages:
     #   - pulseaudio
     #   - libfdk-aac-dev
@@ -109,16 +110,27 @@ parts:
       make generate
       ## build the binary
       make -C ocis build
-      echo $SNAPCRAFT_PART_INSTALL
-      ls -al .
-      ls -al ./ocis
+      echo $CRAFT_PART_INSTALL
+      ls -al $CRAFT_PART_INSTALL
+      # ls -al ./ocis
+    
+    # * Default staging will `cp` from `build` '/data/parts/ocis/build/ocis/bin/` to `/data/parts/ocis/stage/`
+    # * yielding e.g.
+    # * ```shell
+    # * ls -al /data/parts/ocis/stage
+    # * total Xxx
+    # * drwxr-xr-x 2 root root 4096 May 31 00:06 ..
+    # * # [...]
+    # * drwxr-xr-x 2 root root 4096 May 31 00:06 bin
+    # * ```
     override-stage: |
       snapcraftctl stage
+
       ls -al .
+      ls -al ./bin
     override-prime: |
       snapcraftctl prime
-      ls -al .
-      ls -al ./ocis
+      ls -al ./bin
       # ./bin/ocis init
 
 # APPS
@@ -135,7 +147,7 @@ apps:
     # initialize a minimal oCIS configuration
     #  ./ocis/bin/ocis init
     install-mode: disable
-    command: /bin/ocis
+    command: /usr/bin/ocis
     daemon: simple
     environment:
       #* run with demo users
