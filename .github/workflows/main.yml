@@ -52,7 +52,7 @@ jobs:
           echo "latest cached binary doesn't exist, downloading..."
           curl https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-${{matrix.platform}} --output ocis
       - name: Uploading artifact
-        if: ${{ success() && steps.getCached.conclusion == 'failure'}}
+        if: ${{ success() && steps.cacheBin.conclusion == 'success' }}
         uses: actions/upload-artifact@v4
         with:
           name: latest-cached-bin
