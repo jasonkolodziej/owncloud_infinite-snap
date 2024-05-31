@@ -42,22 +42,17 @@ jobs:
       #     tar tvf ./ocis-5_0_5.tar.gz
 
       - uses: actions/download-artifact@v4
+        id: getCached
         with:
           name: latest-cached-bin
-
-      - name: Is file created?
-        if: ${{ hashFiles('ocis') != '' }}
-        run: echo "File exists"
-
       - name: Grab binary
-        if: ${{ hashFiles('ocis') == '' }}
-        id: cachedBin
+        if: ${{ failure() }}
+        id: cacheBin
         run: |
           echo "latest cached binary doesn't exist, downloading..."
           curl https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-${{matrix.platform}} --output ocis
-
       - name: Uploading artifact
-        if: ${{ hashFiles('ocis') == '' }}
+        if: ${{ success() && steps.getCached.conclusion != 'failure'}}
         uses: actions/upload-artifact@v4
         with:
           name: latest-cached-bin
