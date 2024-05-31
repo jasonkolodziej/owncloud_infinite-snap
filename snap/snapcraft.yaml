@@ -70,7 +70,8 @@ parts:
     override-stage: |
       snapcraftctl stage
       echo "$OCIS_CONFIG_DIR" "$OCIS_BASE_DATA_PATH"
-      chmod +x ./ocis
+      # chmod +x ./ocis
+      ocis init
     override-prime: |
       snapcraftctl prime
     stage:
