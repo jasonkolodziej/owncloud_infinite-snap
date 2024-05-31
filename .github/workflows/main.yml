@@ -34,7 +34,7 @@ jobs:
         run: |
           docker pull owncloud/ocis:5.0.5
           docker save -o ocis-5_0_5.tar owncloud/ocis:5.0.5
-          ls -al
+          tar tvf ./ocis-5_0_5.tar
       # # Use Samuel's action to get snapcraft
       # - name: Install Snapcraft
       #   uses: samuelmeuli/action-snapcraft@v2
