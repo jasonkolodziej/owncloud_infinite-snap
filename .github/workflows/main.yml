@@ -32,6 +32,7 @@ jobs:
 
       - name: Pull and save docker image as tarball
         run: |
+          docker pull owncloud/ocis:5.0.5
           docker save -o ocis-5_0_5.tar owncloud/ocis:5.0.5
           ls -al
       # # Use Samuel's action to get snapcraft
