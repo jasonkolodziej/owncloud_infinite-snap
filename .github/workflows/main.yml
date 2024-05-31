@@ -51,23 +51,23 @@ jobs:
       #? To do so, use a key which is unique for every run and use restore-keys to restore the nearest cache. For example:
       - uses: actions/cache/restore@v3
         id: cached
-        continue-on-error: true
+        # continue-on-error: true
         with:
           path: ocis
           key: ${{ runner.os }}-ocis-${{ hashFiles('ocis') }}
-          fail-on-cache-miss: true
+          # fail-on-cache-miss: true
 
       - name: Grab binary via Cache
         id: grab
-        if: ${{ steps.cached.outcome == 'failure' || steps.cached.outputs.cache-hit != 'true' }}
+        if: ${{ steps.cached.outputs.cache-hit != 'true' }}
         run: |
           echo "latest cached binary doesn't exist, downloading..."
           curl --fail https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-${{matrix.platform}} --output ocis
           # set file to be executable
-          chmod +x ./ocis
+          # chmod +x ./ocis
 
       - uses: actions/cache@v4
-        if: ${{ steps.grab.conclusion == 'sucess' }}
+        if: ${{ steps.cached.outputs.cache-hit != 'true' }}
         id: cache
         with:
           path: ocis

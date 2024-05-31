@@ -71,8 +71,9 @@ parts:
 
     override-stage: |
       craftctl default
-      echo "$OCIS_CONFIG_DIR" "$OCIS_BASE_DATA_PATH"
-      # chmod +x ./ocis
+      mkdir -p $OCIS_CONFIG_DIR
+      mkdir -p $OCIS_BASE_DATA_PATH
+      chmod +x "$CRAFT_STAGE/usr/bin/ocis"
       ls -al .
       ocis init
 
