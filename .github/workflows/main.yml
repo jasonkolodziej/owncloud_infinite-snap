@@ -40,7 +40,7 @@ jobs:
       #     tar tvf ./ocis-5_0_5.tar.gz
       - name: Grab binary
         run: |
-          curl https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-$(uname -s)-$(uname -m) --output ocis
+          curl https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-${{matrix.platform.os}}-${{matrix.platform}} --output ocis
 
       # # Use Samuel's action to get snapcraft
       # - name: Install Snapcraft
