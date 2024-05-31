@@ -58,11 +58,12 @@ parts:
   ocis-download:
     plugin: dump
     # https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-arm64
-    source: https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-$(shell uname -s)-$(shell uname -m)
+    source: ./ocis
     organize:
-      "ocis-*": usr/bin/ocis
+      "ocis*": usr/bin/ocis
     override-build: |
-      snapcraftctl build
+      snapcraftctl build --debug
+
       ls -al .
   # override-build: |
   #   curl -sSL \ "https://github.com/bufbuild/buf/releases/download/${BUF_VERSION}/buf-$(shell uname -s)-$(shell uname -m)" -o "$(shell go env GOPATH)/bin/buf" && chmod +x "$(shell go env GOPATH)/bin/buf"
