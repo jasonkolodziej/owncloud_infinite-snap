@@ -58,7 +58,7 @@ parts:
   ocis-download:
     plugin: dump
     # https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-arm64
-    source: ./ocis
+    source: ./
     organize:
       "ocis*": usr/bin/ocis
     override-build: |
