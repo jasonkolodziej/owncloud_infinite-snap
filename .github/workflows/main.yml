@@ -40,9 +40,28 @@ jobs:
       #     docker export ${CONT_ID} -o ocis-5_0_5.tar.gz
       #     # docker save -o ocis-5_0_5.tar owncloud/ocis:5.0.5
       #     tar tvf ./ocis-5_0_5.tar.gz
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: latest-cached-bin
+
+      - name: Is file created?
+        if: ${{ hashFiles('ocis') != '' }}
+        run: echo "File exists"
+
       - name: Grab binary
+        if: ${{ hashFiles('ocis') == '' }}
+        id: cachedBin
         run: |
+          echo "latest cached binary doesn't exist, downloading..."
           curl https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-${{matrix.platform}} --output ocis
+
+      - name: Uploading artifact
+        if: ${{ hashFiles('ocis') == '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: latest-cached-bin
+          path: ./ocis
 
       # # Use Samuel's action to get snapcraft
       # - name: Install Snapcraft
@@ -57,7 +76,7 @@ jobs:
         id: snapcraft
         with:
           architecture: ${{ matrix.platform }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: snap
           path: ${{ steps.snapcraft.outputs.snap }}

@@ -61,10 +61,20 @@ parts:
     source: ./
     organize:
       "ocis*": usr/bin/ocis
+    build-environment:
+      - OCIS_CONFIG_DIR: $SNAP_USER_COMMON
+      - OCIS_BASE_DATA_PATH: $SNAP_DATA
     override-build: |
-      snapcraftctl build --debug
-
+      snapcraftctl build
       ls -al .
+    override-stage: |
+      snapcraftctl stage
+      echo "$OCIS_CONFIG_DIR" "$OCIS_BASE_DATA_PATH"
+      chmod +x ./ocis
+    override-prime: |
+      snapcraftctl prime
+    stage:
+      - $"ocis*"
   # override-build: |
   #   curl -sSL \ "https://github.com/bufbuild/buf/releases/download/${BUF_VERSION}/buf-$(shell uname -s)-$(shell uname -m)" -o "$(shell go env GOPATH)/bin/buf" && chmod +x "$(shell go env GOPATH)/bin/buf"
   # ocis:
