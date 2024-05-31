@@ -8,7 +8,7 @@ name: owncloud-infinite # you probably want to 'snapcraft register <name>'
 ## with a minimal set of libraries that are common to most applications.
 ## They’re transparent to users, but they need to be considered, and specified, when building a snap.
 base: core22 # the base snap is the execution environment for this snap
-version: '5.0.5+git' # just for humans, typically '1.2+git' or '1.3.2'
+version: "5.0.5+git" # just for humans, typically '1.2+git' or '1.3.2'
 summary: ownCloud infinite scale # 79 char long summary
 description: |
   To create a truly federated storage architecture oCIS breaks down the old ownCloud 10 user specific namespace, 
@@ -23,10 +23,11 @@ license: MIT
 ## ref: https://snapcraft.io/docs/architectures
 architectures:
   #- build-on: arm64
-#    build-for:
+  #    build-for:
   - build-on: arm64
     build-for: arm64
   # - build-on: amd64
+
 lint:
   ignore:
     - library
@@ -55,15 +56,15 @@ parts:
   #   npm-include-node: true
   #   npm-node-version: 20
   ocis:
-  ## The plugin field=(dump) determines how the information in specified in the source field
-  ## and includes the source's contents in the snap.
-  ## The source can be a local or remote zip file, deb file, or tarball.
-  
+    ## The plugin field=(dump) determines how the information in specified in the source field
+    ## and includes the source's contents in the snap.
+    ## The source can be a local or remote zip file, deb file, or tarball.
+
     # plugin: make
     # plugin: npm
     # npm-node-version: 22
     # npm-include-node: true
-    
+
     plugin: go
     ## (list of strings) Features used to build optional dependencies
     build-snaps:
@@ -111,9 +112,15 @@ parts:
       ## build the binary
       make -C ocis build
       echo $CRAFT_PART_INSTALL
-      ls -al $CRAFT_PART_INSTALL
-      # ls -al ./ocis
-    
+
+      if [ -e "$CRAFT_PART_INSTALL/bin/ocis" ]; then
+        echo "File exists, changing permissions"
+        chmod +x $CRAFT_PART_INSTALL/bin/ocis
+      else
+          echo "File does not exist in $CRAFT_PART_INSTALL"
+          ls -al "$CRAFT_PART_INSTALL/bin"
+      fi
+
     # * Default staging will `cp` from `build` '/data/parts/ocis/build/ocis/bin/` to `/data/parts/ocis/stage/`
     # * yielding e.g.
     # * ```shell
@@ -124,10 +131,26 @@ parts:
     # * drwxr-xr-x 2 root root 4096 May 31 00:06 bin
     # * ```
     override-stage: |
-      snapcraftctl stage
+      # snapcraftctl stage
 
-      ls -al .
-      ls -al ./bin
+      if [ -e "$CRAFT_PART_INSTALL/bin/ocis" ]; then
+        echo "File exists, copying"
+        cp -r $CRAFT_PART_INSTALL/bin/ $CRAFT_PART_STAGE/bin
+      else
+          echo "File does not exist in $CRAFT_PART_INSTALL"
+          ls -al "$CRAFT_PART_INSTALL/bin"
+          ls -al "$CRAFT_PART_STAGE"
+          echo "Checking build folder $CRAFT_PART_BUILD"
+        if [ -e "$CRAFT_PART_BUILD/ocis/bin/ocis" ]; then
+          echo "File exists in $CRAFT_PART_BUILD/ocis/bin/ocis"
+          cp -r $CRAFT_PART_BUILD/ocis/bin/ $CRAFT_PART_STAGE/bin
+        else
+          echo "File does not exist in $CRAFT_PART_BUILD"
+          ls -al "$CRAFT_PART_BUILD/ocis/bin"
+          ls -al "$CRAFT_PART_STAGE"
+        fi
+      fi
+
     override-prime: |
       snapcraftctl prime
       ls -al ./bin
@@ -152,46 +175,46 @@ apps:
     environment:
       #* run with demo users
       # IDM_CREATE_DEMO_USERS: true
-      
+
       #? https://doc.owncloud.com/ocis/next/deployment/general/general-info.html#default-paths
       #* Path to config files.
       #* The configuration directory has a default location for config files, which must be on a POSIX storage:
       #*  - For container images (inside the container) => `/etc/ocis/`
       #*  - For binary releases => `$HOME/.ocis/config/`
       # Directory for user data that is common across revisions of a snap.
-      # Unlike SNAP_USER_DATA, data present in this directory is not backed up or restored across snap refresh 
-      # and snap revert operations. The directory is suitable for large data that the application can access even 
-      # if it was made or modified by a future version of a snap. 
+      # Unlike SNAP_USER_DATA, data present in this directory is not backed up or restored across snap refresh
+      # and snap revert operations. The directory is suitable for large data that the application can access even
+      # if it was made or modified by a future version of a snap.
       # ==> $HOME/snap/$SNAP_NAME/common
       OCIS_CONFIG_DIR: $SNAP_USER_COMMON
-      
+
       #* Path to system relevant data.
-      #* Because Infinite Scale does not use a database for storing information like users, groups, spaces, internal data, etc., 
-      #* it saves all this data to a permanent file location. Depending on the system setup, the base directory contains not 
+      #* Because Infinite Scale does not use a database for storing information like users, groups, spaces, internal data, etc.,
+      #* it saves all this data to a permanent file location. Depending on the system setup, the base directory contains not
       #* only the metadata but also blobs. See Filesystems and Shared Storage for more details.
-      #* The base path has a default location for metadata and service dependent data (see above) which must be on a POSIX storage. 
+      #* The base path has a default location for metadata and service dependent data (see above) which must be on a POSIX storage.
       #* If not otherwise defined when using S3, it is also used to store blobs using that path:
       #*   - For container images (inside the container) => `/var/lib/ocis`
       #*   - For binary releases => `$HOME/.ocis/`
-      
+
       #* `SNAP_DATA`
-      #* Directory for system data of a snap. This directory is owned and writable by root and is meant to be used by background applications 
+      #* Directory for system data of a snap. This directory is owned and writable by root and is meant to be used by background applications
       #* (daemons, services). Unlike `SNAP_COMMON` this directory is backed up and restored across snap refresh and snap revert operations.
       # ==> /var/snap/$SNAP_NAME/$SNAP_REVISION
 
       OCIS_BASE_DATA_PATH: $SNAP_DATA
-      
+
       #* Path to blobs and metadata if POSIX is used.
       #* Derives from `OCIS_BASE_DATA_PATH` if not set otherwise.
       #* Used if `STORAGE_USERS_DRIVER` is set to ocis
       # STORAGE_USERS_OCIS_ROOT: xx
-      
+
       #* Path to metadata if S3 is used.
       #* Derives from OCIS_BASE_DATA_PATH if not set otherwise.
       #* Used if STORAGE_USERS_DRIVER is set to s3ng.
       #* See Using S3 for Blobs for the S3 configuration.
-      #*   When using S3 for storing user data (blobs), metadata must reside on POSIX. The environment variable responsible for 
-      #*   storaing metadata in S3 is `STORAGE_USERS_S3NG_ROOT` and derives, if not otherwise defined, from the base directory 
+      #*   When using S3 for storing user data (blobs), metadata must reside on POSIX. The environment variable responsible for
+      #*   storaing metadata in S3 is `STORAGE_USERS_S3NG_ROOT` and derives, if not otherwise defined, from the base directory
       #*   `OCIS_BASE_DATA_PATH`. For more details see the section Base Data Directory above.
       # STORAGE_USERS_S3NG_ROOT: xx
       # GOPLAY2_CONFIG_PATH: /$SNAP_USER_DATA/.config
@@ -202,4 +225,3 @@ apps:
       ## Removeable Devices
       ##? removable-media allows read/write access to mounted removable storage in `/media`, `/run/media` and `/mnt`.
       - removable-media
-      
