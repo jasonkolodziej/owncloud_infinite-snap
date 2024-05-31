@@ -41,28 +41,55 @@ jobs:
       #     # docker save -o ocis-5_0_5.tar owncloud/ocis:5.0.5
       #     tar tvf ./ocis-5_0_5.tar.gz
 
-      - uses: actions/download-artifact@v4
+      # - uses: actions/download-artifact@v4
+      #   id: cached
+      #   with:
+      #     name: latest-cached-bin
+      #   continue-on-error: true
+      #? A cache today is immutable and cannot be updated. But some use cases require the cache to be saved even though
+      #? there was a "hit" during restore.
+      #? To do so, use a key which is unique for every run and use restore-keys to restore the nearest cache. For example:
+      - uses: actions/cache/restore@v3
         id: cached
-        with:
-          name: latest-cached-bin
         continue-on-error: true
+        with:
+          path: ocis
+          key: ${{ runner.os }}-ocis-${{ hashFiles('ocis') }}
+          fail-on-cache-miss: true
 
-      - name: Grab binary
+      - name: Grab binary via Cache
         id: grab
-        if: ${{ steps.cached.outcome == 'failure' }}
+        if: ${{ steps.cached.outcome == 'failure' || steps.cached.outputs.cache-hit != 'true' }}
         run: |
-          # echo ${{ steps.cached.outcome }} ${{ steps.cached.conclusion }}
           echo "latest cached binary doesn't exist, downloading..."
           curl --fail https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-${{matrix.platform}} --output ocis
           # set file to be executable
           chmod +x ./ocis
-      - name: Uploading artifact
+
+      - uses: actions/cache@v4
+        if: ${{ steps.grab.conclusion == 'sucess' }}
         id: cache
-        if: ${{ steps.grab.conclusion == 'success' }}
-        uses: actions/upload-artifact@v4
         with:
-          name: latest-cached-bin
-          path: ./ocis
+          path: ocis
+          key: ${{ runner.os }}-ocis-${{ hashFiles('ocis') }}
+
+      # - name: Grab binary
+      #   id: grab
+      #   if: ${{ steps.cached.outcome == 'failure' }}
+      #   run: |
+      #     # echo ${{ steps.cached.outcome }} ${{ steps.cached.conclusion }}
+      #     echo "latest cached binary doesn't exist, downloading..."
+      #     curl --fail https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-${{matrix.platform}} --output ocis
+      #     # set file to be executable
+      #     chmod +x ./ocis
+
+      # - name: Uploading artifact
+      #   id: cache
+      #   if: ${{ steps.grab.conclusion == 'success' }}
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: latest-cached-bin
+      #     path: ./ocis
 
       # # Use Samuel's action to get snapcraft
       # - name: Install Snapcraft

@@ -68,21 +68,16 @@ parts:
     override-build: |
       craftctl default
       echo "$OCIS_CONFIG_DIR" "$OCIS_BASE_DATA_PATH"
-      # mkdir -p 
-      ls -al .
 
-    stage:
-      - $"ocis*"
     override-stage: |
       craftctl default
       echo "$OCIS_CONFIG_DIR" "$OCIS_BASE_DATA_PATH"
       # chmod +x ./ocis
       ls -al .
       ocis init
-    prime:
-      - $"ocis*"
+
     override-prime: |
-      craftctl default
+      snapcraftctl prime
       ls -al .
 
   # override-build: |
