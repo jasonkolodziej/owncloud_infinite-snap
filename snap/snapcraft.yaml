@@ -55,117 +55,122 @@ parts:
   #   source: .
   #   npm-include-node: true
   #   npm-node-version: 20
-  ocis:
-    ## The plugin field=(dump) determines how the information in specified in the source field
-    ## and includes the source's contents in the snap.
-    ## The source can be a local or remote zip file, deb file, or tarball.
-
-    # plugin: make
-    # plugin: npm
-    # npm-node-version: 22
-    # npm-include-node: true
-
-    plugin: go
-    ## (list of strings) Features used to build optional dependencies
-    build-snaps:
-      - go
-    source-type: git
-    source-tag: v5.0.5
-    source: https://github.com/owncloud/ocis.git
-    ## Before building the part, the packages listed in the build-packages section
-    ## need to be installed in the build environment.
-    ## These are the tools and libraries that are used during the build process.
-    build-packages:
-      - make
-      - curl
-      - wget
-      - npm
-    build-environment:
-      - OCIS_CONFIG_DIR: $SNAP_USER_COMMON
-      - OCIS_BASE_DATA_PATH: $SNAP_DATA
-    # stage-packages:
-    #   - pulseaudio
-    #   - libfdk-aac-dev
-    ## These are packages containing libraries are resources that the final snap needs to run.
-    ## They are very similar to those that would be listed as run-time
-    ## dependencies on a standard distribution package.
-    #stage-packages:
-    ## You can override and customise steps of a part’s lifecycle (pull, build, stage, and prime) using overrides;
-    ## ref: https://snapcraft.io/docs/overrides
+  ocis-download:
+    plugin: dump
+    # https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-arm64
+    source: https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-$(shell uname -s)-$(shell uname -m)
+    organize:
+      "ocis-*": usr/bin/ocis
     override-build: |
-      # Clean NPM cache
-      # npm cache clean -f
+      snapcraftctl build
+      ls -al .
+  # override-build: |
+  #   curl -sSL \ "https://github.com/bufbuild/buf/releases/download/${BUF_VERSION}/buf-$(shell uname -s)-$(shell uname -m)" -o "$(shell go env GOPATH)/bin/buf" && chmod +x "$(shell go env GOPATH)/bin/buf"
+  # ocis:
+  #   ## The plugin field=(dump) determines how the information in specified in the source field
+  #   ## and includes the source's contents in the snap.
+  #   ## The source can be a local or remote zip file, deb file, or tarball.
 
-      # Update NPM globally
-      npm update -g npm
-      npm --version
+  #   # plugin: make
+  #   # plugin: npm
+  #   # npm-node-version: 22
+  #   # npm-include-node: true
 
-      # Install N globally
-      npm install -g n
+  #   plugin: go
+  #   ## (list of strings) Features used to build optional dependencies
+  #   build-snaps:
+  #     - go
+  #   source-type: git
+  #   source-tag: v5.0.5
+  #   source: https://github.com/owncloud/ocis.git
+  #   ## Before building the part, the packages listed in the build-packages section
+  #   ## need to be installed in the build environment.
+  #   ## These are the tools and libraries that are used during the build process.
+  #   build-packages:
+  #     - make
+  #     - curl
+  #     - wget
+  #     - npm
+  #   build-environment:
+  #     - OCIS_CONFIG_DIR: $SNAP_USER_COMMON
+  #     - OCIS_BASE_DATA_PATH: $SNAP_DATA
+  #   # stage-packages:
+  #   #   - pulseaudio
+  #   #   - libfdk-aac-dev
+  #   ## These are packages containing libraries are resources that the final snap needs to run.
+  #   ## They are very similar to those that would be listed as run-time
+  #   ## dependencies on a standard distribution package.
+  #   #stage-packages:
+  #   ## You can override and customise steps of a part’s lifecycle (pull, build, stage, and prime) using overrides;
+  #   ## ref: https://snapcraft.io/docs/overrides
+  #   override-build: |
+  #     # Clean NPM cache
+  #     # npm cache clean -f
 
-      # Prune older versions & Install latest node version
-      n prune && n lts
-      node --version
-      hash -r
+  #     # Update NPM globally
+  #     npm update -g npm
+  #     npm --version
 
-      ## install pnpm globally
-      npm install -g @pnpm/exe
-      ## npm install -g pnpm
+  #     # Install N globally
+  #     npm install -g n
 
-      ## You only need to run following command if you have changed protobuf definitions 
-      ## or the frontend part in one of the extensions. Run the command in the root directory of the repository. 
-      ## Otherwise you can skip this step and proceed to build the oCIS binary. 
-      ## This will usually modify multiple embed.go files because we embed the frontend build output in these embed.go 
-      ## files and a timestamp will be updated and also minor differences are expected between different Node.js versions.
-      # make generate
+  #     # Prune older versions & Install latest node version
+  #     n prune && n lts
+  #     node --version
+  #     hash -r
 
-      ## build the binary
-      make -C ocis build
+  #     ## install pnpm globally
+  #     npm install -g @pnpm/exe
+  #     ## npm install -g pnpm
 
-      echo $CRAFT_PART_INSTALL
+  #     ## You only need to run following command if you have changed protobuf definitions
+  #     ## or the frontend part in one of the extensions. Run the command in the root directory of the repository.
+  #     ## Otherwise you can skip this step and proceed to build the oCIS binary.
+  #     ## This will usually modify multiple embed.go files because we embed the frontend build output in these embed.go
+  #     ## files and a timestamp will be updated and also minor differences are expected between different Node.js versions.
+  #     # make generate
 
-      if [ -e "$CRAFT_PART_INSTALL/bin/ocis" ]; then
-        echo "File exists, changing permissions"
-        chmod +x $CRAFT_PART_INSTALL/bin/ocis
-      else
-          echo "File does not exist in $CRAFT_PART_INSTALL"
-          ls -al "$CRAFT_PART_INSTALL/bin"
-      fi
+  #     ## build the binary
+  #     make -C ocis build
 
-    # * Default staging will `cp` from `build` '/data/parts/ocis/build/ocis/bin/` to `/data/parts/ocis/stage/`
-    # * yielding e.g.
-    # * ```shell
-    # * ls -al /data/parts/ocis/stage
-    # * total Xxx
-    # * drwxr-xr-x 2 root root 4096 May 31 00:06 ..
-    # * # [...]
-    # * drwxr-xr-x 2 root root 4096 May 31 00:06 bin
-    # * ```
-    override-stage: |
-      # snapcraftctl stage
+  #     echo $CRAFT_PART_INSTALL
 
-      if [ -e "$CRAFT_PART_INSTALL/bin/ocis" ]; then
-        echo "File exists, copying"
-        cp -r $CRAFT_PART_INSTALL/bin/ $CRAFT_PART_STAGE/bin
-      else
-          echo "File does not exist in $CRAFT_PART_INSTALL"
-          ls -al "$CRAFT_PART_INSTALL/bin"
-          ls -al "$CRAFT_PART_STAGE"
-          echo "Checking build folder $CRAFT_PART_BUILD"
-        if [ -e "$CRAFT_PART_BUILD/ocis/bin/ocis" ]; then
-          echo "File exists in $CRAFT_PART_BUILD/ocis/bin/ocis"
-          cp -r $CRAFT_PART_BUILD/ocis/bin/ $CRAFT_PART_STAGE/bin
-        else
-          echo "File does not exist in $CRAFT_PART_BUILD"
-          ls -al "$CRAFT_PART_BUILD/ocis/bin"
-          ls -al "$CRAFT_PART_STAGE"
-        fi
-      fi
+  #     ls -al
 
-    override-prime: |
-      snapcraftctl prime
-      ls -al ./bin
-      # ./bin/ocis init
+  #   # * Default staging will `cp` from `build` '/data/parts/ocis/build/ocis/bin/` to `/data/parts/ocis/stage/`
+  #   # * yielding e.g.
+  #   # * ```shell
+  #   # * ls -al /data/parts/ocis/stage
+  #   # * total Xxx
+  #   # * drwxr-xr-x 2 root root 4096 May 31 00:06 ..
+  #   # * # [...]
+  #   # * drwxr-xr-x 2 root root 4096 May 31 00:06 bin
+  #   # * ```
+  #   override-stage: |
+  #     # snapcraftctl stage
+
+  #     if [ -e "$CRAFT_PART_INSTALL/bin/ocis" ]; then
+  #       echo "File exists, copying"
+  #       cp -r $CRAFT_PART_INSTALL/bin/ $CRAFT_PART_STAGE/bin
+  #     else
+  #         echo "File does not exist in $CRAFT_PART_INSTALL"
+  #         ls -al "$CRAFT_PART_INSTALL/bin"
+  #         ls -al "$CRAFT_PART_STAGE"
+  #         echo "Checking build folder $CRAFT_PART_BUILD"
+  #       if [ -e "$CRAFT_PART_BUILD/ocis/bin/ocis" ]; then
+  #         echo "File exists in $CRAFT_PART_BUILD/ocis/bin/ocis"
+  #         cp -r $CRAFT_PART_BUILD/ocis/bin/ $CRAFT_PART_STAGE/bin
+  #       else
+  #         echo "File does not exist in $CRAFT_PART_BUILD"
+  #         ls -al "$CRAFT_PART_BUILD/ocis/bin"
+  #         ls -al "$CRAFT_PART_STAGE"
+  #       fi
+  #     fi
+
+  #   override-prime: |
+  #     snapcraftctl prime
+  #     ls -al ./bin
+  #     # ./bin/ocis init
 
 # APPS
 ## ref: https://snapcraft.io/docs/snapcraft-app-and-service-metadata
