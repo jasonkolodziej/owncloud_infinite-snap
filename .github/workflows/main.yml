@@ -46,7 +46,7 @@ jobs:
         with:
           name: latest-cached-bin
       - name: Grab binary
-        if: ${{ failure() }}
+        if: ${{ steps.getCached.conclusion == 'failure' }}
         id: cacheBin
         run: |
           echo "latest cached binary doesn't exist, downloading..."
