@@ -60,24 +60,31 @@ parts:
     # https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-arm64
     source: ./
     organize:
-      "ocis*": usr/bin/ocis
+      "ocis*": /usr/bin/ocis
+
     build-environment:
-      - OCIS_CONFIG_DIR: $SNAP_USER_COMMON
-      - OCIS_BASE_DATA_PATH: $SNAP_DATA
+      - OCIS_CONFIG_DIR: $CRAFT_STAGE/etc/ocis/
+      - OCIS_BASE_DATA_PATH: $CRAFT_STAGE/var/lib/ocis
     override-build: |
       craftctl default
+      echo "$OCIS_CONFIG_DIR" "$OCIS_BASE_DATA_PATH"
+      # mkdir -p 
       ls -al .
+
+    stage:
+      - $"ocis*"
     override-stage: |
       craftctl default
       echo "$OCIS_CONFIG_DIR" "$OCIS_BASE_DATA_PATH"
       # chmod +x ./ocis
       ls -al .
       ocis init
+    prime:
+      - $"ocis*"
     override-prime: |
       craftctl default
       ls -al .
-    stage:
-      - $"ocis*"
+
   # override-build: |
   #   curl -sSL \ "https://github.com/bufbuild/buf/releases/download/${BUF_VERSION}/buf-$(shell uname -s)-$(shell uname -m)" -o "$(shell go env GOPATH)/bin/buf" && chmod +x "$(shell go env GOPATH)/bin/buf"
   # ocis:
