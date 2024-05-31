@@ -1,22 +1,27 @@
-# This is a basic workflow to help you get started with Actions
+#? This is a basic workflow to help you get started with Actions
 name: CI
-# Controls when the workflow will run
+#? Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
+  #? Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: ["main"]
   pull_request:
     branches: ["main"]
+  #? Listen to a repository dispatch event by the name of `dispatch-event`
+  repository_dispatch:
+    types:
+      # - dispatch-event
+      - dispatch-released
 
-  # Allows you to run this workflow manually from the Actions tab
+  #? Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+#? A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
+  #? This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
+    #? The type of runner that the job will run on
     runs-on: ${{ matrix.os }}
-    # Reference: https://github.com/marketplace/actions/snapcraft-multiarch-build
+    #? Reference: https://github.com/marketplace/actions/snapcraft-multiarch-build
     strategy:
       matrix:
         os:
@@ -24,11 +29,11 @@ jobs:
         platform:
           - arm64
     env:
-      # https://github.com/marketplace/actions/snapcraft-action#log-in
+      #? > https://github.com/marketplace/actions/snapcraft-action#log-in
       SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    #? Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      #? Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -46,6 +51,7 @@ jobs:
       #   with:
       #     name: latest-cached-bin
       #   continue-on-error: true
+      #? Refrence: https://github.com/actions/cache/tree/main
       #? A cache today is immutable and cannot be updated. But some use cases require the cache to be saved even though
       #? there was a "hit" during restore.
       #? To do so, use a key which is unique for every run and use restore-keys to restore the nearest cache. For example:
@@ -66,6 +72,7 @@ jobs:
           # set file to be executable
           # chmod +x ./ocis
 
+      #? Refrence: https://github.com/actions/cache/tree/main
       - uses: actions/cache/save@v4
         if: ${{ steps.cached.outputs.cache-hit != 'true' && steps.grab.conclusion == 'success' }}
         id: cache
@@ -99,7 +106,7 @@ jobs:
       #   with:
       #     use_lxd: ${{ matrix.os == 'ubuntu-18.04' }}
       - uses: docker/setup-qemu-action@v1
-      # https://github.com/marketplace/actions/snapcraft-multiarch-build#action-inputs
+      #? https://github.com/marketplace/actions/snapcraft-multiarch-build#action-inputs
       - uses: diddlesnaps/snapcraft-multiarch-action@v1
         id: snapcraft
         with:
@@ -109,18 +116,19 @@ jobs:
         with:
           name: snap
           path: ${{ steps.snapcraft.outputs.snap }}
-      # Runs a set of commands using the runners shell
+      #? Runs a set of commands using the runners shell
       # - name: Run a multi-line script
       #   run: |
       #     ls -al
       #     echo Add other actions to build,
       #     echo test, and deploy your project.
       #     snapcraft
+  #? Sets the release of this repository
   release:
     needs: build
     runs-on: ubuntu-latest
     permissions:
-      # Required to release
+      #? Required to release
       contents: write
     steps:
       - name: Retrieve result from build
@@ -128,12 +136,13 @@ jobs:
         id: results
         with:
           name: snap
-      # Runs a set of commands using the runners shell
+      #? Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
           ls -al
+      #? Set your release
       - name: GH Release
-        uses: softprops/action-gh-release@v0.1.15
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: v0.12
           prerelease: true

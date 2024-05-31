@@ -1,7 +1,45 @@
-      - name: Repository Dispatch
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{ secrets.PAT }}
-          repository: username/my-repo
-          event-type: my-event
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+#? This is a basic workflow to help you get started with Actions
+name: CI-Dispatcher
+#? Controls when the workflow will run
+on:
+  workflow_dispatch:
+  # schedule:
+  #   #?        ┌───────────── minute (0 - 59)
+  #   #?        │ ┌───────────── hour (0 - 23)
+  #   #?        │ │ ┌───────────── day of the month (1 - 31)
+  #   #?        │ │ │ ┌───────────── month (1 - 12 or JAN-DEC)
+  #   #?        │ │ │ │ ┌───────────── day of the week (0 - 6 or SUN-SAT)
+  #   #?        │ │ │ │ │
+  #   #?        │ │ │ │ │
+  #   #?        │ │ │ │ │
+  #   #?        * * * * *,-
+  #   - cron: "30 2 * * 1,3,5"
+
+jobs:
+  release_dispatch:
+    runs-on: "ubuntu-latest"
+    permissions:
+      contents: read
+    steps:
+      - name: Check Repository
+        #? https://docs.github.com/en/rest/releases/releases?apiVersion=2022-11-28#get-the-latest-release
+        run: |
+          gh api \
+          -H "Accept: application/vnd.github+json" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          /repos/${OWNER}/${ocis}/releases/latest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: owncloud
+          REPOSITORY: ocis
+      # - name: Repository Dispatch
+      #   #? https://github.com/marketplace/actions/repository-dispatch
+      #   uses: peter-evans/repository-dispatch@v3
+      #   with:
+      #     #? It needs the following permissions on the target repositories:
+      #     #?    - contents: read & write
+      #     #?    - metadata: read only (automatically selected when selecting the contents permission)
+      #     token: ${{ secrets.PAT }}
+      #     # repository: username/my-repo
+      #     event-type: dispatch-released
+      #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
