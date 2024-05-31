@@ -65,15 +65,17 @@ parts:
       - OCIS_CONFIG_DIR: $SNAP_USER_COMMON
       - OCIS_BASE_DATA_PATH: $SNAP_DATA
     override-build: |
-      snapcraftctl build
+      craftctl default
       ls -al .
     override-stage: |
-      snapcraftctl stage
+      craftctl default
       echo "$OCIS_CONFIG_DIR" "$OCIS_BASE_DATA_PATH"
       # chmod +x ./ocis
+      ls -al .
       ocis init
     override-prime: |
-      snapcraftctl prime
+      craftctl default
+      ls -al .
     stage:
       - $"ocis*"
   # override-build: |
