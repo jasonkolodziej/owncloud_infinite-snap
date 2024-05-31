@@ -15,10 +15,12 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     # Reference: https://github.com/marketplace/actions/snapcraft-multiarch-build
     strategy:
       matrix:
+        os:
+          - ubuntu-latest
         platform:
           - arm64
     env:
@@ -40,7 +42,7 @@ jobs:
       #     tar tvf ./ocis-5_0_5.tar.gz
       - name: Grab binary
         run: |
-          curl https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-${{matrix.platform.os}}-${{matrix.platform}} --output ocis
+          curl https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-${{matrix.os}}-${{matrix.platform}} --output ocis
 
       # # Use Samuel's action to get snapcraft
       # - name: Install Snapcraft
