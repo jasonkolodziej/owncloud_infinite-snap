@@ -38,8 +38,9 @@ jobs:
         id: extract-tag
         run: |
           echo "tag_name=${{ fromJson(steps.latest-release.outputs.release_info).tag_name }}" >> $GITHUB_OUTPUT
-          echo "tag=$(${{ fromJson(steps.latest-release.outputs.release_info).tag_name }} | tr 'v' '')"
-          echo "tag=$(${{ fromJson(steps.latest-release.outputs.release_info).tag_name }} | tr v '')" >> $GITHUB_OUTPUT
+          #? ${string//substring/replacement}
+          echo "tag=${"${{ fromJson(steps.latest-release.outputs.release_info).tag_name }}"//v}"
+          echo "tag=$("${{ fromJson(steps.latest-release.outputs.release_info).tag_name }}" | tr v '')" >> $GITHUB_OUTPUT
 
       - name: Repository Dispatch
         #? https://github.com/marketplace/actions/repository-dispatch
