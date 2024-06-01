@@ -59,7 +59,6 @@ jobs:
           key: ocis-${{ steps.extract-tag.outputs.tag }}-${{ runner.os }}-${{ matrix.platform }}-${{ hashFiles('ocis') }}
           restore-keys: |
             ocis-${{ steps.extract-tag.outputs.tag }}-${{ runner.os }}-${{ matrix.platform }}-
-            ocis-${{ steps.extract-tag.outputs.tag }}-${{ runner.os }}
 
       - name: Determine if new
         id: is-new

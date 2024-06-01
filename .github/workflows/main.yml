@@ -65,6 +65,7 @@ jobs:
           path: ocis
           key: ${{ env.CACHED_KEY }}
           fail-on-cache-miss: true
+          restore-keys: ocis-${{ env.RELEASE_VERSION }}-${{ runner.os }}-${{ matrix.platform }}-
 
       # - name: Grab binary via Cache
       #   id: grab
