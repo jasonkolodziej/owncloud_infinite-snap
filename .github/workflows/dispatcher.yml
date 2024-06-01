@@ -106,6 +106,6 @@ jobs:
               "tag": "${{ steps.extract-tag.outputs.tag }}",
               "is_new": ${{ steps.is-new.outputs.is_new }},
               "cache_key": "ocis-${{ steps.extract-tag.outputs.tag }}-${{ runner.os }}-${{ matrix.platform }}-${{ hashFiles('ocis') }}",
-              build_platform: "${{ matrix.platform }}",
-              build_os: "${{ matrix.os }}"
+              "build_platform": "${{ matrix.platform }}",
+              "build_os": "${{ matrix.os }}"
             }
