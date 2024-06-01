@@ -54,12 +54,12 @@ get_config() {
 handle_config()
 {
         echo 'handle_config params' $@
-        some_config="$(get_config $1)"
+        local some_config="$(get_config)"
         # Validate HTTP port
-        if ! expr "$some_config" : '^[0-9]\+$' > /dev/null; then
-                echo "\"$some_config\" is not a valid HTTP port" >&2
-                return 1
-        fi
+#        if ! expr "$some_config" : '^[0-9]\+$' > /dev/null; then
+ #               echo "\"$some_config\" is not a valid HTTP port" >&2
+  #              return 1
+   #     fi
        # run function from management script
         set_config "$some_config"
 
@@ -67,7 +67,7 @@ handle_config()
         # snapctl restart example-server
 }
 
-# handle_config $@
+handle_config
 
 # get_config $@
 _update_yaml $@
