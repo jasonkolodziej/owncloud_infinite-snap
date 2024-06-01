@@ -157,6 +157,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.RELEASE_TAG }}
+          #TODO: resolve setting a draft then detecting a draft
+          # draft: true
           prerelease: true
           # token: ${{ secrets.GITRELEASE_TOKEN }}
           files: ${{ steps.results.outputs.download-path }}
