@@ -1,7 +1,9 @@
-#!/bin/sh -e
+#!/bin/bash -e
 #? Reference: https://snapcraft.io/docs/adding-snap-configuration#heading--interpreting
 
-CONFIG_FILE_LOCATION="../../ocis/config/ocis.example.yaml"
+CONFIG_FILE_LOCATION="$OCIS_CONFIG_DIR/ocis.yaml"
+echo "$OCIS_CONFIG_DIR"
+# "../../ocis/config/ocis.example.yaml"
 
 # export NEXTCLOUD_CONFIG_DIR="$SNAP_DATA/nextcloud/config"
 # export NEXTCLOUD_DATA_DIR="$SNAP_COMMON/nextcloud/data"
@@ -15,10 +17,10 @@ set_config() {
     local param=${arrIN[0]}
     local val=${arrIN[1]}
 
-    echo $param
-    echo $val
-    echo set ${param}="$val"
-    # snapctl set ${param}="$val"
+    #echo $param
+    #echo $val
+    echo "setting ${param}=\"$val"\"
+    snapctl set ${param}="$val"
     # snapctl set ${1}="$2"
 }
 
@@ -39,8 +41,8 @@ _json_to_yaml() {
 
 #* Get Config - requests the default config's value if nothing is yet set and returns the value
 get_config() {
-    config_option=
-    # config_option="$(craftctl get ${1})"
+    # config_option=
+    config_option="$(snapctl get ${1})"
     if [ -z "$config_option" ]; then
         config_option="$(yq ".${1}" ${CONFIG_FILE_LOCATION})"
     fi
