@@ -104,7 +104,7 @@ parts:
       cp -r $CRAFT_STAGE/etc $CRAFT_PRIME
       cp -r $CRAFT_STAGE/var $CRAFT_PRIME
       ls -al .
-      cat $CRAFT_PRIME/etc/ocis/config.yaml
+      cat $CRAFT_PRIME/etc/ocis/ocis.yaml
 
   # override-build: |
   #   curl -sSL \ "https://github.com/bufbuild/buf/releases/download/${BUF_VERSION}/buf-$(shell uname -s)-$(shell uname -m)" -o "$(shell go env GOPATH)/bin/buf" && chmod +x "$(shell go env GOPATH)/bin/buf"
