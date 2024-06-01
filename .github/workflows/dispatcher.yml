@@ -75,7 +75,6 @@ jobs:
           echo "latest cached binary doesn't exist, downloading..."
           export OS_FAMILY=$(echo "${{ runner.os }}" | tr '[:upper:]' '[:lower:]')
           curl --fail https://download.owncloud.com/ocis/ocis/stable/${{ steps.extract-tag.outputs.tag }}/ocis-${{steps.extract-tag.outputs.tag}}-${OS_FAMILY}-${{matrix.platform}} --output ocis
-          ls -al /src/ocis
 
       # #? Refrence: https://github.com/actions/cache/tree/main
       # - uses: actions/cache/save@v4
