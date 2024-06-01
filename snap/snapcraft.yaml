@@ -81,6 +81,8 @@ parts:
 
     override-prime: |
       snapcraftctl prime
+      cp -r $CRAFT_STAGE/etc/ $CRAFT_PRIME/etc
+      cp -r $CRAFT_STAGE/var/ $CRAFT_PRIME/var
       ls -al .
 
   # override-build: |

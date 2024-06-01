@@ -149,7 +149,10 @@ jobs:
         id: results
         with:
           # name: snap-${{ env.RELEASE_TAG }}-${{  }}
+          path: snaps
+          #* pattern match the names
           pattern: snap-${{ env.RELEASE_VERSION }}-*
+          merge-multiple: true
       #? Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
