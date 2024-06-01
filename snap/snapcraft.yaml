@@ -55,9 +55,10 @@ parts:
   #   source: .
   #   npm-include-node: true
   #   npm-node-version: 20
-  common:
-    plugin: dump
-    source: src/common/
+
+  # common:
+  #   plugin: dump
+  #   source: src/common/
 
   hooks:
     plugin: dump
