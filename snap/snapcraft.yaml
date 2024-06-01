@@ -21,12 +21,12 @@ license: MIT
 # ARCHITECTURES
 ## builds a snap to run on the same architecture as the build environment.
 ## ref: https://snapcraft.io/docs/architectures
-architectures:
-  #- build-on: arm64
-  #    build-for:
-  # - build-on: arm64
-  # build-for: arm64
-  - build-on: amd64
+# architectures:
+#- build-on: arm64
+#    build-for:
+# - build-on: arm64
+# build-for: arm64
+# - build-on: amd64
 
 lint:
   ignore:
