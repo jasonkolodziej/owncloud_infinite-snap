@@ -71,7 +71,7 @@ jobs:
       - name: Grab binary via Cache
         #* Download the latest binary
         id: grab
-        if: ${{ steps.is-new.outputs.is_new == true }}
+        if: ${{ steps.is-new.outputs.is_new }}
         run: |
           echo "latest cached binary doesn't exist, downloading..."
           export OS_FAMILY=$(echo "${{ runner.os }}" | tr '[:upper:]' '[:lower:]')
