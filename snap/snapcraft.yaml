@@ -55,12 +55,25 @@ parts:
   #   source: .
   #   npm-include-node: true
   #   npm-node-version: 20
-  ocis-download:
+  common:
+    plugin: dump
+    source: src/common/
+
+  hooks:
+    plugin: dump
+    source: src/hooks/
+    organize:
+      bin/: snap/hooks/
+
+  ocis:
     plugin: dump
     # https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-arm64
-    source: ./
+    source: src/ocis/
     organize:
-      "ocis*": /usr/bin/ocis
+      bin/: /usr/bin/
+    # "ocis*": /usr/bin/ocis
+    stage:
+      - /usr/bin/*
 
     build-environment:
       - OCIS_CONFIG_DIR: $CRAFT_STAGE/etc/ocis/
@@ -71,10 +84,15 @@ parts:
       craftctl default
       echo "$OCIS_CONFIG_DIR" "$OCIS_BASE_DATA_PATH"
 
+    stage-snaps:
+      #? used to manage ocis configuration
+      - yq
+
     override-stage: |
       craftctl default
       mkdir -p $OCIS_CONFIG_DIR
       mkdir -p $OCIS_BASE_DATA_PATH
+      ls -al .
       chmod +x "$CRAFT_STAGE/usr/bin/ocis"
       # ls -al .
       ocis init
@@ -85,6 +103,7 @@ parts:
       cp -r $CRAFT_STAGE/etc/ $CRAFT_PRIME/etc
       cp -r $CRAFT_STAGE/var/ $CRAFT_PRIME/var
       ls -al .
+      cat $CRAFT_PRIME/etc/ocis/config.yaml
 
   # override-build: |
   #   curl -sSL \ "https://github.com/bufbuild/buf/releases/download/${BUF_VERSION}/buf-$(shell uname -s)-$(shell uname -m)" -o "$(shell go env GOPATH)/bin/buf" && chmod +x "$(shell go env GOPATH)/bin/buf"
