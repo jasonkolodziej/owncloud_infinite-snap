@@ -166,4 +166,6 @@ jobs:
           # draft: true
           prerelease: true
           # token: ${{ secrets.GITRELEASE_TOKEN }}
-          files: ${{ steps.results.outputs.download-path }}
+          # files: ${{ steps.results.outputs.download-path }}
+          files: |
+            snap-${{ env.RELEASE_VERSION }}-*
