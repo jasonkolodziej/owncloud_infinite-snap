@@ -37,15 +37,18 @@ jobs:
       - name: Extract tag_name
         id: extract-tag
         run: |
-          echo ${{fromJson(steps.latest-release.outputs.release_info).tag_name}}
-      # - name: Repository Dispatch
-      #   #? https://github.com/marketplace/actions/repository-dispatch
-      #   uses: peter-evans/repository-dispatch@v3
-      #   with:
-      #     #? It needs the following permissions on the target repositories:
-      #     #?    - contents: read & write
-      #     #?    - metadata: read only (automatically selected when selecting the contents permission)
-      #     token: ${{ secrets.PAT }}
-      #     # repository: username/my-repo
-      #     event-type: dispatch-released
-      #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+          echo "tag_name=${{ fromJson(steps.latest-release.outputs.release_info).tag_name }}" >> $GITHUB_OUTPUT
+          echo "tag=$(${{ fromJson(steps.latest-release.outputs.release_info).tag_name }} | tr v '')"
+          echo "tag=$(${{ fromJson(steps.latest-release.outputs.release_info).tag_name }} | tr v '')" >> $GITHUB_OUTPUT
+
+      - name: Repository Dispatch
+        #? https://github.com/marketplace/actions/repository-dispatch
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          #? It needs the following permissions on the target repositories:
+          #?    - contents: read & write
+          #?    - metadata: read only (automatically selected when selecting the contents permission)
+          # token: ${{ secrets.PAT }}
+          # repository: username/my-repo
+          event-type: dispatch-released
+          client-payload: '{"tag_name": "${{ steps.extract-tag.outputs.tag_name }}", "tag": "${{ steps.extract-tag.outputs.tag }}"}'
