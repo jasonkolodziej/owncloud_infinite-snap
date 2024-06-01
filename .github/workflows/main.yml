@@ -32,6 +32,7 @@ jobs:
       RELEASE_VERSION: ${{ github.event.client_payload.tag }}
       IS_NEW: ${{ github.event.client_payload.is_new }}
       EVENT_TYPE: ${{ github.event_name }}
+      MANUAL_EVENT: ${{ github.event.client_payload.manual_dispatch }}
       CACHED_KEY: ${{ github.event.client_payload.cache_key }}
       # BUILD_PLATFORM: ${{ github.event.client_payload.build_platform }}
       # BUILD_OS: ${{github.event.client_payload.build_os }}
@@ -86,7 +87,7 @@ jobs:
       #     key: ${{ runner.os }}-ocis-${{ hashFiles('ocis') }}
       - name: Status
         run: |
-          echo ${{ env.EVENT_TYPE }} ${{ env.IS_NEW }} ${{ env.RELEASE_VERSION }}
+          echo "manual_dispatch:${{ env.MANUAL_EVENT }} event:${{ env.EVENT_TYPE }} is_new:${{ env.IS_NEW }} version:${{ env.RELEASE_VERSION }}"
 
       # - name: Grab binary
       #   id: grab
