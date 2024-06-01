@@ -83,7 +83,7 @@ parts:
     #   - IDM_ADMIN_PASSWORD: changeme
     override-build: |
       craftctl default
-      echo "$OCIS_CONFIG_DIR" "$OCIS_BASE_DATA_PATH"
+      # echo "$OCIS_CONFIG_DIR" "$OCIS_BASE_DATA_PATH"
 
     stage-snaps:
       #? used to manage ocis configuration
