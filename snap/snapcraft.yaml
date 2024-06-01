@@ -76,9 +76,9 @@ parts:
     stage:
       - usr/bin/*
 
-    # build-environment:
-    #   - OCIS_CONFIG_DIR: $CRAFT_STAGE/etc/ocis/
-    #   - OCIS_BASE_DATA_PATH: $CRAFT_STAGE/var/lib/ocis
+    build-environment:
+      - OCIS_CONFIG_DIR: $SNAP_DATA/etc/ocis/
+      - OCIS_BASE_DATA_PATH: $SNAP_COMMON/var/lib/ocis
     #   # TODO: for end user to change
     #   - IDM_ADMIN_PASSWORD: changeme
     override-build: |
@@ -247,7 +247,7 @@ apps:
       #? $SNAP_COMMON ==> /var/snap/$SNAP_NAME/common
       #? $SNAP_DATA ==> /var/snap/$SNAP_NAME/$SNAP_REVISION
       #? $SNAP_USER_DATA ==> $HOME/snap/$SNAP_NAME/$SNAP_REVISION
-      OCIS_CONFIG_DIR: $SNAP_DATA/ocis/
+      OCIS_CONFIG_DIR: $SNAP_DATA/etc/ocis/
 
       #* Path to system relevant data.
       #* Because Infinite Scale does not use a database for storing information like users, groups, spaces, internal data, etc.,
@@ -265,7 +265,7 @@ apps:
       #? $SNAP_COMMON ==> /var/snap/$SNAP_NAME/common
       #? $SNAP_DATA ==> /var/snap/$SNAP_NAME/$SNAP_REVISION
       #? $SNAP_USER_DATA ==> $HOME/snap/$SNAP_NAME/$SNAP_REVISION
-      OCIS_BASE_DATA_PATH: $SNAP_COMMON/ocis
+      OCIS_BASE_DATA_PATH: $SNAP_COMMON/var/lib/ocis
 
       #* Path to blobs and metadata if POSIX is used.
       #* Derives from `OCIS_BASE_DATA_PATH` if not set otherwise.
