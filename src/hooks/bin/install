@@ -1,0 +1,24 @@
+#!/bin/sh -e
+#? When running ocis init, a random admin password will be printed to the shell for first login.
+#? Though the password can be changed afterwards in the UI, it is possible to define it right from the start when initializing.
+#* --insecure
+#* OCIS_INSECURE, value=true|false
+#? This allows to use transport security, but disables certificate verification.
+#? Useful with self-signed certificates to avoid certificate warnings.
+#? If set, the value will also be written to the config file. In such a case, when calling `ocis server`,
+#? it is not necessary to set the environment variable again with each start.
+#* --config-path
+#* OCIS_CONFIG_DIR, value=absolute_path
+#? If using this setting, the environment variable MUST be used when starting `ocis server`.
+#* --force-overwrite or -f
+#* OCIS_FORCE_CONFIG_OVERWRITE, value=true|false
+#? If you already have run `ocis init` and a config has been defined, a consecutive run will cause a warning
+#? that a config already exists. Use this if you want to create a new configuration.
+
+IDM_ADMIN_PASSWORD=changeme \
+    ocis init
+
+#? Note that this will bind ocis to the shell you are running.
+#? If you want to detach it and avoid it being stopped when closing the shell or
+#? the shell gets disconnected (SIGHUP), use the following command:
+#* ocis server & disown -h
