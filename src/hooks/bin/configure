@@ -41,8 +41,8 @@ _json_to_yaml() {
 
 #* Get Config - requests the default config's value if nothing is yet set and returns the value
 get_config() {
-    # config_option=
-    config_option="$(snapctl get ${1})"
+    # local config_option=
+    local config_option="$(snapctl get ${1})"
     if [ -z "$config_option" ]; then
         config_option="$(yq ".${1}" ${CONFIG_FILE_LOCATION})"
     fi
@@ -53,7 +53,7 @@ get_config() {
 # TODO: fix
 handle_config()
 {
-        echo $@
+        echo 'handle_config params' $@
         some_config="$(get_config $1)"
         # Validate HTTP port
         if ! expr "$some_config" : '^[0-9]\+$' > /dev/null; then
