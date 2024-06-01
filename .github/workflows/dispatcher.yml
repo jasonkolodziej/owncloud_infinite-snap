@@ -47,7 +47,7 @@ jobs:
           #? It needs the following permissions on the target repositories:
           #?    - contents: read & write
           #?    - metadata: read only (automatically selected when selecting the contents permission)
-          # token: ${{ secrets.PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           # repository: username/my-repo
           event-type: dispatch-released
           client-payload: |-
