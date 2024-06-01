@@ -17,15 +17,14 @@ on:
 jobs:
   #? This workflow contains a single job called "build"
   build:
-    #? The type of runner that the job will run on
-    runs-on: ${{ matrix.os }}
     #? Reference: https://github.com/marketplace/actions/snapcraft-multiarch-build
     strategy:
       matrix:
-        os:
-          - ubuntu-latest
-        platform:
-          - arm64
+        os: ${{ github.event.client_payload.build_os }}
+        platform: ${{ github.event.client_payload.build_platform }}
+
+    #? The type of runner that the job will run on
+    runs-on: ${{ matrix.os }}
 
     env:
       #? > https://github.com/marketplace/actions/snapcraft-action#log-in
@@ -34,6 +33,9 @@ jobs:
       IS_NEW: ${{ github.event.client_payload.is_new }}
       EVENT_TYPE: ${{ github.event_name }}
       CACHED_KEY: ${{ github.event.client_payload.cache_key }}
+      BUILD_PLATFORM: ${{ github.event.client_payload.build_platform }}
+      BUILD_OS: ${{github.event.client_payload.build_os }}
+
     #? Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       #? Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it

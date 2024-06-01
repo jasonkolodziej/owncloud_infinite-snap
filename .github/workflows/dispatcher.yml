@@ -3,17 +3,17 @@ name: CI-Dispatcher
 #? Controls when the workflow will run
 on:
   workflow_dispatch:
-  # schedule:
-  #   #?        ┌───────────── minute (0 - 59)
-  #   #?        │ ┌───────────── hour (0 - 23)
-  #   #?        │ │ ┌───────────── day of the month (1 - 31)
-  #   #?        │ │ │ ┌───────────── month (1 - 12 or JAN-DEC)
-  #   #?        │ │ │ │ ┌───────────── day of the week (0 - 6 or SUN-SAT)
-  #   #?        │ │ │ │ │
-  #   #?        │ │ │ │ │
-  #   #?        │ │ │ │ │
-  #   #?        * * * * *,-
-  #   - cron: "30 2 * * 1,3,5"
+  schedule:
+    #?        ┌───────────── minute (0 - 59)
+    #?        │ ┌───────────── hour (0 - 23)
+    #?        │ │ ┌───────────── day of the month (1 - 31)
+    #?        │ │ │ ┌───────────── month (1 - 12 or JAN-DEC)
+    #?        │ │ │ │ ┌───────────── day of the week (0 - 6 or SUN-SAT)
+    #?        │ │ │ │ │
+    #?        │ │ │ │ │
+    #?        │ │ │ │ │
+    #?        * * * * *,-
+    - cron: "30 2 * * *"
 
 jobs:
   release_dispatch:
@@ -24,6 +24,7 @@ jobs:
           - ubuntu-latest
         platform:
           - arm64
+          - amd64
     #? The type of runner that the job will run on
     runs-on: ${{ matrix.os }}
     permissions:
@@ -58,10 +59,10 @@ jobs:
         # continue-on-error: true
         with:
           path: ocis
-          key: ${{ runner.os }}-ocis-${{ steps.extract-tag.outputs.tag }}-${{ hashFiles('ocis') }}
+          key: ocis-${{ steps.extract-tag.outputs.tag }}-${{ runner.os }}-${{ matrix.platform }}-${{ hashFiles('ocis') }}
           restore-keys: |
-            ${{ runner.os }}-ocis-${{ steps.extract-tag.outputs.tag }}
-            ${{ runner.os }}-ocis-
+            ocis-${{ steps.extract-tag.outputs.tag }}-${{ runner.os }}-${{ matrix.platform }}-
+            ocis-${{ steps.extract-tag.outputs.tag }}-${{ runner.os }}
 
       - name: Determine if new
         id: is-new
@@ -86,7 +87,7 @@ jobs:
         id: cache
         with:
           path: ocis
-          key: ${{ runner.os }}-ocis-${{ steps.extract-tag.outputs.tag }}-${{ hashFiles('ocis') }}
+          key: ocis-${{ steps.extract-tag.outputs.tag }}-${{ runner.os }}-${{ matrix.platform }}-${{ hashFiles('ocis') }}
 
       - name: Repository Dispatch
         if: ${{ steps.is-new.outputs.is_new && steps.cache.conclusion == 'success' }}
@@ -104,5 +105,7 @@ jobs:
               "tag_name": "${{ steps.extract-tag.outputs.tag_name }}", 
               "tag": "${{ steps.extract-tag.outputs.tag }}",
               "is_new": ${{ steps.is-new.outputs.is_new }},
-              "cache_key": "${{ runner.os }}-ocis-${{ steps.extract-tag.outputs.tag }}-${{ hashFiles('ocis') }}"
+              "cache_key": "ocis-${{ steps.extract-tag.outputs.tag }}-${{ runner.os }}-${{ matrix.platform }}-${{ hashFiles('ocis') }}",
+              build_platform: "${{ matrix.platform }}",
+              build_os: "${{ matrix.os }}"
             }
