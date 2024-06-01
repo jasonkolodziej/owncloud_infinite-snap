@@ -70,10 +70,10 @@ parts:
     # https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-arm64
     source: src/ocis/
     organize:
-      bin/: /usr/bin/
+      bin/: usr/bin/
     # "ocis*": /usr/bin/ocis
     stage:
-      - /usr/bin/*
+      - usr/bin/*
 
     build-environment:
       - OCIS_CONFIG_DIR: $CRAFT_STAGE/etc/ocis/
