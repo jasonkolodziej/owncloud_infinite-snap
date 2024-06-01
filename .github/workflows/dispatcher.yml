@@ -52,7 +52,6 @@ jobs:
           event-type: dispatch-released
           client-payload: |-
             {
-              "github": ${{ toJson(github) }},
               "tag_name": "${{ steps.extract-tag.outputs.tag_name }}", 
               "tag": "${{ steps.extract-tag.outputs.tag }}"
             }
