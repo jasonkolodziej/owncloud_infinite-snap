@@ -17,7 +17,15 @@ on:
 
 jobs:
   release_dispatch:
-    runs-on: "ubuntu-latest"
+    #? Reference: https://github.com/marketplace/actions/snapcraft-multiarch-build
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+        platform:
+          - arm64
+    #? The type of runner that the job will run on
+    runs-on: ${{ matrix.os }}
     permissions:
       contents: read
     steps:
@@ -40,7 +48,48 @@ jobs:
           echo "tag_name=${{ fromJson(steps.latest-release.outputs.release_info).tag_name }}" >> $GITHUB_OUTPUT
           echo "tag=$(echo ${{ fromJson(steps.latest-release.outputs.release_info).tag_name }} | tr -d 'v')" >> $GITHUB_OUTPUT
 
+      #? Refrence: https://github.com/actions/cache/tree/main
+      #? A cache today is immutable and cannot be updated. But some use cases require the cache to be saved even though
+      #? there was a "hit" during restore.
+      #? To do so, use a key which is unique for every run and use restore-keys to restore the nearest cache. For example:
+      - uses: actions/cache@v4
+        #* Try and restore a cached version if possibe
+        id: cached
+        # continue-on-error: true
+        with:
+          path: ocis
+          key: ${{ runner.os }}-ocis-${{ steps.extract-tag.outputs.tag }}-${{ hashFiles('ocis') }}
+          restore-keys: |
+            ${{ runner.os }}-ocis-${{ steps.extract-tag.outputs.tag }}
+            ${{ runner.os }}-ocis-
+
+      - name: Determine if new
+        id: is-new
+        run: echo "is_new=${{ steps.cached.outputs.cache-hit != 'true' }}" >> $GITHUB_OUTPUT
+
+      - name: Grab binary via Cache
+        #* Download the latest binary
+        id: grab
+        if: ${{ steps.is-new.outputs.is_new }}
+        run: |
+          echo "latest cached binary doesn't exist, downloading..."
+          export OS_FAMILY=$(echo "${{ runner.os }}" | tr '[:upper:]' '[:lower:]')
+          curl --fail https://download.owncloud.com/ocis/ocis/stable/${{ steps.extract-tag.outputs.tag }}/ocis-${{steps.extract-tag.outputs.tag}}-${OS_FAMILY}-${{matrix.platform}} --output ocis
+          # set file to be executable
+          # chmod +x ./ocis
+
+      #? Refrence: https://github.com/actions/cache/tree/main
+      - uses: actions/cache/save@v4
+        #? https://github.com/actions/runner/blob/main/docs/adrs/0274-step-outcome-and-conclusion.md
+        # if: ${{ steps.cached.outputs.cache-hit != 'true' && steps.grab.conclusion == 'success' }}
+        if: ${{ steps.is-new.outputs.is_new && steps.grab.conclusion == 'success' }}
+        id: cache
+        with:
+          path: ocis
+          key: ${{ runner.os }}-ocis-${{ steps.extract-tag.outputs.tag }}-${{ hashFiles('ocis') }}
+
       - name: Repository Dispatch
+        if: ${{ steps.is-new.outputs.is_new && steps.cache.conclusion == 'success' }}
         #? https://github.com/marketplace/actions/repository-dispatch
         uses: peter-evans/repository-dispatch@v3
         with:
@@ -53,5 +102,6 @@ jobs:
           client-payload: |-
             {
               "tag_name": "${{ steps.extract-tag.outputs.tag_name }}", 
-              "tag": "${{ steps.extract-tag.outputs.tag }}"
+              "tag": "${{ steps.extract-tag.outputs.tag }}",
+              "is_new": ${{ steps.is-new.outputs.is_new }}
             }

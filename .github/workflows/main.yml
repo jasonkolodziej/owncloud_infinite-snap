@@ -30,7 +30,9 @@ jobs:
     env:
       #? > https://github.com/marketplace/actions/snapcraft-action#log-in
       SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
-      RELEASE_TAG: ${{ github.event.client_payload.tag }}
+      RELEASE_VERSION: ${{ github.event.client_payload.tag }}
+      IS_NEW: ${{ github.event.client_payload.is_new }}
+      EVENT_TYPE: ${{ github.event.sender.type }}
     #? Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       #? Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -55,31 +57,34 @@ jobs:
       #? A cache today is immutable and cannot be updated. But some use cases require the cache to be saved even though
       #? there was a "hit" during restore.
       #? To do so, use a key which is unique for every run and use restore-keys to restore the nearest cache. For example:
-      - uses: actions/cache/restore@v4
-        id: cached
-        # continue-on-error: true
-        with:
-          path: ocis
-          key: ${{ runner.os }}-ocis-${{ hashFiles('ocis') }}
-          # fail-on-cache-miss: true
+      # - uses: actions/cache/restore@v4
+      #   id: cached
+      #   # continue-on-error: true
+      #   with:
+      #     path: ocis
+      #     key: ${{ runner.os }}-ocis-${{ hashFiles('ocis') }}
+      #     # fail-on-cache-miss: true
 
-      - name: Grab binary via Cache
-        id: grab
-        if: ${{ steps.cached.outputs.cache-hit != 'true' }}
+      # - name: Grab binary via Cache
+      #   id: grab
+      #   if: ${{ steps.cached.outputs.cache-hit != 'true' }}
+      #   run: |
+      #     echo "latest cached binary doesn't exist, downloading..."
+      #     curl --fail https://download.owncloud.com/ocis/ocis/stable/${{env.RELEASE_TAG}}/ocis-${{env.RELEASE_TAG}}-linux-${{matrix.platform}} --output ocis
+      #     # set file to be executable
+      #     # chmod +x ./ocis
+
+      # #? Refrence: https://github.com/actions/cache/tree/main
+      # - uses: actions/cache/save@v4
+      #   #? https://github.com/actions/runner/blob/main/docs/adrs/0274-step-outcome-and-conclusion.md
+      #   if: ${{ steps.cached.outputs.cache-hit != 'true' && steps.grab.conclusion == 'success' }}
+      #   id: cache
+      #   with:
+      #     path: ocis
+      #     key: ${{ runner.os }}-ocis-${{ hashFiles('ocis') }}
+      - name: Status
         run: |
-          echo "latest cached binary doesn't exist, downloading..."
-          curl --fail https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-${{matrix.platform}} --output ocis
-          # set file to be executable
-          # chmod +x ./ocis
-
-      #? Refrence: https://github.com/actions/cache/tree/main
-      - uses: actions/cache/save@v4
-        #? https://github.com/actions/runner/blob/main/docs/adrs/0274-step-outcome-and-conclusion.md
-        if: ${{ steps.cached.outputs.cache-hit != 'true' && steps.grab.conclusion == 'success' }}
-        id: cache
-        with:
-          path: ocis
-          key: ${{ runner.os }}-ocis-${{ hashFiles('ocis') }}
+          echo ${{ env.EVENT_TYPE }} ${{ env.IS_NEW }} ${{ env.RELEASE_VERSION }}
 
       # - name: Grab binary
       #   id: grab
@@ -126,6 +131,9 @@ jobs:
       #     snapcraft
   #? Sets the release of this repository
   release:
+    env:
+      #? Set the release tag relative to the tag_name provided by dispatcher.yml
+      RELEASE_TAG: ${{ github.event.client_payload.tag_name }}
     needs: build
     runs-on: ubuntu-latest
     permissions:
@@ -145,7 +153,7 @@ jobs:
       - name: GH Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v0.12
+          tag_name: ${{ env.RELEASE_TAG }}
           prerelease: true
           # token: ${{ secrets.GITRELEASE_TOKEN }}
           files: ${{ steps.results.outputs.download-path }}
