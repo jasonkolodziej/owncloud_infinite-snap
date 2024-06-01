@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        platform: [arm64, amd64]
+        platform: [amd64]
 
     #? The type of runner that the job will run on
     runs-on: ${{ matrix.os }}
