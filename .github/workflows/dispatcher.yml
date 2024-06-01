@@ -84,10 +84,19 @@ jobs:
       #   with:
       #     path: ocis
       #     key: ocis-${{ steps.extract-tag.outputs.tag }}-${{ runner.os }}-${{ matrix.platform }}-${{ hashFiles('ocis') }}
+    outputs:
+      tag: ${{ steps.extract-tag.outputs.tag }}
+      tag_name: ${{ steps.extract-tag.outputs.tag_name }}
+      is_new: ${{ steps.is-new.outputs.is_new }}
 
       # TODO: perhaps move to it's own job
+
+  dispatch:
+    needs: release_dispatch
+    runs-on: "ubuntu-latest"
+    steps:
       - name: Repository Dispatch
-        if: ${{ steps.is-new.outputs.is_new == 'true' && steps.grab.conclusion == 'success' }}
+        if: ${{ needs.release_dispatch.outputs.is_new == 'true' && needs.release_dispatch.result == 'success' }}
         #? https://github.com/marketplace/actions/repository-dispatch
         uses: peter-evans/repository-dispatch@v3
         with:
@@ -99,10 +108,8 @@ jobs:
           event-type: dispatch-released
           client-payload: |-
             {
-              "tag_name": "${{ steps.extract-tag.outputs.tag_name }}", 
-              "tag": "${{ steps.extract-tag.outputs.tag }}",
-              "is_new": ${{ steps.is-new.outputs.is_new }},
-              "cache_key": "ocis-${{ steps.extract-tag.outputs.tag }}-${{ runner.os }}-${{ matrix.platform }}-${{ hashFiles('ocis') }}",
-              "build_platform": "${{ matrix.platform }}",
-              "build_os": "${{ matrix.os }}"
+              "tag_name": "${{ needs.release_dispatch.outputs.tag_name }}", 
+              "tag": "${{ needs.release_dispatch.outputs.tag }}",
+              "is_new": ${{ needs.release_dispatch.outputs.is_new }},
+              "cache_key": "ocis-${{ needs.release_dispatch.outputs.tag }}-${{ runner.os }}"
             }
