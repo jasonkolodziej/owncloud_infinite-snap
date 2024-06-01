@@ -1,2 +1,60 @@
 #!/bin/sh -e
 #? Reference: https://snapcraft.io/docs/adding-snap-configuration#heading--interpreting
+
+CONFIG_FILE_LOCATION="../../ocis/config/ocis.example.yaml"
+
+#* Set Config - sets the value/values of the config
+set_config() {
+    local arrIN=(${1//=/ })
+    local param=${arrIN[0]}
+    local val=${arrIN[1]}
+
+    echo $param
+    echo $val
+    echo set ${param}="$val"
+    # snapctl set ${param}="$val"
+    # snapctl set ${1}="$2"
+}
+
+_update_yaml() {
+    local updater="$@"
+    yq -i ".$updater" ${CONFIG_FILE_LOCATION}
+}
+
+_json_to_yaml() {
+    # yq -Poy sample.json
+     yq -Poy sample.json
+}
+
+#* Get Config - requests the default config's value if nothing is yet set and returns the value
+get_config() {
+    config_option=
+    # config_option="$(craftctl get ${1})"
+    if [ -z "$config_option" ]; then
+        config_option="$(yq ".${1}" ${CONFIG_FILE_LOCATION})"
+    fi
+    # yq ".${1}" ${CONFIG_FILE_LOCATION}
+    echo "$config_option"
+}
+
+# TODO: fix
+handle_config()
+{
+        echo $@
+        some_config="$(get_config $1)"
+        # Validate HTTP port
+        if ! expr "$some_config" : '^[0-9]\+$' > /dev/null; then
+                echo "\"$some_config\" is not a valid HTTP port" >&2
+                return 1
+        fi
+       # run function from management script
+        set_config "$some_config"
+
+        # Restart example-server to apply new config
+        # snapctl restart example-server
+}
+
+# handle_config $@
+
+# get_config $@
+_update_yaml $@
