@@ -100,9 +100,9 @@ parts:
 
     override-prime: |
       craftctl default
-      mkdir -p $CRAFT_PRIME/{etc,var}
-      cp -r $CRAFT_STAGE/etc/ $CRAFT_PRIME/etc
-      cp -r $CRAFT_STAGE/var/ $CRAFT_PRIME/var
+      # mkdir -p $CRAFT_PRIME/{etc,var}
+      cp -r $CRAFT_STAGE/etc $CRAFT_PRIME
+      cp -r $CRAFT_STAGE/var $CRAFT_PRIME
       ls -al .
       cat $CRAFT_PRIME/etc/ocis/config.yaml
 
