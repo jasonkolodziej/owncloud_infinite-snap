@@ -63,7 +63,7 @@ jobs:
 
       - name: Determine if new
         id: is-new
-        run: echo "is_new='${{ steps.cached.outputs.cache-hit != 'true' }}'" >> $GITHUB_OUTPUT
+        run: echo "is_new=${{ steps.cached.outputs.cache-hit != 'true' }}" >> $GITHUB_OUTPUT
 
       - name: Grab binary via Cache
         #* Download the latest binary
