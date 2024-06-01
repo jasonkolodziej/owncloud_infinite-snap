@@ -9,9 +9,7 @@ on:
   #   branches: ["main"]
   #? Listen to a repository dispatch event by the name of `dispatch-event`
   repository_dispatch:
-    types:
-      # - dispatch-event
-      - dispatch-released
+    types: [dispatch-released]
 
   #? Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -28,9 +26,11 @@ jobs:
           - ubuntu-latest
         platform:
           - arm64
+
     env:
       #? > https://github.com/marketplace/actions/snapcraft-action#log-in
       SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
+      RELEASE_TAG: ${{ github.event.client_payload.tag }}
     #? Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       #? Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
