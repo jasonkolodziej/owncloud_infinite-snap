@@ -272,6 +272,13 @@ apps:
       #* Used if `STORAGE_USERS_DRIVER` is set to ocis
       # STORAGE_USERS_OCIS_ROOT: "/media"
 
+      #* When accessing the server using the hostname or IP:
+      #* You must start Infinite Scale using the environment variable OCIS_URL=<hostname or IP>.
+      #* See the following sections for more details and information: https://doc.owncloud.com/ocis/next/deployment/general/general-info.html#using-a-reverse-proxy
+      #? Used port ranges: https://doc.owncloud.com/ocis/next/deployment/services/ports-used.html#used-port-ranges
+      OCIS_URL: 'https://localhost:9200'
+      PROXY_HTTP_ADDR: '0.0.0.0:9200'
+
       #* Path to metadata if S3 is used.
       #* Derives from OCIS_BASE_DATA_PATH if not set otherwise.
       #* Used if STORAGE_USERS_DRIVER is set to s3ng.
