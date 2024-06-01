@@ -3,6 +3,12 @@
 
 CONFIG_FILE_LOCATION="../../ocis/config/ocis.example.yaml"
 
+# export NEXTCLOUD_CONFIG_DIR="$SNAP_DATA/nextcloud/config"
+# export NEXTCLOUD_DATA_DIR="$SNAP_COMMON/nextcloud/data"
+
+#* PRIVATE_KEY_TERMS
+#*   *secret* *password* *key*
+
 #* Set Config - sets the value/values of the config
 set_config() {
     local arrIN=(${1//=/ })
@@ -16,9 +22,14 @@ set_config() {
     # snapctl set ${1}="$2"
 }
 
-_update_yaml() {
+_update_yaml_inplace() {
     local updater="$@"
     yq -i ".$updater" ${CONFIG_FILE_LOCATION}
+}
+
+_update_yaml() {
+    local updater="$@"
+    yq ".$updater" ${CONFIG_FILE_LOCATION}
 }
 
 _json_to_yaml() {
