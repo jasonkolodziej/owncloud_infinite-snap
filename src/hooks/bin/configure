@@ -36,35 +36,38 @@ _update_yaml() {
 
 _json_to_yaml() {
     # yq -Poy sample.json
-     yq -Poy sample.json
+    yq -Poy sample.json
 }
 
 #* Get Config - requests the default config's value if nothing is yet set and returns the value
 get_config() {
+    local conf_key=${1}
     # local config_option=
-    local config_option="$(snapctl get ${1})"
+
+    if [ -n "$conf_key" ]; then
+        local config_option="$(snapctl get ${conf_key})"
+    fi
     if [ -z "$config_option" ]; then
-        config_option="$(yq ".${1}" ${CONFIG_FILE_LOCATION})"
+        config_option="$(yq ".${conf_key}" ${CONFIG_FILE_LOCATION})"
     fi
     # yq ".${1}" ${CONFIG_FILE_LOCATION}
     echo "$config_option"
 }
 
 # TODO: fix
-handle_config()
-{
-        echo 'handle_config params' $@
-        local some_config="$(get_config)"
-        # Validate HTTP port
-#        if ! expr "$some_config" : '^[0-9]\+$' > /dev/null; then
- #               echo "\"$some_config\" is not a valid HTTP port" >&2
-  #              return 1
-   #     fi
-       # run function from management script
-        set_config "$some_config"
+handle_config() {
+    echo 'handle_config params' $@
+    local some_config="$(get_config)"
+    # Validate HTTP port
+    #        if ! expr "$some_config" : '^[0-9]\+$' > /dev/null; then
+    #               echo "\"$some_config\" is not a valid HTTP port" >&2
+    #              return 1
+    #     fi
+    # run function from management script
+    set_config "$some_config"
 
-        # Restart example-server to apply new config
-        # snapctl restart example-server
+    # Restart example-server to apply new config
+    # snapctl restart example-server
 }
 
 handle_config
