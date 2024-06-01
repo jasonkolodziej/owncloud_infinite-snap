@@ -50,4 +50,9 @@ jobs:
           # token: ${{ secrets.PAT }}
           # repository: username/my-repo
           event-type: dispatch-released
-          client-payload: '{"tag_name": "${{ steps.extract-tag.outputs.tag_name }}", "tag": "${{ steps.extract-tag.outputs.tag }}"}'
+          client-payload: |-
+            {
+              "github": ${{ toJson(github) }},
+              "tag_name": "${{ steps.extract-tag.outputs.tag_name }}", 
+              "tag": "${{ steps.extract-tag.outputs.tag }}"
+            }
