@@ -103,5 +103,6 @@ jobs:
             {
               "tag_name": "${{ steps.extract-tag.outputs.tag_name }}", 
               "tag": "${{ steps.extract-tag.outputs.tag }}",
-              "is_new": ${{ steps.is-new.outputs.is_new }}
+              "is_new": ${{ steps.is-new.outputs.is_new }},
+              "cache_key": "${{ runner.os }}-ocis-${{ steps.extract-tag.outputs.tag }}-${{ hashFiles('ocis') }}"
             }

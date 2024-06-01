@@ -32,7 +32,8 @@ jobs:
       SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
       RELEASE_VERSION: ${{ github.event.client_payload.tag }}
       IS_NEW: ${{ github.event.client_payload.is_new }}
-      EVENT_TYPE: ${{ github.event.sender.type }}
+      EVENT_TYPE: ${{ github.event_name }}
+      CACHED_KEY: ${{ github.event.client_payload.cache_key }}
     #? Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       #? Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -53,17 +54,15 @@ jobs:
       #   with:
       #     name: latest-cached-bin
       #   continue-on-error: true
-      #? Refrence: https://github.com/actions/cache/tree/main
-      #? A cache today is immutable and cannot be updated. But some use cases require the cache to be saved even though
-      #? there was a "hit" during restore.
-      #? To do so, use a key which is unique for every run and use restore-keys to restore the nearest cache. For example:
-      # - uses: actions/cache/restore@v4
-      #   id: cached
-      #   # continue-on-error: true
-      #   with:
-      #     path: ocis
-      #     key: ${{ runner.os }}-ocis-${{ hashFiles('ocis') }}
-      #     # fail-on-cache-miss: true
+
+      - uses: actions/cache@v4
+        #* Try and restore a cached version if possibe
+        id: restore-cached
+        # continue-on-error: true
+        with:
+          path: ocis
+          key: ${{ env.CACHED_KEY }}
+          fail-on-cache-miss: true
 
       # - name: Grab binary via Cache
       #   id: grab
@@ -114,6 +113,7 @@ jobs:
       - uses: docker/setup-qemu-action@v1
       #? https://github.com/marketplace/actions/snapcraft-multiarch-build#action-inputs
       - uses: diddlesnaps/snapcraft-multiarch-action@v1
+        # if: ${{ steps.restore-cached.outputs.cache-hit == 'true' }}
         id: snapcraft
         with:
           architecture: ${{ matrix.platform }}
