@@ -39,7 +39,8 @@ jobs:
         run: |
           echo "tag_name=${{ fromJson(steps.latest-release.outputs.release_info).tag_name }}" >> $GITHUB_OUTPUT
           #? ${string//substring/replacement}
-          echo "tag=${${{ fromJson(steps.latest-release.outputs.release_info).tag_name }}//v}"
+          export TAG=${${{ fromJson(steps.latest-release.outputs.release_info).tag_name }}//v}
+          echo "tag=${TAG}"
           echo "tag=$("${{ fromJson(steps.latest-release.outputs.release_info).tag_name }}" | tr v '')" >> $GITHUB_OUTPUT
 
       - name: Repository Dispatch
