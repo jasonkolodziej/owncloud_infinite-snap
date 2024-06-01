@@ -272,7 +272,7 @@ apps:
       #* Path to blobs and metadata if POSIX is used.
       #* Derives from `OCIS_BASE_DATA_PATH` if not set otherwise.
       #* Used if `STORAGE_USERS_DRIVER` is set to ocis
-      STORAGE_USERS_OCIS_ROOT: "/media"
+      # STORAGE_USERS_OCIS_ROOT: "/media"
 
       #* Path to metadata if S3 is used.
       #* Derives from OCIS_BASE_DATA_PATH if not set otherwise.
