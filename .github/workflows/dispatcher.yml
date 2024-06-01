@@ -76,18 +76,18 @@ jobs:
           # set file to be executable
           # chmod +x ./ocis
 
-      #? Refrence: https://github.com/actions/cache/tree/main
-      - uses: actions/cache/save@v4
-        #? https://github.com/actions/runner/blob/main/docs/adrs/0274-step-outcome-and-conclusion.md
-        # if: ${{ steps.is-new.outputs.is_new == 'true' && steps.grab.conclusion == 'success' }}
-        if: ${{ steps.is-new.outputs.is_new == 'true' && steps.grab.conclusion == 'success' }}
-        id: cache
-        with:
-          path: ocis
-          key: ocis-${{ steps.extract-tag.outputs.tag }}-${{ runner.os }}-${{ matrix.platform }}-${{ hashFiles('ocis') }}
+      # #? Refrence: https://github.com/actions/cache/tree/main
+      # - uses: actions/cache/save@v4
+      #   #? https://github.com/actions/runner/blob/main/docs/adrs/0274-step-outcome-and-conclusion.md
+      #   # if: ${{ steps.is-new.outputs.is_new == 'true' && steps.grab.conclusion == 'success' }}
+      #   if: ${{ steps.is-new.outputs.is_new == 'true' && steps.grab.conclusion == 'success' }}
+      #   id: cache
+      #   with:
+      #     path: ocis
+      #     key: ocis-${{ steps.extract-tag.outputs.tag }}-${{ runner.os }}-${{ matrix.platform }}-${{ hashFiles('ocis') }}
 
       - name: Repository Dispatch
-        if: ${{ steps.is-new.outputs.is_new == 'true' && steps.cache.conclusion == 'success' }}
+        if: ${{ steps.is-new.outputs.is_new == 'true' && steps.grab.conclusion == 'success' }}
         #? https://github.com/marketplace/actions/repository-dispatch
         uses: peter-evans/repository-dispatch@v3
         with:
