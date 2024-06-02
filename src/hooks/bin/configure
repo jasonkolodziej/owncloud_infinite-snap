@@ -21,7 +21,7 @@ _private_key_terms() {
     _key=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p == "*key*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${CONFIG_FILE_LOCATION})
     _password=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p == "*password*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${CONFIG_FILE_LOCATION})
 
-    echo $(echo -n $_password $_key $_secrets)
+    echo $(echo $_password)
 }
 
 #* Set Config - sets the value/values of the config
