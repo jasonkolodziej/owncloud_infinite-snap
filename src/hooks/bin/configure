@@ -15,6 +15,15 @@ not_private_key_terms() {
     yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p != "*secret*") | select(.p != "*key*") | select(.p!= "*password*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${CONFIG_FILE_LOCATION}
 }
 
+_private_key_terms() {
+    # yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p != "*secret*") | select(.p != "*key*") | select(.p!= "*password*") | select(.tag != "!!map") | select(.isKey == false) ]' ${CONFIG_FILE_LOCATION}
+    _secrets=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p == "*secret*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value }]' ${CONFIG_FILE_LOCATION})
+    _key=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p == "*key*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${CONFIG_FILE_LOCATION})
+    _password=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p == "*password*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${CONFIG_FILE_LOCATION})
+
+    echo $(echo -n $_password $_key $_secrets)
+}
+
 #* Set Config - sets the value/values of the config
 set_config() {
     local arrIN=(${1//=/ })
@@ -76,5 +85,5 @@ handle_config() {
 
 # handle_config
 
-get_config $@
+_private_key_terms
 # _update_yaml $@
