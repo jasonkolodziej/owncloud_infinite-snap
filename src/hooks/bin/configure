@@ -12,7 +12,7 @@ CONFIG_FILE_LOCATION="../../ocis/config/ocis.example.yaml"
 
 not_private_key_terms() {
     yq 'keys | filter( . != "*key*" ) | filter( . != "*secret*" ) | filter( . != "*password*" ) | ..' ${CONFIG_FILE_LOCATION}
-    yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag } | select(.p != "*secret*") | select(.p != "*key*") | select(.p!= "*password*") | select(.tag != "!!map") | select(.isKey == true)]' ${CONFIG_FILE_LOCATION}
+    yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p != "*secret*") | select(.p != "*key*") | select(.p!= "*password*") | select(.tag != "!!map") | select(.isKey == false) ]' ${CONFIG_FILE_LOCATION}
 }
 
 #* Set Config - sets the value/values of the config
