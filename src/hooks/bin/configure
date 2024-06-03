@@ -26,23 +26,16 @@ _private_key_terms() {
     keys=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p == "*key*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${CONFIG_FILE_LOCATION})
     passwords=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p == "*password*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${CONFIG_FILE_LOCATION})
     #* clean up ==> | tr -d  '-' | tr ':' '=' | tr -d ' '
-    privs=$(echo "${secrets[@]} \n ${keys[@]} \n ${passwords[@]}" | tr -d '-' | tr ':' '=' | tr -d ' ')
+    privs=$(echo -e "${secrets[@]} \n ${keys[@]} \n ${passwords[@]}" | tr -d '-' | tr ':' '=' | tr -d ' ')
     for line in $privs; do
-        echo -e "$line"
+        echo "$line"
     done
     # echo "${secrets[@]} \n ${keys[@]} \n ${passwords[@]}"
 
 }
 
-trim_iterator() {
-    ins=$(${1} | tr -d '-' | tr ':' '=' | tr -d ' ')
-    for line in $ins; do
-        echo -e "$line"
-    done
-}
-
 #* Set Config - sets the value/values of the config
-set_config() {
+set_config_shell() {
     local arrIN=(${1//=/ })
     local param=${arrIN[0]}
     local val=${arrIN[1]}
@@ -70,7 +63,7 @@ _json_to_yaml() {
 }
 
 #* Get Config - requests the default config's value if nothing is yet set and returns the value
-get_config() {
+get_config_shell() {
     local conf_key=${1}
     # local config_option=
 
@@ -102,6 +95,15 @@ handle_config() {
 
 # handle_config
 
-_private_key_terms
-_not_private_key_terms
-# _update_yaml $@
+#* Alternatively, the entire set of configuration options can be dumped as JSON by adding the -d option:
+#? [Reference]: https://snapcraft.io/docs/configuration-in-snaps
+
+get_config_json() {
+    echo "get_json_config"
+    snapctl get -d ${SNAP_NAME}
+}
+
+set_config_json() {
+    echo "set_json_config"
+    yq '.' -o json ${CONFIG_FILE_LOCATION} | snapctl set -d ${SNAP_NAME}
+}
