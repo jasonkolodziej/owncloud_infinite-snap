@@ -15,9 +15,9 @@
 #? If you already have run `ocis init` and a config has been defined, a consecutive run will cause a warning
 #? that a config already exists. Use this if you want to create a new configuration.
 
-OCIS_INSECURE=false
-IDM_ADMIN_PASSWORD=changeme
-ocis init
+OCIS_INSECURE=false \
+    IDM_ADMIN_PASSWORD=changeme \
+    ocis init
 
 #? Note that this will bind ocis to the shell you are running.
 #? If you want to detach it and avoid it being stopped when closing the shell or
