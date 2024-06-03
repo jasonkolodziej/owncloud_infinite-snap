@@ -17,7 +17,7 @@ _not_private_key_terms() {
     non_priv=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p != "*secret*") | select(.p != "*key*") | select(.p!= "*password*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${CONFIG_FILE_LOCATION})
     non_priv=$(echo -e "${non_priv[@]}" | tr -d '-' | tr ':' '=' | tr -d ' ')
     for line in $non_priv; do
-        set_config_shell 'false' $line
+        config_option_modifier $line
     done
     # echo $non_priv
 }
@@ -32,7 +32,7 @@ _private_key_terms() {
     #* clean up ==> | tr -d  '-' | tr ':' '=' | tr -d ' '
     privs=$(echo -e "${secrets[@]} \n ${keys[@]} \n ${passwords[@]}" | tr -d '-' | tr ':' '=' | tr -d ' ')
     for line in $privs; do
-        set_config_shell 'true' $line
+        config_option_modifier $line
     done
     # echo "${secrets[@]} \n ${keys[@]} \n ${passwords[@]}"
 
@@ -43,23 +43,23 @@ _private_key_terms() {
 #* @param {is_priv} - boolean, default false
 #* @param {arr_in} - array, e.g. [ this.conf.param1='something_to_be_set1' this.conf.param2='something_to_be_set2' #... ]
 set_config_shell() {
-    local is_priv=${1:='false'}
-    local arr_in=(${2//=/ })
-    local param=${arr_in[0]}
-    local val=${arr_in[1]}
+    # local is_priv=${1:='false'}
+    # local arr_in=(${1//=/ })
+    # local param=${arr_in[0]}
+    # local val=${arr_in[1]}
 
+    local modified=$(config_option_modifier $@)
     #echo $param
     #echo $val
-    if [ "$is_priv" == 'true' ]; then
-        echo "setting private configuration as==> 'private.${param}=${val}'"
-        # snapctl set "private.${param}"=${val}
-    else
-        echo "setting configuration as==> '${param}=${val}'"
-        # snapctl set ${param}=${val}
-    fi
-
-    # snapctl set ${param}="$val"
-    # snapctl set ${1}="$2"
+    # if [ "$is_priv" == 'true' ]; then
+    #     echo "setting private configuration as==> '${param}=${val}'"
+    #     # snapctl set "private.${param}=${val}"
+    # else
+    #     echo "setting configuration as==> '${param}=${val}'"
+    #     # snapctl set "${param}=${val}"
+    # fi
+    echo "setting configuration as==> '${modified}'"
+    snapctl set ${modified}
 }
 
 #* Set All Defaults From YAML -
@@ -78,24 +78,14 @@ set_all_defaults_from_yaml() {
 #* @param {conf_key} - the key to retrieve from the configuration file, default: NIL (a.k.a: grab all configs)
 get_config_shell() {
     local conf_key=${1}
-    # local config_option=
-
-    # if [ -n "$conf_key" ]; then
-    # local config_option="$(snapctl get ${conf_key})"
-    # fi
-    if [ -z "$config_option" ]; then
+    local config_option=
+    if [ -n "$conf_key" ]; then #? n, string is not null.
+        local config_option="$(snapctl get ${conf_key})"
+    fi
+    if [ -z "$config_option" ]; then #? z, string is null, that is, has zero length
         config_option="$(yq ".${conf_key}" ${CONFIG_FILE_LOCATION})"
     fi
-    # yq ".${1}" ${CONFIG_FILE_LOCATION}
     echo "$config_option"
-}
-
-#* Update YAML Inplace -
-#?  Changes the config in-place
-#* @param {updater} - the key to be updated
-_update_yaml_inplace() {
-    local updater="$@"
-    yq -i ".$updater" ${CONFIG_FILE_LOCATION}
 }
 
 #* Update YAML -
@@ -121,24 +111,6 @@ _json_to_yaml() {
     yq -Poy sample.json
 }
 
-# TODO: fix
-handle_config() {
-    echo 'handle_config params' $@
-    local some_config="$(get_config_shell)"
-    # Validate HTTP port
-    #        if ! expr "$some_config" : '^[0-9]\+$' > /dev/null; then
-    #               echo "\"$some_config\" is not a valid HTTP port" >&2
-    #              return 1
-    #     fi
-    # run function from management script
-    set_config "$some_config"
-
-    # Restart example-server to apply new config
-    # snapctl restart example-server
-}
-
-# handle_config
-
 #* Alternatively, the entire set of configuration options can be dumped as JSON by adding the -d option:
 #? [Reference]: https://snapcraft.io/docs/configuration-in-snaps
 
@@ -150,4 +122,43 @@ get_config_json() {
 set_config_json() {
     echo "set_json_config"
     yq '.' -o json ${CONFIG_FILE_LOCATION} | snapctl set -d ${SNAP_NAME}
+}
+
+#? Config Option Modifier -
+#? converts between snapctl config and yaml config
+#* @param {array_in} - expected ex> this.is.a.config=2 !NOT! this.is.a.bad.config = 2
+config_option_modifier() {
+    local arr_in=(${1//=/ })
+    local param=${arr_in[0]}
+    local val=${arr_in[1]}
+    case "$param" in
+    #? is 'private' ==> to snapctl var
+    *"key"* | *"secret"* | *"password"*)
+        # Do stff
+        echo "private.${param}=${val}"
+        ;;
+    #? is 'private' from snapctl var ==> config var
+    *"private."*)
+        # Do stff
+        echo "${param//'private.'/}=${param}"
+        ;;
+    #? defaults
+    *)
+        echo "${param}=${val}"
+        ;;
+    esac
+}
+
+handle_config() {
+    local this_config="$(get_config_json)"
+    # Validate HTTP port
+    #        if ! expr "$some_config" : '^[0-9]\+$' > /dev/null; then
+    #               echo "\"$some_config\" is not a valid HTTP port" >&2
+    #              return 1
+    #     fi
+    echo "${this_config}"
+    # run function from management script
+    set_json_config
+    # Restart example-server to apply new config
+    # snapctl restart example-server
 }
