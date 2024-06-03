@@ -10,18 +10,35 @@ CONFIG_FILE_LOCATION="../../ocis/config/ocis.example.yaml"
 #* PRIVATE_KEY_TERMS
 #*   *secret* *password* *key*
 
-not_private_key_terms() {
-    yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p != "*secret*") | select(.p != "*key*") | select(.p!= "*password*") | select(.tag != "!!map") | select(.isKey == false) ]' ${CONFIG_FILE_LOCATION}
-    yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p != "*secret*") | select(.p != "*key*") | select(.p!= "*password*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${CONFIG_FILE_LOCATION}
+_not_private_key_terms() {
+    # yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p != "*secret*") | select(.p != "*key*") | select(.p!= "*password*") | select(.tag != "!!map") | select(.isKey == false) ]' ${CONFIG_FILE_LOCATION}
+    non_priv=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p != "*secret*") | select(.p != "*key*") | select(.p!= "*password*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${CONFIG_FILE_LOCATION} | tr -d '-' | tr ':' '=' | tr -d ' ')
+    # non_priv=$(echo -e $non_priv | tr -d '-' | tr ':' '=' | tr -d ' ')
+    for line in $non_priv; do
+        echo -e "$line"
+    done
+    # echo $non_priv
 }
 
 _private_key_terms() {
     # yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p != "*secret*") | select(.p != "*key*") | select(.p!= "*password*") | select(.tag != "!!map") | select(.isKey == false) ]' ${CONFIG_FILE_LOCATION}
-    _secrets=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p == "*secret*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value }]' ${CONFIG_FILE_LOCATION})
-    _key=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p == "*key*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${CONFIG_FILE_LOCATION})
-    _password=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p == "*password*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${CONFIG_FILE_LOCATION})
+    secrets=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p == "*secret*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value }]' ${CONFIG_FILE_LOCATION})
+    keys=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p == "*key*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${CONFIG_FILE_LOCATION})
+    passwords=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p == "*password*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${CONFIG_FILE_LOCATION})
+    #* clean up ==> | tr -d  '-' | tr ':' '=' | tr -d ' '
+    privs=$(echo "${secrets[@]} \n ${keys[@]} \n ${passwords[@]}" | tr -d '-' | tr ':' '=' | tr -d ' ')
+    for line in $privs; do
+        echo -e "$line"
+    done
+    # echo "${secrets[@]} \n ${keys[@]} \n ${passwords[@]}"
 
-    echo $(echo $_password)
+}
+
+trim_iterator() {
+    ins=$(${1} | tr -d '-' | tr ':' '=' | tr -d ' ')
+    for line in $ins; do
+        echo -e "$line"
+    done
 }
 
 #* Set Config - sets the value/values of the config
@@ -86,4 +103,5 @@ handle_config() {
 # handle_config
 
 _private_key_terms
+_not_private_key_terms
 # _update_yaml $@
