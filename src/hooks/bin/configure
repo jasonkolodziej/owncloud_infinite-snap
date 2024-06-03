@@ -1,8 +1,8 @@
 #!/bin/bash -e
 #? Reference: https://snapcraft.io/docs/adding-snap-configuration#heading--interpreting
 
-CONFIG_FILE_LOCATION="$OCIS_CONFIG_DIR/ocis.yaml"
-CONFIG_FILE_LOCATION="../../ocis/config/ocis.example.yaml"
+D_OCIS_CONFIG_FILE_LOCATION="$OCIS_CONFIG_DIR/ocis.yaml"
+# CONFIG_FILE_LOCATION="../../ocis/config/ocis.example.yaml"
 
 # export NEXTCLOUD_CONFIG_DIR="$SNAP_DATA/nextcloud/config"
 # export NEXTCLOUD_DATA_DIR="$SNAP_COMMON/nextcloud/data"
@@ -147,6 +147,24 @@ config_option_modifier() {
         echo "${param}=${val}"
         ;;
     esac
+}
+
+get_basics() {
+    local insecure="$(snapctl get insecure)"
+    if [ -z "$insecure" ]; then #? z, string is null, that is, has zero length
+        insecure="$(yq ".insecure" ${CONFIG_FILE_LOCATION})"
+    fi
+    if [ -z "$insecure" ]; then #? z, string is null, that is, has zero length
+        snapctl set insecure="${D_OCIS_INSECURE}"
+    fi
+
+    local idm_adminpass="$(snapctl get private.service_user_passwords.admin_password)"
+    if [ -z "$idm_adminpass" ]; then #? z, string is null, that is, has zero length
+        idm_adminpass="$(yq ".idm.service_user_passwords.admin_password" ${CONFIG_FILE_LOCATION})"
+    fi
+    if [ -z "$idm_adminpass" ]; then #? z, string is null, that is, has zero length
+        snapctl set private.service_user_passwords.admin_password="${D_IDM_ADMIN_PASSWORD}"
+    fi
 }
 
 handle_config() {
