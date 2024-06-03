@@ -77,8 +77,8 @@ parts:
       - usr/bin/*
 
     build-environment:
-      - OCIS_CONFIG_DIR: $SNAP_USER_DATA/etc/ocis/
-      - OCIS_BASE_DATA_PATH: $SNAP_COMMON/var/lib/ocis
+      - OCIS_CONFIG_DIR: etc/ocis/
+      - OCIS_BASE_DATA_PATH: var/lib/ocis
     #   # TODO: for end user to change
     #   - IDM_ADMIN_PASSWORD: changeme
     override-build: |
@@ -91,8 +91,8 @@ parts:
 
     override-stage: |
       craftctl default
-      mkdir -p $OCIS_CONFIG_DIR
-      mkdir -p $OCIS_BASE_DATA_PATH
+      mkdir -p $CRAFT_STAGE/$OCIS_CONFIG_DIR
+      mkdir -p $CRAFT_STAGE/$OCIS_BASE_DATA_PATH
       # ls -al .
       chmod +x "$CRAFT_STAGE/usr/bin/ocis"
       # ls -al .
