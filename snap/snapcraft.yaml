@@ -223,12 +223,16 @@ slots:
     interface: content
     content: ocis-config
     source:
-      - $SNAP_DATA/etc/ocis
+      read:
+        - $SNAP/etc/ocis
+      write:
+        - $SNAP_DATA/etc/ocis
   ocis-base-data:
     interface: content
     content: ocis-base-data
     source:
-      - $SNAP_COMMON/var/lib/ocis
+      write:
+        - $SNAP_COMMON/var/lib/ocis
 #? Content plugs - CONSUMERS
 #? Reference: https://snapcraft.io/docs/content-interface#heading--read-only
 plugs:
@@ -236,12 +240,12 @@ plugs:
     interface: content
     content: ocis-config
     target:
-      - $SNAP_DATA/etc/ocis
+      - $SNAP_DATA
   ocis-base-data:
     interface: content
     content: ocis-base-data
     target:
-      - $SNAP_COMMON/var/lib/ocis
+      - $SNAP_COMMON
 
 # APPS
 ## ref: https://snapcraft.io/docs/snapcraft-app-and-service-metadata
@@ -320,6 +324,7 @@ apps:
       # STORAGE_USERS_S3NG_ROOT: xx
     slots:
       - ocis-config
+      - ocis-base-data
     plugs:
       - ocis-config
       - ocis-base-data
