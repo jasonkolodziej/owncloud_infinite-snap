@@ -101,8 +101,8 @@ parts:
     override-prime: |
       craftctl default
 
-      #cp -r $CRAFT_STAGE/etc $CRAFT_PRIME
-      #cp -r $CRAFT_STAGE/var $CRAFT_PRIME
+      cp -r $CRAFT_STAGE/etc $CRAFT_PRIME
+      cp -r $CRAFT_STAGE/var $CRAFT_PRIME
 
   # override-build: |
   #   curl -sSL \ "https://github.com/bufbuild/buf/releases/download/${BUF_VERSION}/buf-$(shell uname -s)-$(shell uname -m)" -o "$(shell go env GOPATH)/bin/buf" && chmod +x "$(shell go env GOPATH)/bin/buf"
@@ -211,6 +211,8 @@ parts:
   #     snapcraftctl prime
   #     ls -al ./bin
   #     # ./bin/ocis init
+#? Content slots
+#? Reference: https://snapcraft.io/docs/content-interface#heading--read-only
 
 # APPS
 ## ref: https://snapcraft.io/docs/snapcraft-app-and-service-metadata
