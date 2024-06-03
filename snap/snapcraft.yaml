@@ -211,8 +211,37 @@ parts:
   #     snapcraftctl prime
   #     ls -al ./bin
   #     # ./bin/ocis init
-#? Content slots
+#? Content slots - PRODUCERS
 #? Reference: https://snapcraft.io/docs/content-interface#heading--read-only
+# By default, the AppArmor sandbox allows writes to $SNAP_DATA and reads from $SNAP (see Environment variables for details).
+# The content interface takes advantage of this feature to map data from other locations to either $SNAP or $SNAP_DATA.
+# A bind mount is then created to link $SNAP in one snap (e.g. from /snap/my-snap/1234/content) to an empty directory in the other snap (e.g., to /snap/my-other-snap/4321/incoming-content).
+# Locations need to be selected carefully because a bind mount could potentially permit mounts over important locations, such as $SNAP_DATA, preventing access to a snap’s own writable space.
+# The same can be done for particular files, if desired, but it requires a pair of interfaces for each file and is more cumbersome.
+slots:
+  ocis-config:
+    interface: content
+    content: ocis-config
+    source:
+      - $SNAP_DATA/etc/ocis
+  ocis-base-data:
+    interface: content
+    content: ocis-base-data
+    source:
+      - $SNAP_COMMON/var/lib/ocis
+#? Content plugs - CONSUMERS
+#? Reference: https://snapcraft.io/docs/content-interface#heading--read-only
+plugs:
+  ocis-config:
+    interface: content
+    content: ocis-config
+    target:
+      - $SNAP_DATA/etc/ocis
+  ocis-base-data:
+    interface: content
+    content: ocis-base-data
+    target:
+      - $SNAP_COMMON/var/lib/ocis
 
 # APPS
 ## ref: https://snapcraft.io/docs/snapcraft-app-and-service-metadata
@@ -289,7 +318,11 @@ apps:
       #*   storaing metadata in S3 is `STORAGE_USERS_S3NG_ROOT` and derives, if not otherwise defined, from the base directory
       #*   `OCIS_BASE_DATA_PATH`. For more details see the section Base Data Directory above.
       # STORAGE_USERS_S3NG_ROOT: xx
+    slots:
+      - ocis-config
     plugs:
+      - ocis-config
+      - ocis-base-data
       ## Network Access
       - network
       - network-bind
