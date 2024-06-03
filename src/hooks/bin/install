@@ -37,24 +37,27 @@ if ! [ -f "$D_OCIS_CONFIG_FILE_LOCATION" ]; then
     snapctl set-health $file_created blocked "$(whoami): there was an error touching the file"
 fi
 
-local insecure="$(snapctl get insecure)"
-if [ -z "$insecure" ]; then #? z, string is null, that is, has zero length
-    insecure="$(yq ".insecure" ${D_OCIS_CONFIG_FILE_LOCATION})"
-fi
-if [ -z "$insecure" ]; then #? z, string is null, that is, has zero length
-    snapctl set insecure="${D_OCIS_INSECURE}"
-fi
+get_basics() {
+    local insecure="$(snapctl get insecure)"
+    if [ -z "$insecure" ]; then #? z, string is null, that is, has zero length
+        insecure="$(yq ".insecure" ${CONFIG_FILE_LOCATION})"
+    fi
+    if [ -z "$insecure" ]; then #? z, string is null, that is, has zero length
+        snapctl set insecure="${D_OCIS_INSECURE}"
+    fi
 
-local idm_adminpass="$(snapctl get private.service_user_passwords.admin_password)"
-if [ -z "$idm_adminpass" ]; then #? z, string is null, that is, has zero length
-    idm_adminpass="$(yq ".idm.service_user_passwords.admin_password" ${D_OCIS_CONFIG_FILE_LOCATION})"
-fi
-if [ -z "$idm_adminpass" ]; then #? z, string is null, that is, has zero length
-    snapctl set private.idm.service_user_passwords.admin_password="${D_IDM_ADMIN_PASSWORD}"
-fi
-
-OCIS_INSECURE=${insecure} \ 
-IDM_ADMIN_PASSWORD=${idm_adminpass} \
+    local idm_adminpass="$(snapctl get private.idm.service_user_passwords.admin_password)"
+    if [ -z "$idm_adminpass" ]; then #? z, string is null, that is, has zero length
+        idm_adminpass="$(yq ".idm.service_user_passwords.admin_password" ${CONFIG_FILE_LOCATION})"
+    fi
+    if [ -z "$idm_adminpass" ]; then #? z, string is null, that is, has zero length
+        snapctl set private.idm.service_user_passwords.admin_password="${D_IDM_ADMIN_PASSWORD}"
+    fi
+}
+c_insecure="$(snapctl get insecure)"
+c_idm_adminpass="$(snapctl get private.idm.service_user_passwords.admin_password)"
+OCIS_INSECURE=${c_insecure} \ 
+IDM_ADMIN_PASSWORD=${c_idm_adminpass} \
     ocis init
 
 #? Note that this will bind ocis to the shell you are running.

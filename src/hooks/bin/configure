@@ -149,24 +149,6 @@ config_option_modifier() {
     esac
 }
 
-get_basics() {
-    local insecure="$(snapctl get insecure)"
-    if [ -z "$insecure" ]; then #? z, string is null, that is, has zero length
-        insecure="$(yq ".insecure" ${CONFIG_FILE_LOCATION})"
-    fi
-    if [ -z "$insecure" ]; then #? z, string is null, that is, has zero length
-        snapctl set insecure="${D_OCIS_INSECURE}"
-    fi
-
-    local idm_adminpass="$(snapctl get private.service_user_passwords.admin_password)"
-    if [ -z "$idm_adminpass" ]; then #? z, string is null, that is, has zero length
-        idm_adminpass="$(yq ".idm.service_user_passwords.admin_password" ${CONFIG_FILE_LOCATION})"
-    fi
-    if [ -z "$idm_adminpass" ]; then #? z, string is null, that is, has zero length
-        snapctl set private.service_user_passwords.admin_password="${D_IDM_ADMIN_PASSWORD}"
-    fi
-}
-
 handle_config() {
     local this_config="$(get_config_json)"
     # Validate HTTP port
