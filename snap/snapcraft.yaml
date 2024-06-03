@@ -77,7 +77,7 @@ parts:
       - usr/bin/*
 
     build-environment:
-      - OCIS_CONFIG_DIR: etc/ocis/
+      - OCIS_CONFIG_DIR: etc/ocis
       - OCIS_BASE_DATA_PATH: var/lib/ocis
     #   # TODO: for end user to change
     #   - IDM_ADMIN_PASSWORD: changeme
@@ -226,7 +226,7 @@ slots:
       read:
         - $SNAP/etc/ocis
       write:
-        - $SNAP_DATA/etc/ocis
+        - $SNAP_USER_DATA/etc/ocis
   ocis-base-data:
     interface: content
     content: ocis-base-data
@@ -240,12 +240,12 @@ plugs:
     interface: content
     content: ocis-config
     target:
-      - $SNAP_DATA
+      - $SNAP_DATA/etc/ocis
   ocis-base-data:
     interface: content
     content: ocis-base-data
     target:
-      - $SNAP_COMMON
+      - $SNAP_COMMON/var/lib/ocis
 
 # APPS
 ## ref: https://snapcraft.io/docs/snapcraft-app-and-service-metadata
@@ -282,7 +282,7 @@ apps:
       #? $SNAP_COMMON ==> /var/snap/$SNAP_NAME/common
       #? $SNAP_DATA ==> /var/snap/$SNAP_NAME/$SNAP_REVISION
       #? $SNAP_USER_DATA ==> $HOME/snap/$SNAP_NAME/$SNAP_REVISION
-      OCIS_CONFIG_DIR: $SNAP_DATA/etc/ocis/
+      OCIS_CONFIG_DIR: $SNAP_USER_DATA/etc/ocis
 
       #* Path to system relevant data.
       #* Because Infinite Scale does not use a database for storing information like users, groups, spaces, internal data, etc.,
