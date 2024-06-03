@@ -247,7 +247,7 @@ apps:
       #? $SNAP_COMMON ==> /var/snap/$SNAP_NAME/common
       #? $SNAP_DATA ==> /var/snap/$SNAP_NAME/$SNAP_REVISION
       #? $SNAP_USER_DATA ==> $HOME/snap/$SNAP_NAME/$SNAP_REVISION
-      OCIS_CONFIG_DIR: $SNAP_DATA/etc/ocis/
+      OCIS_CONFIG_DIR: $SNAP_DATA/etc/ocis
 
       #* Path to system relevant data.
       #* Because Infinite Scale does not use a database for storing information like users, groups, spaces, internal data, etc.,
@@ -276,8 +276,8 @@ apps:
       #* You must start Infinite Scale using the environment variable OCIS_URL=<hostname or IP>.
       #* See the following sections for more details and information: https://doc.owncloud.com/ocis/next/deployment/general/general-info.html#using-a-reverse-proxy
       #? Used port ranges: https://doc.owncloud.com/ocis/next/deployment/services/ports-used.html#used-port-ranges
-      OCIS_URL: 'https://localhost:9200'
-      PROXY_HTTP_ADDR: '0.0.0.0:9200'
+      OCIS_URL: "https://localhost:9200"
+      PROXY_HTTP_ADDR: "0.0.0.0:9200"
 
       #* Path to metadata if S3 is used.
       #* Derives from OCIS_BASE_DATA_PATH if not set otherwise.
