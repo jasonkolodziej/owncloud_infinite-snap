@@ -10,16 +10,20 @@ CONFIG_FILE_LOCATION="../../ocis/config/ocis.example.yaml"
 #* PRIVATE_KEY_TERMS
 #*   *secret* *password* *key*
 
+#! Not Private Key Terms -
+#? Collects the 'non-private' configuration options then sets the configuration via shell
 _not_private_key_terms() {
     # yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p != "*secret*") | select(.p != "*key*") | select(.p!= "*password*") | select(.tag != "!!map") | select(.isKey == false) ]' ${CONFIG_FILE_LOCATION}
-    non_priv=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p != "*secret*") | select(.p != "*key*") | select(.p!= "*password*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${CONFIG_FILE_LOCATION} | tr -d '-' | tr ':' '=' | tr -d ' ')
-    # non_priv=$(echo -e $non_priv | tr -d '-' | tr ':' '=' | tr -d ' ')
+    non_priv=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p != "*secret*") | select(.p != "*key*") | select(.p!= "*password*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${CONFIG_FILE_LOCATION})
+    non_priv=$(echo -e "${non_priv[@]}" | tr -d '-' | tr ':' '=' | tr -d ' ')
     for line in $non_priv; do
-        echo -e "$line"
+        set_config_shell 'false' $line
     done
     # echo $non_priv
 }
 
+#! Private Key Terms -
+#? Collects the 'private' configuration options then sets the configuration via shell
 _private_key_terms() {
     # yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p != "*secret*") | select(.p != "*key*") | select(.p!= "*password*") | select(.tag != "!!map") | select(.isKey == false) ]' ${CONFIG_FILE_LOCATION}
     secrets=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p == "*secret*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value }]' ${CONFIG_FILE_LOCATION})
@@ -28,41 +32,50 @@ _private_key_terms() {
     #* clean up ==> | tr -d  '-' | tr ':' '=' | tr -d ' '
     privs=$(echo -e "${secrets[@]} \n ${keys[@]} \n ${passwords[@]}" | tr -d '-' | tr ':' '=' | tr -d ' ')
     for line in $privs; do
-        echo "$line"
+        set_config_shell 'true' $line
     done
     # echo "${secrets[@]} \n ${keys[@]} \n ${passwords[@]}"
 
 }
 
-#* Set Config - sets the value/values of the config
+#* Set Config Shell -
+#? sets the value/values of the config
+#* @param {is_priv} - boolean, default false
+#* @param {arr_in} - array, e.g. [ this.conf.param1='something_to_be_set1' this.conf.param2='something_to_be_set2' #... ]
 set_config_shell() {
-    local arrIN=(${1//=/ })
-    local param=${arrIN[0]}
-    local val=${arrIN[1]}
+    local is_priv=${1:='false'}
+    local arr_in=(${2//=/ })
+    local param=${arr_in[0]}
+    local val=${arr_in[1]}
 
     #echo $param
     #echo $val
-    echo "setting ${param}=\"$val"\"
-    snapctl set ${param}="$val"
+    if [ "$is_priv" == 'true' ]; then
+        echo "setting private configuration as==> 'private.${param}=${val}'"
+        # snapctl set "private.${param}"=${val}
+    else
+        echo "setting configuration as==> '${param}=${val}'"
+        # snapctl set ${param}=${val}
+    fi
+
+    # snapctl set ${param}="$val"
     # snapctl set ${1}="$2"
 }
 
-_update_yaml_inplace() {
-    local updater="$@"
-    yq -i ".$updater" ${CONFIG_FILE_LOCATION}
+#* Set All Defaults From YAML -
+#?  Invokes the splitting of 'private' & 'non-private' configuration options from
+#*  the applications YAML file and sets them with-in the context of `snapctl`
+set_all_defaults_from_yaml() {
+    echo 'Setting all configuration options'
+    #? set non private
+    _not_private_key_terms
+    #? set private
+    _private_key_terms
 }
 
-_update_yaml() {
-    local updater="$@"
-    yq ".$updater" ${CONFIG_FILE_LOCATION}
-}
-
-_json_to_yaml() {
-    # yq -Poy sample.json
-    yq -Poy sample.json
-}
-
-#* Get Config - requests the default config's value if nothing is yet set and returns the value
+#* Get Config -
+#?  Requests the current/default config's value if nothing is yet set and returns the value
+#* @param {conf_key} - the key to retrieve from the configuration file, default: NIL (a.k.a: grab all configs)
 get_config_shell() {
     local conf_key=${1}
     # local config_option=
@@ -77,10 +90,41 @@ get_config_shell() {
     echo "$config_option"
 }
 
+#* Update YAML Inplace -
+#?  Changes the config in-place
+#* @param {updater} - the key to be updated
+_update_yaml_inplace() {
+    local updater="$@"
+    yq -i ".$updater" ${CONFIG_FILE_LOCATION}
+}
+
+#* Update YAML -
+#? Produces output of an updated yaml but doesn't change config
+#* @param {in_place} - when 'true' changes the config in-place, default: 'false'
+#* @param {updater} - the key to be updated
+update_yaml() {
+    local in_place="${1:-'false'}"
+    local updater="${@:2}"
+    if [ "$in_place" == 'false' ]; then
+        echo 'generating a non-inplace config'
+        # echo "${updater}"
+        yq ".$updater" ${CONFIG_FILE_LOCATION}
+    else
+        echo 'editing config inplace'
+        yq -i ".$updater" ${CONFIG_FILE_LOCATION}
+    fi
+
+}
+
+_json_to_yaml() {
+    # yq -Poy sample.json
+    yq -Poy sample.json
+}
+
 # TODO: fix
 handle_config() {
     echo 'handle_config params' $@
-    local some_config="$(get_config)"
+    local some_config="$(get_config_shell)"
     # Validate HTTP port
     #        if ! expr "$some_config" : '^[0-9]\+$' > /dev/null; then
     #               echo "\"$some_config\" is not a valid HTTP port" >&2
