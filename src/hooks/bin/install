@@ -26,39 +26,40 @@ D_OCIS_CONFIG_FILE_LOCATION="$OCIS_CONFIG_DIR/ocis.yaml"
 # PROXY_TRANSPORT_TLS_KEY=./certs/your-host.key
 # PROXY_TRANSPORT_TLS_CERT=./certs/your-host.crt
 #? auto certs
-D_OCIS_INSECURE=true
+D_OCIS_INSECURE='true'
 # PROXY_HTTP_ADDR=0.0.0.0:9200
 # OCIS_URL=https://your-host:9200
-D_IDM_ADMIN_PASSWORD=changeme
+D_IDM_ADMIN_PASSWORD='changeme'
 
-local file_created = "$(touch ${D_OCIS_CONFIG_FILE_LOCATION})"
+file_created="$(touch ${D_OCIS_CONFIG_FILE_LOCATION})"
 
 if ! [ -f "$D_OCIS_CONFIG_FILE_LOCATION" ]; then
-    snapctl set-health $file_created blocked "$(whoami): there was an error touching the file"
+    snapctl set-health blocked "$(whoami): there was an error touching the file"
 fi
 
 get_basics() {
-    local insecure="$(snapctl get insecure)"
+    local insecure="$(snapctl get $SNAP_NAME insecure)"
     if [ -z "$insecure" ]; then #? z, string is null, that is, has zero length
         insecure="$(yq ".insecure" ${CONFIG_FILE_LOCATION})"
     fi
     if [ -z "$insecure" ]; then #? z, string is null, that is, has zero length
-        snapctl set insecure="${D_OCIS_INSECURE}"
+        snapctl set $SNAP_NAME insecure="${D_OCIS_INSECURE}"
     fi
 
-    local idm_adminpass="$(snapctl get private.idm.service_user_passwords.admin_password)"
+    local idm_adminpass="$(snapctl get $SNAP_NAME private.idm.service-user-passwords.admin-password)"
     if [ -z "$idm_adminpass" ]; then #? z, string is null, that is, has zero length
         idm_adminpass="$(yq ".idm.service_user_passwords.admin_password" ${CONFIG_FILE_LOCATION})"
     fi
     if [ -z "$idm_adminpass" ]; then #? z, string is null, that is, has zero length
-        snapctl set private.idm.service_user_passwords.admin_password="${D_IDM_ADMIN_PASSWORD}"
+        snapctl set $SNAP_NAME private.idm.service-user-passwords.admin-password="${D_IDM_ADMIN_PASSWORD}"
     fi
 }
-c_insecure="$(snapctl get insecure)"
-c_idm_adminpass="$(snapctl get private.idm.service_user_passwords.admin_password)"
-OCIS_INSECURE=${c_insecure} \ 
+c_insecure="$(snapctl get $SNAP_NAME insecure)"
+c_idm_adminpass="$(snapctl get $SNAP_NAME private.idm.service-user-passwords.admin-password)"
+
+OCIS_INSECURE=${c_insecure} \
 IDM_ADMIN_PASSWORD=${c_idm_adminpass} \
-    ocis init
+$SNAP/usr/bin/ocis init
 
 #? Note that this will bind ocis to the shell you are running.
 #? If you want to detach it and avoid it being stopped when closing the shell or
