@@ -247,9 +247,9 @@ parts:
 #     content: ocis-base-data
 #     target:
 #       - $SNAP_COMMON/var/lib/ocis
-#? HOOKS
-hooks:
-  configure:
+# #? HOOKS
+# hooks:
+#   configure:
 
 #? APPS
 ## ref: https://snapcraft.io/docs/snapcraft-app-and-service-metadata
