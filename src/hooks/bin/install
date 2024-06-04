@@ -40,6 +40,6 @@ TEMP_IDM_ADMIN_PW='changeme'
 
 snapctl set-health okay
 
-"$SNAP/bin/ocis init" --config-path="${DEFAULT_OCIS_CONFIG_FILE_LOCATION}" --ap="${TEMP_IDM_ADMIN_PW}" --insecure="${TEMP_OCIS_INSECURE}"
+exec "$SNAP/bin/ocis init" --config-path="${DEFAULT_OCIS_CONFIG_FILE_LOCATION}" --ap="${TEMP_IDM_ADMIN_PW}" --insecure="${TEMP_OCIS_INSECURE}"
 
 # snapctl restart ocis

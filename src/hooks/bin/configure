@@ -216,7 +216,6 @@ check_first_time() {
 
 if ! [ -f "$DEFAULT_OCIS_CONFIG_FILE_LOCATION" ]; then
     snapctl set-health blocked "usr: $(whoami) conf: ${OCIS_CONFIG_DIR} was not able to detect file"
-
 fi
 
 if [ "$(check_first_time)" == 'true' ]; then
