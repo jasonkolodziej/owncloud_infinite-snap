@@ -75,7 +75,7 @@ parts:
       bin/: bin/
     # "ocis*": /usr/bin/ocis
     stage:
-      - /bin/*
+      - bin/*
 
     build-environment:
       - OCIS_CONFIG_DIR: etc/ocis
