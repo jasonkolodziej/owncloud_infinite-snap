@@ -59,7 +59,7 @@ set_config_shell() {
     # fi
     for line in $modified_arr; do
         echo "setting configuration as==> '${line}'"
-        # snapctl set ${modified}
+        snapctl set ${modified}
     done
 }
 
