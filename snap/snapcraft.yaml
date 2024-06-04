@@ -282,7 +282,7 @@ apps:
       #? $SNAP_COMMON ==> /var/snap/$SNAP_NAME/common
       #? $SNAP_DATA ==> /var/snap/$SNAP_NAME/$SNAP_REVISION
       #? $SNAP_USER_DATA ==> $HOME/snap/$SNAP_NAME/$SNAP_REVISION
-      OCIS_CONFIG_DIR: $SNAP_USER_DATA/etc/ocis
+      OCIS_CONFIG_DIR: $SNAP_DATA/etc/ocis
 
       #* Path to system relevant data.
       #* Because Infinite Scale does not use a database for storing information like users, groups, spaces, internal data, etc.,
@@ -300,7 +300,7 @@ apps:
       #? $SNAP_COMMON ==> /var/snap/$SNAP_NAME/common
       #? $SNAP_DATA ==> /var/snap/$SNAP_NAME/$SNAP_REVISION
       #? $SNAP_USER_DATA ==> $HOME/snap/$SNAP_NAME/$SNAP_REVISION
-      OCIS_BASE_DATA_PATH: $SNAP_USER_COMMON/var/lib/ocis
+      OCIS_BASE_DATA_PATH: $SNAP_COMMON/var/lib/ocis
 
       #* Path to blobs and metadata if POSIX is used.
       #* Derives from `OCIS_BASE_DATA_PATH` if not set otherwise.

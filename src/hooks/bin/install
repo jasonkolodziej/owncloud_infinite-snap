@@ -31,37 +31,29 @@ D_OCIS_INSECURE='true'
 # OCIS_URL=https://your-host:9200
 D_IDM_ADMIN_PASSWORD='changeme'
 
-file_created="$(touch ${D_OCIS_CONFIG_FILE_LOCATION})"
-
-if ! [ -f "$D_OCIS_CONFIG_FILE_LOCATION" ]; then
-    snapctl set-health blocked "$(whoami): there was an error touching the file"
-fi
+# file_created="$(touch ${D_OCIS_CONFIG_FILE_LOCATION})"
 
 get_basics() {
-    local insecure="$(snapctl get $SNAP_NAME insecure)"
+    local insecure="$(snapctl get insecure)"
+    # if [ -z "$insecure" ]; then #? z, string is null, that is, has zero length
+    #     insecure="$(yq ".insecure" ${CONFIG_FILE_LOCATION})"
+    # fi
     if [ -z "$insecure" ]; then #? z, string is null, that is, has zero length
-        insecure="$(yq ".insecure" ${CONFIG_FILE_LOCATION})"
-    fi
-    if [ -z "$insecure" ]; then #? z, string is null, that is, has zero length
-        snapctl set $SNAP_NAME insecure="${D_OCIS_INSECURE}"
+        snapctl set insecure="${D_OCIS_INSECURE}"
     fi
 
-    local idm_adminpass="$(snapctl get $SNAP_NAME private.idm.service-user-passwords.admin-password)"
+    local idm_adminpass="$(snapctl get private.idm.service-user-passwords.admin-password)"
+    # if [ -z "$idm_adminpass" ]; then #? z, string is null, that is, has zero length
+    #     idm_adminpass="$(yq ".idm.service_user_passwords.admin_password" ${CONFIG_FILE_LOCATION})"
+    # fi
     if [ -z "$idm_adminpass" ]; then #? z, string is null, that is, has zero length
-        idm_adminpass="$(yq ".idm.service_user_passwords.admin_password" ${CONFIG_FILE_LOCATION})"
-    fi
-    if [ -z "$idm_adminpass" ]; then #? z, string is null, that is, has zero length
-        snapctl set $SNAP_NAME private.idm.service-user-passwords.admin-password="${D_IDM_ADMIN_PASSWORD}"
+        snapctl set private.idm.service-user-passwords.admin-password="${D_IDM_ADMIN_PASSWORD}"
     fi
 }
-c_insecure="$(snapctl get $SNAP_NAME insecure)"
-c_idm_adminpass="$(snapctl get $SNAP_NAME private.idm.service-user-passwords.admin-password)"
 
-OCIS_INSECURE=${c_insecure} \
-IDM_ADMIN_PASSWORD=${c_idm_adminpass} \
-$SNAP/usr/bin/ocis init
+#? if the default config hasn't been created
+if ! [ -f "$D_OCIS_CONFIG_FILE_LOCATION" ]; then
+    get_basics
+fi
 
-#? Note that this will bind ocis to the shell you are running.
-#? If you want to detach it and avoid it being stopped when closing the shell or
-#? the shell gets disconnected (SIGHUP), use the following command:
-#* ocis server & disown -h
+# snapctl restart ocis

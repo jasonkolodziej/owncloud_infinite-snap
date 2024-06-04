@@ -2,7 +2,7 @@
 #? Reference: https://snapcraft.io/docs/adding-snap-configuration#heading--interpreting
 
 D_OCIS_CONFIG_FILE_LOCATION="$OCIS_CONFIG_DIR/ocis.yaml"
-# CONFIG_FILE_LOCATION="../../ocis/config/ocis.example.yaml"
+CONFIG_FILE_LOCATION="../../ocis/config/ocis.example.yaml"
 
 # export NEXTCLOUD_CONFIG_DIR="$SNAP_DATA/nextcloud/config"
 # export NEXTCLOUD_DATA_DIR="$SNAP_COMMON/nextcloud/data"
@@ -131,20 +131,28 @@ config_option_modifier() {
     local arr_in=(${1//=/ })
     local param=${arr_in[0]}
     local val=${arr_in[1]}
+
     case "$param" in
     #? is 'private' ==> to snapctl var
     *"key"* | *"secret"* | *"password"*)
         # Do stff
-        echo "private.${param}=${val}"
+        s_param="$(echo $param | tr '_' '-')"
+        echo "private.${s_param}=${val}"
         ;;
     #? is 'private' from snapctl var ==> config var
     *"private."*)
         # Do stff
-        echo "${param//'private.'/}=${param}"
+        y_param="$(echo $param | tr '-' '_')"
+        echo "${y_param//'private.'/}=${val}"
         ;;
     #? defaults
-    *)
-        echo "${param}=${val}"
+    *"-"*)
+        y_param="$(echo $param | tr '-' '_')"
+        echo "${y_param}=${val}"
+        ;;
+    *"_"*)
+        s_param="$(echo $param | tr '_' '-')"
+        echo "${s_param}=${val}"
         ;;
     esac
 }
@@ -162,3 +170,25 @@ handle_config() {
     # Restart example-server to apply new config
     # snapctl restart example-server
 }
+
+# _not_private_key_terms
+
+# #? if the default config hasn't been created
+if ! [ -f "$OCIS_CONFIG_DIR/ocis.yaml" ]; then
+    c_insecure="$(snapctl get insecure)"
+    c_idm_adminpass="$(snapctl get private.idm.service-user-passwords.admin-password)"
+
+    "$SNAP/usr/bin/ocis init" --config-path="${OCIS_CONFIG_DIR}" --ap="${c_idm_adminpass}" --insecure="${c_insecure}"
+
+    #? Note that this will bind ocis to the shell you are running.
+    #? If you want to detach it and avoid it being stopped when closing the shell or
+    #? the shell gets disconnected (SIGHUP), use the following command:
+    #* ocis server & disown -h
+fi
+
+if ! [ -f "$OCIS_CONFIG_DIR/ocis.yaml" ]; then
+    snapctl set-health blocked "current_usr: $(whoami) configure was not able to detect file"
+else
+    snapctl restart ocis
+    snapctl set-health okay
+fi
