@@ -71,7 +71,8 @@ parts:
     # https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-arm64
     source: src/ocis/
     organize:
-      bin/: usr/bin/
+      # bin/: usr/bin/
+      bin/: bin/
     # "ocis*": /usr/bin/ocis
     stage:
       - usr/bin/*
@@ -246,8 +247,11 @@ parts:
 #     content: ocis-base-data
 #     target:
 #       - $SNAP_COMMON/var/lib/ocis
+#? HOOKS
+hooks:
+  configure:
 
-# APPS
+#? APPS
 ## ref: https://snapcraft.io/docs/snapcraft-app-and-service-metadata
 apps:
   ## ref: https://snapcraft.io/docs/services-and-daemons
@@ -261,7 +265,7 @@ apps:
     # initialize a minimal oCIS configuration
     #  ./ocis/bin/ocis init
     # install-mode: disable
-    command: /usr/bin/ocis server
+    command: /bin/ocis server
     daemon: simple
     environment:
       #* run with demo users
@@ -282,7 +286,8 @@ apps:
       #? $SNAP_COMMON ==> /var/snap/$SNAP_NAME/common
       #? $SNAP_DATA ==> /var/snap/$SNAP_NAME/$SNAP_REVISION
       #? $SNAP_USER_DATA ==> $HOME/snap/$SNAP_NAME/$SNAP_REVISION
-      OCIS_CONFIG_DIR: $SNAP_DATA/etc/ocis
+      # OCIS_CONFIG_DIR: $SNAP_DATA/etc/ocis
+      OCIS_CONFIG_DIR: $SNAP_USER_DATA/ocis
 
       #* Path to system relevant data.
       #* Because Infinite Scale does not use a database for storing information like users, groups, spaces, internal data, etc.,
@@ -300,7 +305,8 @@ apps:
       #? $SNAP_COMMON ==> /var/snap/$SNAP_NAME/common
       #? $SNAP_DATA ==> /var/snap/$SNAP_NAME/$SNAP_REVISION
       #? $SNAP_USER_DATA ==> $HOME/snap/$SNAP_NAME/$SNAP_REVISION
-      OCIS_BASE_DATA_PATH: $SNAP_COMMON/var/lib/ocis
+      # OCIS_BASE_DATA_PATH: $SNAP_COMMON/var/lib/ocis
+      OCIS_BASE_DATA_PATH: $SNAP_USER_COMMON/lib/ocis
 
       #* Path to blobs and metadata if POSIX is used.
       #* Derives from `OCIS_BASE_DATA_PATH` if not set otherwise.

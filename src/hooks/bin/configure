@@ -1,8 +1,7 @@
 #!/bin/bash -e
 #? Reference: https://snapcraft.io/docs/adding-snap-configuration#heading--interpreting
 
-D_OCIS_CONFIG_FILE_LOCATION="$OCIS_CONFIG_DIR/ocis.yaml"
-CONFIG_FILE_LOCATION="../../ocis/config/ocis.example.yaml"
+DEFAULT_OCIS_CONFIG_FILE_LOCATION="$OCIS_CONFIG_DIR/ocis.yaml"
 
 # export NEXTCLOUD_CONFIG_DIR="$SNAP_DATA/nextcloud/config"
 # export NEXTCLOUD_DATA_DIR="$SNAP_COMMON/nextcloud/data"
@@ -13,8 +12,8 @@ CONFIG_FILE_LOCATION="../../ocis/config/ocis.example.yaml"
 #! Not Private Key Terms -
 #? Collects the 'non-private' configuration options then sets the configuration via shell
 _not_private_key_terms() {
-    # yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p != "*secret*") | select(.p != "*key*") | select(.p!= "*password*") | select(.tag != "!!map") | select(.isKey == false) ]' ${CONFIG_FILE_LOCATION}
-    non_priv=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p != "*secret*") | select(.p != "*key*") | select(.p!= "*password*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${CONFIG_FILE_LOCATION})
+    # yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p != "*secret*") | select(.p != "*key*") | select(.p!= "*password*") | select(.tag != "!!map") | select(.isKey == false) ]' ${DEFAULT_OCIS_CONFIG_FILE_LOCATION}
+    non_priv=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p != "*secret*") | select(.p != "*key*") | select(.p!= "*password*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${DEFAULT_OCIS_CONFIG_FILE_LOCATION})
     non_priv=$(echo -e "${non_priv[@]}" | tr -d '-' | tr ':' '=' | tr -d ' ')
     for line in $non_priv; do
         config_option_modifier $line
@@ -25,10 +24,10 @@ _not_private_key_terms() {
 #! Private Key Terms -
 #? Collects the 'private' configuration options then sets the configuration via shell
 _private_key_terms() {
-    # yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p != "*secret*") | select(.p != "*key*") | select(.p!= "*password*") | select(.tag != "!!map") | select(.isKey == false) ]' ${CONFIG_FILE_LOCATION}
-    secrets=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p == "*secret*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value }]' ${CONFIG_FILE_LOCATION})
-    keys=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p == "*key*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${CONFIG_FILE_LOCATION})
-    passwords=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p == "*password*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${CONFIG_FILE_LOCATION})
+    # yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p != "*secret*") | select(.p != "*key*") | select(.p!= "*password*") | select(.tag != "!!map") | select(.isKey == false) ]' ${DEFAULT_OCIS_CONFIG_FILE_LOCATION}
+    secrets=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p == "*secret*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value }]' ${DEFAULT_OCIS_CONFIG_FILE_LOCATION})
+    keys=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p == "*key*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${DEFAULT_OCIS_CONFIG_FILE_LOCATION})
+    passwords=$(yq '[... | { "p": path | join("."), "isKey": is_key, "tag": tag, "value": eval(path) } | select(.p == "*password*") | select(.tag != "!!map") | select(.isKey == false) | { .p:.value } ]' ${DEFAULT_OCIS_CONFIG_FILE_LOCATION})
     #* clean up ==> | tr -d  '-' | tr ':' '=' | tr -d ' '
     privs=$(echo -e "${secrets[@]} \n ${keys[@]} \n ${passwords[@]}" | tr -d '-' | tr ':' '=' | tr -d ' ')
     for line in $privs; do
@@ -48,7 +47,7 @@ set_config_shell() {
     # local param=${arr_in[0]}
     # local val=${arr_in[1]}
 
-    local modified=$(config_option_modifier $@)
+    local modified_arr="${1}"
     #echo $param
     #echo $val
     # if [ "$is_priv" == 'true' ]; then
@@ -58,8 +57,10 @@ set_config_shell() {
     #     echo "setting configuration as==> '${param}=${val}'"
     #     # snapctl set "${param}=${val}"
     # fi
-    echo "setting configuration as==> '${modified}'"
-    snapctl set ${modified}
+    for line in $modified_arr; do
+        echo "setting configuration as==> '${line}'"
+        # snapctl set ${modified}
+    done
 }
 
 #* Set All Defaults From YAML -
@@ -83,7 +84,7 @@ get_config_shell() {
         local config_option="$(snapctl get ${conf_key})"
     fi
     if [ -z "$config_option" ]; then #? z, string is null, that is, has zero length
-        config_option="$(yq ".${conf_key}" ${CONFIG_FILE_LOCATION})"
+        config_option="$(yq ".${conf_key}" ${DEFAULT_OCIS_CONFIG_FILE_LOCATION})"
     fi
     echo "$config_option"
 }
@@ -98,10 +99,10 @@ update_yaml() {
     if [ "$in_place" == 'false' ]; then
         echo 'generating a non-inplace config'
         # echo "${updater}"
-        yq ".$updater" ${CONFIG_FILE_LOCATION}
+        yq ".$updater" ${DEFAULT_OCIS_CONFIG_FILE_LOCATION}
     else
         echo 'editing config inplace'
-        yq -i ".$updater" ${CONFIG_FILE_LOCATION}
+        yq -i ".$updater" ${DEFAULT_OCIS_CONFIG_FILE_LOCATION}
     fi
 
 }
@@ -121,7 +122,7 @@ get_config_json() {
 
 set_config_json() {
     echo "set_json_config"
-    yq '.' -o json ${CONFIG_FILE_LOCATION} | snapctl set -d ${SNAP_NAME}
+    yq '.' -o json ${DEFAULT_OCIS_CONFIG_FILE_LOCATION} | snapctl set -d ${SNAP_NAME}
 }
 
 #? Config Option Modifier -
@@ -137,22 +138,22 @@ config_option_modifier() {
     *"key"* | *"secret"* | *"password"*)
         # Do stff
         s_param="$(echo $param | tr '_' '-')"
-        echo "private.${s_param}=${val}"
+        echo "private.${s_param}=\"${val}\""
         ;;
     #? is 'private' from snapctl var ==> config var
     *"private."*)
         # Do stff
         y_param="$(echo $param | tr '-' '_')"
-        echo "${y_param//'private.'/}=${val}"
+        echo "${y_param//'private.'/}=\"${val}\""
         ;;
     #? defaults
     *"-"*)
         y_param="$(echo $param | tr '-' '_')"
-        echo "${y_param}=${val}"
+        echo "${y_param}=\"${val}\""
         ;;
     *"_"*)
         s_param="$(echo $param | tr '_' '-')"
-        echo "${s_param}=${val}"
+        echo "${s_param}=\"${val}\""
         ;;
     esac
 }
@@ -171,24 +172,62 @@ handle_config() {
     # snapctl restart example-server
 }
 
-# _not_private_key_terms
+get_basics() {
+    #? defined generated certs...
+    # OCIS_INSECURE=false
+    # PROXY_TRANSPORT_TLS_KEY=./certs/your-host.key
+    # PROXY_TRANSPORT_TLS_CERT=./certs/your-host.crt
+    #? auto certs
+    D_OCIS_INSECURE='true'
+    # PROXY_HTTP_ADDR=0.0.0.0:9200
+    # OCIS_URL=https://your-host:9200
+    D_IDM_ADMIN_PASSWORD='changeme'
+
+    local insecure="$(snapctl get insecure)"
+    # if [ -z "$insecure" ]; then #? z, string is null, that is, has zero length
+    #     insecure="$(yq ".insecure" ${DEFAULT_OCIS_CONFIG_FILE_LOCATION})"
+    # fi
+    if [ -z "$insecure" ]; then #? z, string is null, that is, has zero length
+        snapctl set insecure="${D_OCIS_INSECURE}"
+    fi
+
+    local idm_adminpass="$(snapctl get private.idm.service-user-passwords.admin-password)"
+    # if [ -z "$idm_adminpass" ]; then #? z, string is null, that is, has zero length
+    #     idm_adminpass="$(yq ".idm.service_user_passwords.admin_password" ${DEFAULT_OCIS_CONFIG_FILE_LOCATION})"
+    # fi
+    if [ -z "$idm_adminpass" ]; then #? z, string is null, that is, has zero length
+        snapctl set private.idm.service-user-passwords.admin-password="${D_IDM_ADMIN_PASSWORD}"
+    fi
+}
+
+check_first_time() {
+    local idm_adminpass="$(snapctl get private.idm.service-user-passwords.admin-password)"
+    # if [ -z "$idm_adminpass" ]; then #? z, string is null, that is, has zero length
+    #     idm_adminpass="$(yq ".idm.service_user_passwords.admin_password" ${DEFAULT_OCIS_CONFIG_FILE_LOCATION})"
+    # fi
+    if [ -z "$idm_adminpass" ]; then #? z, string is null, that is, has zero length
+        echo 'false'
+    else
+        echo 'true'
+    fi
+}
 
 # #? if the default config hasn't been created
-if ! [ -f "$OCIS_CONFIG_DIR/ocis.yaml" ]; then
-    c_insecure="$(snapctl get insecure)"
-    c_idm_adminpass="$(snapctl get private.idm.service-user-passwords.admin-password)"
 
-    "$SNAP/usr/bin/ocis init" --config-path="${OCIS_CONFIG_DIR}" --ap="${c_idm_adminpass}" --insecure="${c_insecure}"
+if ! [ -f "$DEFAULT_OCIS_CONFIG_FILE_LOCATION" ]; then
+    snapctl set-health blocked "usr: $(whoami) conf: ${OCIS_CONFIG_DIR} was not able to detect file"
 
+fi
+
+if [ "$(check_first_time)" == 'true' ]; then
+    terms="$(_private_key_terms)"
+    set_config_shell "${terms[@]}"
     #? Note that this will bind ocis to the shell you are running.
     #? If you want to detach it and avoid it being stopped when closing the shell or
     #? the shell gets disconnected (SIGHUP), use the following command:
     #* ocis server & disown -h
-fi
-
-if ! [ -f "$OCIS_CONFIG_DIR/ocis.yaml" ]; then
-    snapctl set-health blocked "current_usr: $(whoami) configure was not able to detect file"
-else
     snapctl restart ocis
     snapctl set-health okay
 fi
+
+# DEFAULT_OCIS_CONFIG_FILE_LOCATION="../../ocis/config/ocis.example.yaml"
