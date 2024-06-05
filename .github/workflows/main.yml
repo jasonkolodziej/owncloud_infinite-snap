@@ -165,15 +165,16 @@ jobs:
       - name: Run a multi-line script
         run: |
           ls -al
+          echo ${{ steps.results.outputs.download-path }}
       #? Set your release
       - name: GH Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.RELEASE_TAG }}
           #TODO: resolve setting a draft then detecting a draft
-          # draft: true
+          draft: true
           prerelease: true
-          # token: ${{ secrets.GITRELEASE_TOKEN }}
-          # files: ${{ steps.results.outputs.download-path }}
-          files: |
-            snap-${{ env.RELEASE_VERSION }}-*
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: ${{ steps.results.outputs.download-path }}
+          # files: |
+          #   snap-${{ env.RELEASE_VERSION }}-*
