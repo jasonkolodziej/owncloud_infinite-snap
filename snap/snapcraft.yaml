@@ -77,9 +77,9 @@ parts:
     organize:
       bin/*: bin/
     stage:
-      # - bin/*
-      - bin/ocis
-      - bin/yq
+      - bin/*
+      # - bin/ocis
+      # - bin/yq
       - -bin/.gitkeep
     prime:
       - bin/*
@@ -103,7 +103,7 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/$OCIS_CONFIG_DIR
       mkdir -p $CRAFT_PART_INSTALL/$OCIS_BASE_DATA_PATH
       ls -al $CRAFT_PART_BUILD_WORK
-      # craftctl default
+      craftctl default
       ls -al $CRAFT_PART_INSTALL
       ls -al $CRAFT_PART_INSTALL/bin
 
