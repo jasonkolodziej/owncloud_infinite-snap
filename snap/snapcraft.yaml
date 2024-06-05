@@ -44,42 +44,29 @@ confinement: devmode # use 'strict' once you have the right plugs and slots
 ## A snap of type app (default) cannot be set to stable if the base is not on a stable channel.
 grade: devel # must be 'stable' to release into candidate/stable channels
 
-# PARTS
-## are the raw building blocks of a snap, used to collect and build binaries and their dependencies.
-## Parts define what sources are needed to assemble your app.
-## Parts can be anything: programs, libraries, or other needed assets.
+#* PARTS
+#? Reference: https://snapcraft.io/docs/snapcraft-parts-metadata
+##* are the raw building blocks of a snap, used to collect and build binaries and their dependencies.
+##* Parts define what sources are needed to assemble your app.
+##* Parts can be anything: programs, libraries, or other needed assets.
 parts:
-  ## The parts arbitrary name
-  # node:
-  #   plugin: npm
-  #   source: .
-  #   npm-include-node: true
-  #   npm-node-version: 20
-
-  # common:
-  #   plugin: dump
-  #   source: src/common/
-
   hooks:
     plugin: dump
     source: src/hooks/
     organize:
       bin/: snap/hooks/
 
-  yq:
-    #? used to manage ocis configuration
-    plugin: nil
-    stage-snaps:
-      - yq
-    override-prime: |
-      craftctl default
-      echo $CRAFT_PRIME
-      ls -al .
+  # yq:
+  #   #? used to manage ocis configuration
+  #   plugin: nil
+  #   stage-snaps:
+  #     - yq
+  #   override-prime: |
+  #     craftctl default
+  #     echo $CRAFT_PRIME
+  #     ls -al .
 
   ocis:
-    after:
-      - yq
-      - hooks
     plugin: dump
     # https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-arm64
     source: src/ocis/
@@ -93,6 +80,9 @@ parts:
       - bin/*
       - etc/*
       - var/*
+
+    stage-snaps:
+      - yq
 
     build-environment:
       - OCIS_CONFIG_DIR: etc/ocis

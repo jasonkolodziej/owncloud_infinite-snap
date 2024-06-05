@@ -127,6 +127,7 @@ jobs:
         id: snapcraft
         with:
           architecture: ${{ matrix.platform }}
+          snapcraft-args: clean
 
       - uses: actions/upload-artifact@v4
         id: uploadSnapArtifact
