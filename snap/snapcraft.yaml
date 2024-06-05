@@ -268,7 +268,7 @@ apps:
     # initialize a minimal oCIS configuration
     #  ./ocis/bin/ocis init
     # install-mode: disable
-    command: /bin/ocis server
+    command: /usr/bin/ocis server
     daemon: simple
     environment:
       #* run with demo users
