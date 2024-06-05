@@ -93,7 +93,7 @@ parts:
       craftctl default
       mkdir -p $CRAFT_PART_INSTALL/$OCIS_CONFIG_DIR
       mkdir -p $CRAFT_PART_INSTALL/$OCIS_BASE_DATA_PATH
-      chmod +x "CRAFT_PART_INSTALL/bin/ocis"
+      chmod +x "$CRAFT_PART_INSTALL/bin/ocis"
       ls -al $CRAFT_PART_INSTALL
 
     override-stage: |
