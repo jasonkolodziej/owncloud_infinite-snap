@@ -98,7 +98,7 @@ parts:
       ls -al .
       craftctl default
       ls -al ./bin
-      ls -al $CRAFT_PART_INSTALL
+      ls -al $CRAFT_PART_INSTALL/bin
     override-stage: |
       craftctl default
       mkdir -p $CRAFT_STAGE/$OCIS_CONFIG_DIR
