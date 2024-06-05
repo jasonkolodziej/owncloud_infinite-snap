@@ -71,9 +71,9 @@ parts:
     plugin: nil
     stage-snaps:
       - yq
-    override-stage: |
+    override-prime: |
       craftctl default
-      echo $CRAFT_STAGE
+      echo $CRAFT_PRIME
       ls -al .
 
   ocis:
@@ -89,15 +89,16 @@ parts:
     stage:
       - bin/*
 
+    prime:
+      - bin/*
+      - etc/*
+      - var/*
+
     build-environment:
       - OCIS_CONFIG_DIR: etc/ocis
       - OCIS_BASE_DATA_PATH: var/lib/ocis
     #   # TODO: for end user to change
-    #   - IDM_ADMIN_PASSWORD: changeme
-    override-build: |
-      craftctl default
-      echo "$OCIS_CONFIG_DIR" "$OCIS_BASE_DATA_PATH"
-      ls -al .
+    # - TEMP_IDM_ADMIN_PASSWORD: changeme
 
     override-stage: |
       craftctl default
@@ -105,12 +106,13 @@ parts:
       mkdir -p $CRAFT_STAGE/$OCIS_BASE_DATA_PATH
       # ls -al .
       chmod +x "$CRAFT_STAGE/bin/ocis"
-      # ls -al .
+      echo "Staging files in ==> $CRAFT_STAGE"
+      ls -al .
       # ocis init
 
     override-prime: |
       craftctl default
-
+      echo "Primed files after 'default' in ==> $CRAFT_STAGE"
       cp -r $CRAFT_STAGE/etc $CRAFT_PRIME
       cp -r $CRAFT_STAGE/var $CRAFT_PRIME
 
