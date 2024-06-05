@@ -56,14 +56,14 @@ parts:
     organize:
       bin/: snap/hooks/
 
-  yq-install:
-    #? used to manage ocis configuration
-    plugin: nil
-    stage-snaps:
-      - yq
-    override-prime: |
-      craftctl default
-      ls -al $CRAFT_PRIME
+  # yq-install:
+  #   #? used to manage ocis configuration
+  #   plugin: nil
+  #   stage-snaps:
+  #     - yq
+  #   override-prime: |
+  #     craftctl default
+  #     ls -al $CRAFT_PRIME
 
   ocis:
     plugin: dump
@@ -77,8 +77,10 @@ parts:
       bin/: bin/
     stage:
       - bin/*
-    # stage-snaps:
-    #   - yq
+    build-snaps:
+      - tree
+    stage-snaps:
+      - yq
 
     build-environment:
       - OCIS_CONFIG_DIR: etc/ocis
@@ -89,8 +91,9 @@ parts:
     #? Overrides
     #? Reference: https://snapcraft.io/docs/overrides
     override-build: |
-      echo "Starting OVERRIDE-BUILD in $CRAFT_PART_BUILD with work $CRAFT_PART_BUILD_WORK"
-      craftctl default
+      echo "Starting OVERRIDE-BUILD in $PWD with work $CRAFT_PART_BUILD_WORK"
+      tree .
+      # craftctl default
       mkdir -p $CRAFT_PART_INSTALL/$OCIS_CONFIG_DIR
       mkdir -p $CRAFT_PART_INSTALL/$OCIS_BASE_DATA_PATH
       chmod +x "$CRAFT_PART_INSTALL/bin/ocis"
@@ -100,13 +103,13 @@ parts:
       echo "Starting OVERRIDE-STAGE in $CRAFT_STAGE"
       craftctl default
       echo "Staging files in ==> $CRAFT_STAGE"
-      ls -al $CRAFT_STAGE
+      tree $CRAFT_STAGE
       # ocis init
 
     override-prime: |
       echo "Starting OVERRIDE-PRIME in $CRAFT_PRIME"
       craftctl default
-      ls -al $CRAFT_PRIME
+      tree $CRAFT_PRIME
     #   echo "Primed files after 'default' in ==> $CRAFT_STAGE"
     #   # cp -r $CRAFT_STAGE/etc $CRAFT_PRIME
     #   # cp -r $CRAFT_STAGE/var $CRAFT_PRIME
