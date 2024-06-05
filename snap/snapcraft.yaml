@@ -77,6 +77,8 @@ parts:
 
     stage:
       - bin/*
+      - etc/*
+      - var/*
 
     prime:
       - bin/*
@@ -95,14 +97,16 @@ parts:
     #? Overrides
     #? Reference: https://snapcraft.io/docs/overrides
     override-build: |
-      ls -al .
+      mkdir -p $CRAFT_BUILD/$OCIS_CONFIG_DIR
+      mkdir -p $CRAFT_BUILD/$OCIS_BASE_DATA_PATH
       craftctl default
-      ls -al ./bin
+      ls -al $CRAFT_PART_INSTALL
       ls -al $CRAFT_PART_INSTALL/bin
+
     override-stage: |
       craftctl default
-      mkdir -p $CRAFT_STAGE/$OCIS_CONFIG_DIR
-      mkdir -p $CRAFT_STAGE/$OCIS_BASE_DATA_PATH
+      # mkdir -p $CRAFT_STAGE/$OCIS_CONFIG_DIR
+      # mkdir -p $CRAFT_STAGE/$OCIS_BASE_DATA_PATH
       ls -al .
       chmod +x "$CRAFT_STAGE/bin/ocis"
       echo "Staging files in ==> $CRAFT_STAGE"
