@@ -99,6 +99,8 @@ parts:
 
     override-stage: |
       echo "Starting OVERRIDE-STAGE in $CRAFT_STAGE"
+      tree $CRAFT_STAGE
+      chmod +x $CRAFT_STAGE/bin/ocis
       craftctl default
       echo "Staging files in ==> $CRAFT_STAGE"
       tree $CRAFT_STAGE
