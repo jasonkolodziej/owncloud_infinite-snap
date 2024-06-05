@@ -117,16 +117,17 @@ parts:
     override-stage: |
       echo "Starting OVERRIDE-STAGE in $CRAFT_STAGE"
       ls -al $CRAFT_STAGE
-      [ -f "$CRAFT_STAGE/bin/ocis" ] && echo "$CRAFT_STAGE/bin/ocis exists." || craftctl default; ls -al $CRAFT_STAGE
-      # [ -d "$CRAFT_STAGE/$OCIS_CONFIG_DIR" ] && echo "$CRAFT_STAGE/$OCIS_CONFIG_DIR exists." || mkdir -p "$CRAFT_PART_BUILD/$OCIS_CONFIG_DIR"
-      # [ -d "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH" ] && echo "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH exists." || mkdir -p "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH"
+      [ -f "$CRAFT_STAGE/usr/bin/ocis" ] && echo "$CRAFT_STAGE/usr/bin/ocis exists." || craftctl default; ls -al $CRAFT_STAGE
+      [ -d "$CRAFT_STAGE/$OCIS_CONFIG_DIR" ] && echo "$CRAFT_STAGE/$OCIS_CONFIG_DIR exists." || mkdir -p "$CRAFT_STAGE/$OCIS_CONFIG_DIR"
+      [ -d "$CRAFT_STAGE/$OCIS_BASE_DATA_PATH" ] && echo "$CRAFT_STAGE/$OCIS_BASE_DATA_PATH exists." || mkdir -p "$CRAFT_STAGE/$OCIS_BASE_DATA_PATH"
       # [ -f "$CRAFT_PART_BUILD/bin/ocis" ] && chmod +x "$CRAFT_PART_BUILD/bin/ocis" || echo "$CRAFT_PART_BUILD/bin/ocis does not exist."
       # mkdir -p $CRAFT_STAGE/$OCIS_CONFIG_DIR
       # mkdir -p $CRAFT_STAGE/$OCIS_BASE_DATA_PATH
 
-    # override-prime: |
-    #   echo "Starting OVERRIDE-PRIME in $CRAFT_PRIME"
-    #   # craftctl default
+    override-prime: |
+      echo "Starting OVERRIDE-PRIME in $CRAFT_PRIME"
+      craftctl default
+      [ -d "$CRAFT_PRIME/$OCIS_CONFIG_DIR" ] && echo "$CRAFT_PRIME/$OCIS_CONFIG_DIR exists." || ls -al $CRAFT_PRIME; mkdir -p "$CRAFT_PRIME/$OCIS_CONFIG_DIR"
     #   ls -al $CRAFT_PRIME
     #   echo "Primed files after 'default' in ==> $CRAFT_STAGE"
     #   # cp -r $CRAFT_STAGE/etc $CRAFT_PRIME
