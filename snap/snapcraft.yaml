@@ -196,31 +196,7 @@ parts:
   #   # * # [...]
   #   # * drwxr-xr-x 2 root root 4096 May 31 00:06 bin
   #   # * ```
-  #   override-stage: |
-  #     # snapcraftctl stage
 
-  #     if [ -e "$CRAFT_PART_INSTALL/bin/ocis" ]; then
-  #       echo "File exists, copying"
-  #       cp -r $CRAFT_PART_INSTALL/bin/ $CRAFT_PART_STAGE/bin
-  #     else
-  #         echo "File does not exist in $CRAFT_PART_INSTALL"
-  #         ls -al "$CRAFT_PART_INSTALL/bin"
-  #         ls -al "$CRAFT_PART_STAGE"
-  #         echo "Checking build folder $CRAFT_PART_BUILD"
-  #       if [ -e "$CRAFT_PART_BUILD/ocis/bin/ocis" ]; then
-  #         echo "File exists in $CRAFT_PART_BUILD/ocis/bin/ocis"
-  #         cp -r $CRAFT_PART_BUILD/ocis/bin/ $CRAFT_PART_STAGE/bin
-  #       else
-  #         echo "File does not exist in $CRAFT_PART_BUILD"
-  #         ls -al "$CRAFT_PART_BUILD/ocis/bin"
-  #         ls -al "$CRAFT_PART_STAGE"
-  #       fi
-  #     fi
-
-  #   override-prime: |
-  #     snapcraftctl prime
-  #     ls -al ./bin
-  #     # ./bin/ocis init
 #? Content slots - PRODUCERS
 #? Reference: https://snapcraft.io/docs/content-interface#heading--read-only
 # By default, the AppArmor sandbox allows writes to $SNAP_DATA and reads from $SNAP (see Environment variables for details).
