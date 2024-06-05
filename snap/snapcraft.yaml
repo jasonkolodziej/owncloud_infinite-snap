@@ -90,16 +90,18 @@ parts:
 
     #? Overrides
     #? Reference: https://snapcraft.io/docs/overrides
-    override-build: |
-      echo "Starting OVERRIDE-BUILD in $PWD with work $CRAFT_PART_BUILD_WORK"
-      mkdir -p $CRAFT_PART_BUILD_WORK/$OCIS_CONFIG_DIR
-      mkdir -p $CRAFT_PART_BUILD_WORK/$OCIS_BASE_DATA_PATH
-      craftctl default
-      tree $CRAFT_PART_INSTALL
+    # override-build: |
+    #   echo "Starting OVERRIDE-BUILD in $PWD with work $CRAFT_PART_BUILD_WORK"
+    #   mkdir -p $CRAFT_PART_INSTALL/$OCIS_CONFIG_DIR
+    #   mkdir -p $CRAFT_PART_INSTALL/$OCIS_BASE_DATA_PATH
+    #   craftctl default
+    #   tree $CRAFT_PART_INSTALL
 
     override-stage: |
       echo "Starting OVERRIDE-STAGE in $CRAFT_STAGE"
       tree $CRAFT_STAGE
+      mkdir -p $OCIS_CONFIG_DIR
+      mkdir -p $OCIS_BASE_DATA_PATH
       chmod +x $CRAFT_STAGE/bin/ocis
       craftctl default
       echo "Staging files in ==> $CRAFT_STAGE"
