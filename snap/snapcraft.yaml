@@ -66,14 +66,25 @@ parts:
     organize:
       bin/: snap/hooks/
 
+  yq:
+    #? used to manage ocis configuration
+    plugin: dump
+    stage-snaps:
+      - yq
+    override-stage: |
+      craftctl default
+      echo $CRAFT_STAGE
+      ls -al .
+
   ocis:
+    after:
+      - yq
     plugin: dump
     # https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-arm64
     source: src/ocis/
     organize:
-      # bin/: usr/bin/
       bin/: bin/
-    # "ocis*": /usr/bin/ocis
+
     stage:
       - bin/*
 
@@ -85,10 +96,7 @@ parts:
     override-build: |
       craftctl default
       echo "$OCIS_CONFIG_DIR" "$OCIS_BASE_DATA_PATH"
-
-    stage-snaps:
-      #? used to manage ocis configuration
-      - yq
+      ls -al .
 
     override-stage: |
       craftctl default
