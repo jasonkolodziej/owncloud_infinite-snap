@@ -73,9 +73,10 @@ parts:
     #? In the key/value pair, the key represents the path of a file inside the part and
     #? the value represents how the file is going to be staged.
     organize:
-      bin/: bin/
+      bin/*: bin/
 
     stage:
+      - -bin/.keep
       - bin/*
 
     prime:
@@ -97,7 +98,7 @@ parts:
     override-build: |
       ls -al .
       craftctl default
-      ls -al .
+      ls -al ./bin
     override-stage: |
       craftctl default
       mkdir -p $CRAFT_STAGE/$OCIS_CONFIG_DIR
