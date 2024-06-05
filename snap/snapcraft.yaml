@@ -73,7 +73,7 @@ parts:
     #? In the key/value pair, the key represents the path of a file inside the part and
     #? the value represents how the file is going to be staged.
     organize:
-      bin/: bin/ocis
+      bin/: bin/
 
     stage:
       - bin/*
@@ -92,6 +92,12 @@ parts:
     #   # TODO: for end user to change
     # - TEMP_IDM_ADMIN_PASSWORD: changeme
 
+    #? Overrides
+    #? Reference: https://snapcraft.io/docs/overrides
+    override-build: |
+      ls -al .
+      craftctl default
+      ls -al .
     override-stage: |
       craftctl default
       mkdir -p $CRAFT_STAGE/$OCIS_CONFIG_DIR
