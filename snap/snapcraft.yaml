@@ -67,8 +67,8 @@ parts:
 
   ocis:
     plugin: dump
-    after:
-      - "yq-install"
+    # after:
+    #   - "yq-install"
     # https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-arm64
     source: src/ocis/
     #? In the key/value pair, the key represents the path of a file inside the part and
