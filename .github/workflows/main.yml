@@ -92,8 +92,8 @@ jobs:
           echo "Files at ===> main.workflow.job['build'].steps['status']"
           ls -al
           echo "Moving cached binary to their src folder"
-          # cp ./ocis ./src/ocis/bin
-          mv ./ocis ./src/ocis/bin
+          cp ./ocis ./src/ocis/bin/ocis
+          # mv ./ocis ./src/ocis/bin
 
       # - name: Grab binary
       #   id: grab
