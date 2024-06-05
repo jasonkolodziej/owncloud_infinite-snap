@@ -102,7 +102,7 @@ parts:
       craftctl default
       mkdir -p $CRAFT_STAGE/$OCIS_CONFIG_DIR
       mkdir -p $CRAFT_STAGE/$OCIS_BASE_DATA_PATH
-      # ls -al .
+      ls -al .
       chmod +x "$CRAFT_STAGE/bin/ocis"
       echo "Staging files in ==> $CRAFT_STAGE"
       ls -al .
