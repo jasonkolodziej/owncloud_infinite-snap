@@ -75,16 +75,16 @@ parts:
     #? the value represents how the file is going to be staged.
     #> renames built files in CRAFT_PART_INSTALL
     organize:
-      bin/*: bin/
+      bin/: usr/bin/
     stage:
-      - bin/*
+      - usr/bin/*
       # - bin/ocis
       # - bin/yq
-      - -bin/.gitkeep
-    prime:
-      - bin/*
-      - etc/*
-      - var/*
+      - -usr/bin/.gitkeep
+    # prime:
+    #   - bin/*
+    #   - etc/*
+    #   - var/*
     stage-snaps:
       - yq
 
@@ -98,6 +98,7 @@ parts:
     #? Reference: https://snapcraft.io/docs/overrides
     override-build: |
       echo "Starting OVERRIDE-STAGE in $CRAFT_STAGE"
+      ls -al $CRAFT_PART_BUILD
       [ -d "$CRAFT_PART_BUILD/$OCIS_CONFIG_DIR" ] && echo "$CRAFT_PART_BUILD/$OCIS_CONFIG_DIR exists." || mkdir -p "$CRAFT_PART_BUILD/$OCIS_CONFIG_DIR"
       [ -d "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH" ] && echo "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH exists." || mkdir -p "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH"
       [ -f "$CRAFT_PART_BUILD/bin/ocis" ] && chmod +x "$CRAFT_PART_BUILD/bin/ocis" || echo "$CRAFT_PART_BUILD/bin/ocis does not exist."
@@ -117,7 +118,7 @@ parts:
       echo "Starting OVERRIDE-STAGE in $CRAFT_STAGE"
       ls -al $CRAFT_STAGE
       [ -f "$CRAFT_STAGE/bin/ocis" ] && echo "$CRAFT_STAGE/bin/ocis exists." || craftctl default; ls -al $CRAFT_STAGE
-      # [ -d "$CRAFT_STAGE/$OCIS_CONFIG_DIR" ] && echo "$CRAFT_PART_BUILD/$OCIS_CONFIG_DIR exists." || mkdir -p "$CRAFT_PART_BUILD/$OCIS_CONFIG_DIR"
+      # [ -d "$CRAFT_STAGE/$OCIS_CONFIG_DIR" ] && echo "$CRAFT_STAGE/$OCIS_CONFIG_DIR exists." || mkdir -p "$CRAFT_PART_BUILD/$OCIS_CONFIG_DIR"
       # [ -d "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH" ] && echo "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH exists." || mkdir -p "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH"
       # [ -f "$CRAFT_PART_BUILD/bin/ocis" ] && chmod +x "$CRAFT_PART_BUILD/bin/ocis" || echo "$CRAFT_PART_BUILD/bin/ocis does not exist."
       # mkdir -p $CRAFT_STAGE/$OCIS_CONFIG_DIR
@@ -289,7 +290,7 @@ apps:
       #? $SNAP_DATA ==> /var/snap/$SNAP_NAME/$SNAP_REVISION
       #? $SNAP_USER_DATA ==> $HOME/snap/$SNAP_NAME/$SNAP_REVISION
       # OCIS_CONFIG_DIR: $SNAP_DATA/etc/ocis
-      OCIS_CONFIG_DIR: $SNAP_USER_DATA/ocis
+      OCIS_CONFIG_DIR: $SNAP_USER_DATA/etc/ocis
 
       #* Path to system relevant data.
       #* Because Infinite Scale does not use a database for storing information like users, groups, spaces, internal data, etc.,
