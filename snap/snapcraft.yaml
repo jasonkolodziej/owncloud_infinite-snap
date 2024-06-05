@@ -77,8 +77,7 @@ parts:
       bin/: bin/
     stage:
       - bin/*
-    build-snaps:
-      - tree
+
     stage-snaps:
       - yq
 
@@ -99,19 +98,20 @@ parts:
 
     override-stage: |
       echo "Starting OVERRIDE-STAGE in $CRAFT_STAGE"
-      tree $CRAFT_STAGE
+      ls -al $CRAFT_STAGE
       mkdir -p $OCIS_CONFIG_DIR
       mkdir -p $OCIS_BASE_DATA_PATH
       chmod +x $CRAFT_STAGE/bin/ocis
+      ls -al $CRAFT_STAGE/bin
       craftctl default
       echo "Staging files in ==> $CRAFT_STAGE"
-      tree $CRAFT_STAGE
+      ls -al $CRAFT_STAGE
       # ocis init
 
     override-prime: |
       echo "Starting OVERRIDE-PRIME in $CRAFT_PRIME"
       craftctl default
-      tree $CRAFT_PRIME
+      ls -al $CRAFT_PRIME
     #   echo "Primed files after 'default' in ==> $CRAFT_STAGE"
     #   # cp -r $CRAFT_STAGE/etc $CRAFT_PRIME
     #   # cp -r $CRAFT_STAGE/var $CRAFT_PRIME
