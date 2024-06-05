@@ -97,8 +97,10 @@ parts:
     #? Overrides
     #? Reference: https://snapcraft.io/docs/overrides
     override-build: |
-      mkdir -p $CRAFT_BUILD/$OCIS_CONFIG_DIR
-      mkdir -p $CRAFT_BUILD/$OCIS_BASE_DATA_PATH
+      echo $CRAFT_PART_BUILD_WORK
+      ls -al $CRAFT_PART_BUILD_WORK
+      mkdir -p $CRAFT_PART_INSTALL/$OCIS_CONFIG_DIR
+      mkdir -p $CRAFT_PART_INSTALL/$OCIS_BASE_DATA_PATH
       craftctl default
       ls -al $CRAFT_PART_INSTALL
       ls -al $CRAFT_PART_INSTALL/bin
