@@ -127,7 +127,7 @@ parts:
     override-prime: |
       echo "Starting OVERRIDE-PRIME in $CRAFT_PRIME"
       craftctl default
-      [ -f "$CRAFT_PRIME/bin/ocis" ] && echo "$CRAFT_PRIME/bin/ocis exists." || cp -r "$CRAFT_PRIME/usr/" "$CRAFT_PRIME"; ls -al "$CRAFT_PRIME"
+      [ -f "$CRAFT_PRIME/bin/ocis" ] && echo "$CRAFT_PRIME/bin/ocis exists." || cp -r "$CRAFT_PRIME/usr/bin" "$CRAFT_PRIME"; ls -al "$CRAFT_PRIME"
     #   ls -al $CRAFT_PRIME
     #   echo "Primed files after 'default' in ==> $CRAFT_STAGE"
     #   # cp -r $CRAFT_STAGE/etc $CRAFT_PRIME
