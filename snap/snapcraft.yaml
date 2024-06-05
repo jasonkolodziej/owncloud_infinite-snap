@@ -88,29 +88,26 @@ parts:
 
     #? Overrides
     #? Reference: https://snapcraft.io/docs/overrides
-    override-build: |
-      echo "Starting OVERRIDE-BUILD in $CRAFT_PART_BUILD with work $CRAFT_PART_BUILD_WORK"
-      mkdir -p $CRAFT_PART_BUILD_WORK/$OCIS_CONFIG_DIR
-      mkdir -p $CRAFT_PART_BUILD_WORK/$OCIS_BASE_DATA_PATH
-      craftctl default
+    # override-build: |
+    #   echo "Starting OVERRIDE-BUILD in $CRAFT_PART_BUILD with work $CRAFT_PART_BUILD_WORK"
+    #   craftctl default
 
     override-stage: |
       echo "Starting OVERRIDE-STAGE in $CRAFT_STAGE"
-      craftctl default
-      # mkdir -p $CRAFT_STAGE/$OCIS_CONFIG_DIR
-      # mkdir -p $CRAFT_STAGE/$OCIS_BASE_DATA_PATH
-      ls -al .
+      mkdir -p $CRAFT_STAGE/$OCIS_CONFIG_DIR
+      mkdir -p $CRAFT_STAGE/$OCIS_BASE_DATA_PATH
       chmod +x "$CRAFT_STAGE/bin/ocis"
       echo "Staging files in ==> $CRAFT_STAGE"
       ls -al .
+      craftctl default
       # ocis init
 
-    override-prime: |
-      echo "Starting OVERRIDE-PRIME in $CRAFT_PRIME"
-      craftctl default
-      echo "Primed files after 'default' in ==> $CRAFT_STAGE"
-      # cp -r $CRAFT_STAGE/etc $CRAFT_PRIME
-      # cp -r $CRAFT_STAGE/var $CRAFT_PRIME
+    # override-prime: |
+    #   echo "Starting OVERRIDE-PRIME in $CRAFT_PRIME"
+    #   craftctl default
+    #   echo "Primed files after 'default' in ==> $CRAFT_STAGE"
+    #   # cp -r $CRAFT_STAGE/etc $CRAFT_PRIME
+    #   # cp -r $CRAFT_STAGE/var $CRAFT_PRIME
 
     stage-snaps:
       - yq
