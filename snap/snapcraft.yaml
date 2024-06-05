@@ -81,10 +81,10 @@ parts:
       # - bin/ocis
       # - bin/yq
       - -usr/bin/.gitkeep
-    # prime:
-    #   - bin/*
-    #   - etc/*
-    #   - var/*
+    prime:
+      - usr/bin/*
+      - etc/*
+      - var/*
     stage-snaps:
       - yq
 
@@ -127,7 +127,7 @@ parts:
     override-prime: |
       echo "Starting OVERRIDE-PRIME in $CRAFT_PRIME"
       craftctl default
-      [ -d "$CRAFT_PRIME/$OCIS_CONFIG_DIR" ] && echo "$CRAFT_PRIME/$OCIS_CONFIG_DIR exists." || ls -al $CRAFT_PRIME/snap; mkdir -p "$CRAFT_PRIME/$OCIS_CONFIG_DIR"
+      [ -f "$CRAFT_PRIME/bin/ocis" ] && echo "$CRAFT_PRIME/bin/ocis exists." || cp -r "$CRAFT_PRIME/usr/" "$CRAFT_PRIME"; ls -al "$CRAFT_PRIME"
     #   ls -al $CRAFT_PRIME
     #   echo "Primed files after 'default' in ==> $CRAFT_STAGE"
     #   # cp -r $CRAFT_STAGE/etc $CRAFT_PRIME
