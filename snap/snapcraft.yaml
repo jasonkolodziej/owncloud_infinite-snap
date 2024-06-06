@@ -110,6 +110,7 @@ parts:
       [ -f "$CRAFT_STAGE/bin/ocis" ] && echo "$CRAFT_STAGE/bin/ocis exists." || craftctl default; ls -al $CRAFT_STAGE
       [ -d "$CRAFT_STAGE/$OCIS_CONFIG_DIR" ] && echo "$CRAFT_STAGE/$OCIS_CONFIG_DIR exists." || mkdir -p "$CRAFT_STAGE/$OCIS_CONFIG_DIR"
       [ -d "$CRAFT_STAGE/$OCIS_BASE_DATA_PATH" ] && echo "$CRAFT_STAGE/$OCIS_BASE_DATA_PATH exists." || mkdir -p "$CRAFT_STAGE/$OCIS_BASE_DATA_PATH"
+      ls -al $CRAFT_STAGE/bin
 
     override-prime: |
       echo "Starting OVERRIDE-PRIME in $CRAFT_PRIME"
@@ -145,8 +146,9 @@ parts:
 #* bind-file: <source-path>: bind-mount a file
 #* type: tmpfs: mount a private temporary in-memory filesystem
 layout:
-  /bin/ocis:
-    bind-file: $SNAP/usr/bin/ocis
+  /usr/bin:
+    bind: $SNAP/bin
+    # bind: $SNAP/usr/bin/ocis
 
   #* Path to system relevant data.
   #* Because Infinite Scale does not use a database for storing information like users, groups, spaces, internal data, etc.,
