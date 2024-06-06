@@ -89,7 +89,7 @@ parts:
       [ -f "$CRAFT_PART_BUILD/bin" ] && chmod +x "$CRAFT_PART_BUILD/bin/ocis"; echo "Binary Found $CRAFT_PART_BUILD/bin/ocis" || ls -al "$CRAFT_PART_BUILD"
       craftctl default
       ls -al $CRAFT_PART_INSTALL/bin
-      [ -d "$CRAFT_PART_INSTALL/usr/bin" ] && ls -al "$CRAFT_PART_INSTALL/usr/bin" || echo "No usr/bin directory in $CRAFT_PART_INSTALL"
+      [ -d "$CRAFT_PART_INSTALL/usr/bin" ] && ls -al "$CRAFT_PART_INSTALL/usr/bin" || echo "No usr/bin directory in $CRAFT_PART_INSTALL"; exit 0
 
     override-prime: |
       echo "Starting OVERRIDE-PRIME in $PWD"
