@@ -43,21 +43,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Check action context
-        if: ${{ env.RELEASE_VERSION == '' && env.MANUAL_EVENT != 'repository_dispatch' }}
-        id: check-action-context
-        run: |
-          echo "MANUAL_EVENT='true'" >> $GITHUB_ENV
-          echo "IS_NEW='false'" >> $GITHUB_ENV
-          echo "${{github.repository}}"
-          echo "RELEASE_VERSION=$(gh api \
-          -H "Accept: application/vnd.github+json" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          /repos/${{github.repository}}/releases/latest)\n" >> $GITHUB_ENV
-          echo "RELEASE_VERSION=$(echo ${{ fromJson(env.RELEASE_VERSION) }} | tr -d 'v')" >> $GITHUB_ENV
-          echo "manual_dispatch:${{ env.MANUAL_EVENT }} event:${{ env.EVENT_TYPE }} is_new:${{ env.IS_NEW }} version:${{ env.RELEASE_VERSION }}"
-          echo "Files at ===> main.workflow.job['build'].steps['Check action context']"
-          ls -al
+      # - name: Check action context
+      #   if: ${{ env.RELEASE_VERSION == '' && env.MANUAL_EVENT != 'repository_dispatch' }}
+      #   id: check-action-context
+      #   run: |
+      #     echo "MANUAL_EVENT='true'" >> $GITHUB_ENV
+      #     echo "IS_NEW='false'" >> $GITHUB_ENV
+      #     echo "${{github.repository}}"
+      #     echo "RELEASE_VERSION=$(gh api \
+      #     -H "Accept: application/vnd.github+json" \
+      #     -H "X-GitHub-Api-Version: 2022-11-28" \
+      #     /repos/${{github.repository}}/releases/latest)\n" >> $GITHUB_ENV
+      #     echo "RELEASE_VERSION=$(echo ${{ fromJson(env.RELEASE_VERSION) }} | tr -d 'v')" >> $GITHUB_ENV
+      #     echo "manual_dispatch:${{ env.MANUAL_EVENT }} event:${{ env.EVENT_TYPE }} is_new:${{ env.IS_NEW }} version:${{ env.RELEASE_VERSION }}"
+      #     echo "Files at ===> main.workflow.job['build'].steps['Check action context']"
+      #     ls -al
 
       - uses: actions/cache@v4
         #* Try and restore a cached version if possibe
