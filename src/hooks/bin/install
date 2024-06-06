@@ -18,6 +18,9 @@
 # OCIS_INSECURE=false \
 #     IDM_ADMIN_PASSWORD=changeme \
 #     ocis init
+env
+OCIS_BASE_DATA_PATH=${OCIS_BASE_DATA_PATH:-"$SNAP_USER_COMMON/lib/ocis"}
+OCIS_CONFIG_DIR=${OCIS_CONFIG_DIR:-"$SNAP_USER_DATA/etc/ocis"}
 
 DEFAULT_OCIS_CONFIG_FILE_LOCATION="$OCIS_CONFIG_DIR/ocis.yaml"
 
@@ -36,10 +39,12 @@ TEMP_OCIS_INSECURE='true'
 TEMP_IDM_ADMIN_PW='changeme'
 
 #? if the default exec config hasn't been created
-[ -e "$DEFAULT_OCIS_CONFIG_FILE_LOCATION" ] || touch $DEFAULT_OCIS_CONFIG_FILE_LOCATION
+# [ -e "$DEFAULT_OCIS_CONFIG_FILE_LOCATION" ] || touch $DEFAULT_OCIS_CONFIG_FILE_LOCATION
 
+echo "$(which ocis)"
+echo "current_usr: $(whoami) config_dir: ${OCIS_CONFIG_DIR}"
 snapctl set-health okay
 
-exec "$SNAP/bin/ocis init" --config-path="${DEFAULT_OCIS_CONFIG_FILE_LOCATION}" --ap="${TEMP_IDM_ADMIN_PW}" --insecure="${TEMP_OCIS_INSECURE}"
+exec "$SNAP/bin/ocis" init --config-path="${OCIS_CONFIG_DIR}" --ap="${TEMP_IDM_ADMIN_PW}" --insecure="${TEMP_OCIS_INSECURE}"
 
 # snapctl restart ocis
