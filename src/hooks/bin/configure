@@ -1,7 +1,27 @@
 #!/bin/bash -e
 #? Reference: https://snapcraft.io/docs/adding-snap-configuration#heading--interpreting
+#? Reference: https://github.com/ubuntu-robotics/snap_configuration/blob/howto/content_sharing_configuration_snap/application_snap/snap/local/teleop_launcher.bash
+
+if ! snapctl is-connected configuration; then
+    echo >&2 "Plug 'configuration' isn't connected, \
+  please run: snap connect ${SNAP_NAME}:configuration PROVIDER_SNAP:configuration"
+    exit 1
+fi
+
+if [ -z "$OCIS_CONFIG_DIR" ]; then
+    snapctl set-health blocked "usr: $(whoami) variable 'OCIS_CONFIG_DIR' not set"
+    echo >&2 "Environment variable 'OCIS_CONFIG_DIR' isn't set"
+    exit 1
+fi
 
 DEFAULT_OCIS_CONFIG_FILE_LOCATION="$OCIS_CONFIG_DIR/ocis.yaml"
+
+# #? if the default config hasn't been created
+if ![ -f "$DEFAULT_OCIS_CONFIG_FILE_LOCATION" ]; then
+    snapctl set-health blocked "usr: $(whoami) conf: ocis.yaml not a file, has ocis init been run?"
+    echo >&2 "usr: $(whoami) conf: ocis.yaml not a file, has 'ocis init' ran?"
+    exit 3
+fi
 
 # export NEXTCLOUD_CONFIG_DIR="$SNAP_DATA/nextcloud/config"
 # export NEXTCLOUD_DATA_DIR="$SNAP_COMMON/nextcloud/data"
@@ -212,12 +232,6 @@ check_first_time() {
     fi
 }
 
-# #? if the default config hasn't been created
-
-if ![ -f "$DEFAULT_OCIS_CONFIG_FILE_LOCATION" ]; then
-    snapctl set-health blocked "usr: $(whoami) conf: ${DEFAULT_OCIS_CONFIG_FILE_LOCATION} was not able to detect file"
-fi
-
 if [ "$(check_first_time)" == 'true' ]; then
     terms="$(_private_key_terms)"
     set_config_shell "${terms[@]}"
@@ -228,7 +242,5 @@ if [ "$(check_first_time)" == 'true' ]; then
     snapctl restart ocis
     snapctl set-health okay
 fi
-
-# DEFAULT_OCIS_CONFIG_FILE_LOCATION="../../ocis/config/ocis.example.yaml"
 
 exec "$@"
