@@ -74,8 +74,6 @@ parts:
     organize:
       bin/*: bin/
       bin/ocis: usr/bin/
-    # prime:
-    #   - usr/bin/*
 
     stage-snaps:
       - yq
@@ -86,18 +84,18 @@ parts:
 
     #? Overrides
     #? Reference: https://snapcraft.io/docs/overrides
-    override-build: |
-      echo "Starting OVERRIDE-STAGE in $PWD"
-      [ -d "$CRAFT_PART_BUILD/bin" ] && echo "$CRAFT_PART_BUILD/bin exists." || ls -al "$CRAFT_PART_BUILD"
-      craftctl default
+    # override-build: |
+    #   echo "Starting OVERRIDE-STAGE in $PWD"
+    #   [ -d "$CRAFT_PART_BUILD/bin" ] && echo "$CRAFT_PART_BUILD/bin exists." || ls -al "$CRAFT_PART_BUILD"
+    #   craftctl default
 
-    override-stage: |
-      echo "Starting OVERRIDE-STAGE in $PWD"
-      craftctl default
-      [[ -d "$CRAFT_STAGE/bin" ] && [ -f "$CRAFT_STAGE/bin/ocis" ]] && chmod +x "$CRAFT_STAGE/bin/ocis"; echo "Binary Found "$CRAFT_STAGE/bin/ocis" || echo "No binary in "$CRAFT_STAGE/bin" 
-      [[ -d "$CRAFT_STAGE/usr/bin" ] && [ -f "$CRAFT_STAGE/usr/bin/ocis" ]] && chmod +x "$CRAFT_STAGE/usr/bin/ocis"; echo "Binary Found "$CRAFT_STAGE/usr/bin/ocis" || echo "No binary in "$CRAFT_STAGE/usr/bin"
-      [ -d "$CRAFT_STAGE/usr/bin" ] && ls -al "$CRAFT_STAGE/usr/bin" || echo "No bin directory in $CRAFT_STAGE"; ls -al "$CRAFT_STAGE"
-      [ -d "$CRAFT_STAGE/bin" ] && ls -al "$CRAFT_STAGE/bin" || echo "No bin directory in $CRAFT_STAGE"; ls -al "$CRAFT_STAGE"
+    override-prime: |
+      echo "Starting OVERRIDE-PRIME in $PWD"
+      snapcraftctl prime
+      [ -f "$CRAFT_PRIME/bin/ocis" ] && chmod +x "$CRAFT_PRIME/bin/ocis"; echo "Binary Found "$CRAFT_PRIME/bin/ocis"; || echo "No binary in "$CRAFT_PRIME/bin";
+      [ -f "$CRAFT_PRIME/usr/bin/ocis" ] && chmod +x "$CRAFT_PRIME/usr/bin/ocis"; echo "Binary Found "$CRAFT_PRIME/usr/bin/ocis"; || echo "No binary in "$CRAFT_PRIME/usr/bin";
+      [ -d "$CRAFT_PRIME/usr/bin" ] && ls -al "$CRAFT_PRIME/usr/bin" || echo "No bin directory in $CRAFT_PRIME"; ls -al "$CRAFT_PRIME";
+      [ -d "$CRAFT_PRIME/bin" ] && ls -al "$CRAFT_PRIME/bin" || echo "No bin directory in $CRAFT_PRIME"; ls -al "$CRAFT_PRIME";
 # System user for filters and backends to drop privileges, "lp" is not
 # available in a Snap
 #? See: https://forum.snapcraft.io/t/system-usernames/
