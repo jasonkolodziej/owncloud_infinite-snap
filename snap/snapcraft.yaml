@@ -66,13 +66,13 @@ parts:
     #? the value represents how the file is going to be staged.
     #> renames built files in CRAFT_PART_INSTALL
     organize:
-      bin/*: usr/bin/
-      bin/yq: bin/yq
+      bin/: bin/
 
     stage:
       - bin/*
-      - usr/bin/*
-      - -usr/bin/.gitkeep
+      - -bin/.gitkeep
+      # - usr/bin/*
+      # - -usr/bin/.gitkeep
 
     # prime:
     #   - usr/bin/*
@@ -128,8 +128,8 @@ parts:
 #* bind-file: <source-path>: bind-mount a file
 #* type: tmpfs: mount a private temporary in-memory filesystem
 layout:
-  /bin:
-    bind: $SNAP/usr/bin
+  /usr/bin:
+    symlink: $SNAP/bin
     # bind: $SNAP/usr/bin/ocis
 
   #* Path to system relevant data.
