@@ -66,7 +66,7 @@ parts:
     #? the value represents how the file is going to be staged.
     #> renames built files in CRAFT_PART_INSTALL
     organize:
-      bin/: bin/
+      bin/*: bin/
 
     stage:
       - bin/*
