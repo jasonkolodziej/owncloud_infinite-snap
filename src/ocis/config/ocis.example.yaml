@@ -1,119 +1,119 @@
-#? this is an example of `/etc/ocis/ocis.yaml`
+#? sudo cat /root/snap/owncloud-infinite/current/etc/ocis/ocis.yaml
 token_manager:
-  jwt_secret: jwy$KmL*dmf385dMc!TalanKy$WKehn=
-machine_auth_api_key: 06fq6%e!^37F!-=$JBYUzuBF+r$2jHA^
-system_user_api_key: P$k+51@tzjDmZ.pmB0eamAHr58mwOb%V
-transfer_secret: TyoZ4I%XddPb7T0SS4g-7b*a9MJ7XR0y
-system_user_id: ffad4357-80b2-4054-bb84-41715d042aa5
-admin_user_id: 1fe8842b-bc2a-423e-8d27-5cda3c19f367
+  jwt_secret: hH+#KDX!H*cG-vg8N&T@KS1m$A4!y7mi
+machine_auth_api_key: rdZDzOpdYprFb**^$P=hWj.m!FQLzasi
+system_user_api_key: 2.TGN5JmwW@d$Hno5!eXuS3sxs#vacGm
+transfer_secret: nQmL8j18kwgf!qHS4X+h2fijDsdAiFEn
+system_user_id: edbd50f5-47c9-44c7-9361-34f41310bcb2
+admin_user_id: 11a87c77-0da4-4020-8bd1-be7c0683dc20
 graph:
   application:
-    id: 75797d3f-b737-41d4-b1f2-1a1078b0340b
+    id: c68189fc-3929-4844-af56-36b143b5d605
   events:
-    tls_insecure: false
+    tls_insecure: true
   spaces:
-    insecure: false
+    insecure: true
   identity:
     ldap:
-      bind_password: BxETr-oBO@G2wQaG@.MS@Ou=lg*8AZp&
+      bind_password: -$SgMO=B#qtLmat3ra72Sk1^.eze5yTK
   service_account:
-    service_account_id: 85f32081-a266-425b-bb43-140eb33d5eea
-    service_account_secret: 0Q$W%J%V%RzN@AyYr!4Uy49o8D&ZT^^G
+    service_account_id: 23953689-2968-484e-93e0-2e5327f163f2
+    service_account_secret: GM!b0aH$3J7sV%24=uU86Nb2UDduZhd0
 idp:
   ldap:
-    bind_password: Vb8c9gFWQpXaaMu9rWrCTw$7zLa%*zy8
+    bind_password: RaZNpY.yNs*-1A-$ESkQph==z8fNjMV&
 idm:
   service_user_passwords:
     admin_password: changeme
-    idm_password: BxETr-oBO@G2wQaG@.MS@Ou=lg*8AZp&
-    reva_password: DFx.JC@AfxFWc=@a!kLwCtdPDi.GEm6G
-    idp_password: Vb8c9gFWQpXaaMu9rWrCTw$7zLa%*zy8
+    idm_password: -$SgMO=B#qtLmat3ra72Sk1^.eze5yTK
+    reva_password: uK2ZRLgf^Xyrx1MPXcFy7d9qSYcrJCsk
+    idp_password: RaZNpY.yNs*-1A-$ESkQph==z8fNjMV&
 proxy:
   oidc:
-    insecure: false
-  insecure_backends: false
+    insecure: true
+  insecure_backends: true
   service_account:
-    service_account_id: 85f32081-a266-425b-bb43-140eb33d5eea
-    service_account_secret: 0Q$W%J%V%RzN@AyYr!4Uy49o8D&ZT^^G
+    service_account_id: 23953689-2968-484e-93e0-2e5327f163f2
+    service_account_secret: GM!b0aH$3J7sV%24=uU86Nb2UDduZhd0
 frontend:
   app_handler:
-    insecure: false
+    insecure: true
   archiver:
-    insecure: false
+    insecure: true
   service_account:
-    service_account_id: 85f32081-a266-425b-bb43-140eb33d5eea
-    service_account_secret: 0Q$W%J%V%RzN@AyYr!4Uy49o8D&ZT^^G
+    service_account_id: 23953689-2968-484e-93e0-2e5327f163f2
+    service_account_secret: GM!b0aH$3J7sV%24=uU86Nb2UDduZhd0
 auth_basic:
   auth_providers:
     ldap:
-      bind_password: DFx.JC@AfxFWc=@a!kLwCtdPDi.GEm6G
+      bind_password: uK2ZRLgf^Xyrx1MPXcFy7d9qSYcrJCsk
 auth_bearer:
   auth_providers:
     oidc:
-      insecure: false
+      insecure: true
 users:
   drivers:
     ldap:
-      bind_password: DFx.JC@AfxFWc=@a!kLwCtdPDi.GEm6G
+      bind_password: uK2ZRLgf^Xyrx1MPXcFy7d9qSYcrJCsk
 groups:
   drivers:
     ldap:
-      bind_password: DFx.JC@AfxFWc=@a!kLwCtdPDi.GEm6G
+      bind_password: uK2ZRLgf^Xyrx1MPXcFy7d9qSYcrJCsk
 ocdav:
-  insecure: false
+  insecure: true
 ocm:
   service_account:
-    service_account_id: 85f32081-a266-425b-bb43-140eb33d5eea
-    service_account_secret: 0Q$W%J%V%RzN@AyYr!4Uy49o8D&ZT^^G
+    service_account_id: 23953689-2968-484e-93e0-2e5327f163f2
+    service_account_secret: GM!b0aH$3J7sV%24=uU86Nb2UDduZhd0
 thumbnails:
   thumbnail:
-    transfer_secret: pFs#mc&9fbL4&Z4^-UMH%c9L+ZLbzn.N
-    webdav_allow_insecure: false
-    cs3_allow_insecure: false
+    transfer_secret: -ZG*UL%kU8nkodx^qTkS+i0@GA&Ua3AD
+    webdav_allow_insecure: true
+    cs3_allow_insecure: true
 search:
   events:
-    tls_insecure: false
+    tls_insecure: true
   service_account:
-    service_account_id: 85f32081-a266-425b-bb43-140eb33d5eea
-    service_account_secret: 0Q$W%J%V%RzN@AyYr!4Uy49o8D&ZT^^G
+    service_account_id: 23953689-2968-484e-93e0-2e5327f163f2
+    service_account_secret: GM!b0aH$3J7sV%24=uU86Nb2UDduZhd0
 audit:
   events:
-    tls_insecure: false
+    tls_insecure: true
 settings:
   service_account_ids:
-    - 85f32081-a266-425b-bb43-140eb33d5eea
+    - 23953689-2968-484e-93e0-2e5327f163f2
 sharing:
   events:
-    tls_insecure: false
+    tls_insecure: true
 storage_users:
   events:
-    tls_insecure: false
-  mount_id: 735e0289-57de-4d97-9a72-f7e104dd7a3f
+    tls_insecure: true
+  mount_id: 4d465115-dde4-4648-a964-a1dfc41b9bf7
   service_account:
-    service_account_id: 85f32081-a266-425b-bb43-140eb33d5eea
-    service_account_secret: 0Q$W%J%V%RzN@AyYr!4Uy49o8D&ZT^^G
+    service_account_id: 23953689-2968-484e-93e0-2e5327f163f2
+    service_account_secret: GM!b0aH$3J7sV%24=uU86Nb2UDduZhd0
 notifications:
   notifications:
     events:
-      tls_insecure: false
+      tls_insecure: true
   service_account:
-    service_account_id: 85f32081-a266-425b-bb43-140eb33d5eea
-    service_account_secret: 0Q$W%J%V%RzN@AyYr!4Uy49o8D&ZT^^G
+    service_account_id: 23953689-2968-484e-93e0-2e5327f163f2
+    service_account_secret: GM!b0aH$3J7sV%24=uU86Nb2UDduZhd0
 nats:
   nats:
-    tls_skip_verify_client_cert: false
+    tls_skip_verify_client_cert: true
 gateway:
   storage_registry:
-    storage_users_mount_id: 735e0289-57de-4d97-9a72-f7e104dd7a3f
+    storage_users_mount_id: 4d465115-dde4-4648-a964-a1dfc41b9bf7
 userlog:
   service_account:
-    service_account_id: 85f32081-a266-425b-bb43-140eb33d5eea
-    service_account_secret: 0Q$W%J%V%RzN@AyYr!4Uy49o8D&ZT^^G
+    service_account_id: 23953689-2968-484e-93e0-2e5327f163f2
+    service_account_secret: GM!b0aH$3J7sV%24=uU86Nb2UDduZhd0
 auth_service:
   service_account:
-    service_account_id: 85f32081-a266-425b-bb43-140eb33d5eea
-    service_account_secret: 0Q$W%J%V%RzN@AyYr!4Uy49o8D&ZT^^G
+    service_account_id: 23953689-2968-484e-93e0-2e5327f163f2
+    service_account_secret: GM!b0aH$3J7sV%24=uU86Nb2UDduZhd0
 clientlog:
   service_account:
-    service_account_id: 85f32081-a266-425b-bb43-140eb33d5eea
-    service_account_secret: 0Q$W%J%V%RzN@AyYr!4Uy49o8D&ZT^^G
+    service_account_id: 23953689-2968-484e-93e0-2e5327f163f2
+    service_account_secret: GM!b0aH$3J7sV%24=uU86Nb2UDduZhd0
