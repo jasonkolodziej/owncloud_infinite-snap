@@ -176,5 +176,4 @@ jobs:
           prerelease: true
           token: ${{ secrets.GITHUB_TOKEN }}
           files: |
-            snap-${{ env.RELEASE_VERSION }}-*
-            ${{ steps.results.outputs.download-path }}-*
+            ${{ steps.results.outputs.download-path }}/*.snap
