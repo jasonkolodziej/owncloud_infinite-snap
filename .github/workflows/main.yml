@@ -96,6 +96,7 @@ jobs:
       - uses: docker/setup-qemu-action@v1
       #? https://github.com/marketplace/actions/snapcraft-multiarch-build#action-inputs
       - uses: diddlesnaps/snapcraft-multiarch-action@v1
+        continue-on-error: true
         id: snapcraftCleaner
         with:
           store-auth: ${{ secrets.SNAPCRAFT_TOKEN }}
