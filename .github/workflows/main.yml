@@ -93,15 +93,6 @@ jobs:
             chmod +x ./src/ocis/bin/ocis
           fi
 
-      - uses: docker/setup-qemu-action@v1
-      #? https://github.com/marketplace/actions/snapcraft-multiarch-build#action-inputs
-      - uses: diddlesnaps/snapcraft-multiarch-action@v1
-        continue-on-error: true
-        id: snapcraftCleaner
-        with:
-          store-auth: ${{ secrets.SNAPCRAFT_TOKEN }}
-          architecture: ${{ matrix.platform }}
-          snapcraft-args: clean --verbosity=verbose
       - uses: diddlesnaps/snapcraft-multiarch-action@v1
         # if: ${{ steps.restore-cached.outputs.cache-hit == 'true' }}
         id: snapcraft
@@ -110,13 +101,13 @@ jobs:
           architecture: ${{ matrix.platform }}
           #? Full execution log: '/root/.local/state/snapcraft/log/snapcraft-20240606-082202.271748.log'
           # snapcraft-args: #? --verbosity={quiet,brief,verbose}
-      #? Runs a set of commands using the runners shell
-      # - name: Run a multi-line script
-      #   run: |
-      #     ls -al
-      #     echo Add other actions to build,
-      #     echo test, and deploy your project.
-      #     snapcraft
+
+      - uses: actions/upload-artifact@v4
+        id: uploadSnapArtifact
+        with:
+          name: snap-${{ env.RELEASE_VERSION }}-${{ matrix.platform }}
+          path: ${{ steps.snapcraft.outputs.snap }}
+
   #? Sets the release of this repository
   release:
     env:
