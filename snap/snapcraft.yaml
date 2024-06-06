@@ -70,6 +70,7 @@ parts:
     stage:
       # - etc/*
       # - var/*
+      - bin/*
       - usr/bin/*
     prime:
       - usr/bin/*
