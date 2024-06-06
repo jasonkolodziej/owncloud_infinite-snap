@@ -62,18 +62,17 @@ parts:
     #   - "yq-install"
     # https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-arm64
     source: src/ocis/
+
+    stage:
+      - bin/*
+      - -bin/.gitkeep
+      # - usr/bin/*
+      # - -usr/bin/.gitkeep
     #? In the key/value pair, the key represents the path of a file inside the part and
     #? the value represents how the file is going to be staged.
     #> renames built files in CRAFT_PART_INSTALL
     organize:
-      bin/ocis: bin/ocis
-
-    stage:
-      - bin/*
-      # - -bin/.gitkeep
-      # - usr/bin/*
-      # - -usr/bin/.gitkeep
-
+      bin/: usr/bin/
     # prime:
     #   - usr/bin/*
 
@@ -86,21 +85,11 @@ parts:
 
     #? Overrides
     #? Reference: https://snapcraft.io/docs/overrides
-    override-build: |
-      echo "Starting OVERRIDE-BUILD in $PWD"
-      ls -al $CRAFT_PART_BUILD
-      # [ -d "$CRAFT_PART_BUILD/$OCIS_CONFIG_DIR" ] && echo "$CRAFT_PART_BUILD/$OCIS_CONFIG_DIR exists." || mkdir -p "$CRAFT_PART_BUILD/$OCIS_CONFIG_DIR"
-      # [ -d "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH" ] && echo "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH exists." || mkdir -p "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH"
-      [ -f "$CRAFT_PART_BUILD/bin/ocis" ] && chmod +x "$CRAFT_PART_BUILD/bin/ocis" || echo "$CRAFT_PART_BUILD/bin/ocis does not exist."
-      craftctl default
-      [ -f "$CRAFT_PART_INSTALL/bin/ocis" ] && echo "$CRAFT_PART_INSTALL/bin/ocis exists." || echo "$CRAFT_PART_BUILD/bin/ocis does not exist."
-      ls -al "$CRAFT_PART_INSTALL/bin"
-
     override-stage: |
       echo "Starting OVERRIDE-STAGE in $PWD"
       craftctl default
-      [ -f "$CRAFT_STAGE/bin/ocis" ] && echo "$CRAFT_STAGE/bin/ocis exists." || echo "$CRAFT_STAGE/bin/ocis does not exist."; ls -al
-      ls -al "$CRAFT_STAGE/bin"
+      [ -f "$CRAFT_STAGE/bin/ocis" ] && chmod +x "$CRAFT_STAGE/bin/ocis" || [ -f "$CRAFT_STAGE/usr/bin/ocis" ] && chmod +x "$CRAFT_STAGE/bin/ocis" || echo "No ocis binary found"
+      [ -d "$CRAFT_STAGE/bin" ] && ls -al "$CRAFT_STAGE/bin" || [ -d "$CRAFT_STAGE/usr/bin" ] && ls -al "$CRAFT_STAGE/usr/bin" || echo "No bin directory found"
 # System user for filters and backends to drop privileges, "lp" is not
 # available in a Snap
 #? See: https://forum.snapcraft.io/t/system-usernames/
