@@ -96,6 +96,12 @@ jobs:
       - uses: docker/setup-qemu-action@v1
       #? https://github.com/marketplace/actions/snapcraft-multiarch-build#action-inputs
       - uses: diddlesnaps/snapcraft-multiarch-action@v1
+        id: snapcraftCleaner
+        with:
+          store-auth: ${{ secrets.SNAPCRAFT_TOKEN }}
+          architecture: ${{ matrix.platform }}
+          snapcraft-args: clean
+      - uses: diddlesnaps/snapcraft-multiarch-action@v1
         # if: ${{ steps.restore-cached.outputs.cache-hit == 'true' }}
         id: snapcraft
         with:
