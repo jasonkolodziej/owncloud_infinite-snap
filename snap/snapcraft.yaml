@@ -134,11 +134,11 @@ parts:
 #* bind-file: <source-path>: bind-mount a file
 #* type: tmpfs: mount a private temporary in-memory filesystem
 layout:
-  /bin:
-    bind: $SNAP/bin
-  /usr/bin:
-    bind: $SNAP/usr/bin
-    # bind: $SNAP/usr/bin/ocis
+  # /bin:
+  #   bind: $SNAP/bin
+  # /usr/bin:
+  #   bind: $SNAP/usr/bin
+  # bind: $SNAP/usr/bin/ocis
 
   #* Path to system relevant data.
   #* Because Infinite Scale does not use a database for storing information like users, groups, spaces, internal data, etc.,
@@ -255,21 +255,21 @@ environment:
 # A bind mount is then created to link $SNAP in one snap (e.g. from /snap/my-snap/1234/content) to an empty directory in the other snap (e.g., to /snap/my-other-snap/4321/incoming-content).
 # Locations need to be selected carefully because a bind mount could potentially permit mounts over important locations, such as $SNAP_DATA, preventing access to a snap’s own writable space.
 # The same can be done for particular files, if desired, but it requires a pair of interfaces for each file and is more cumbersome.
-slots:
-  ocis-config:
-    interface: content
-    #? content (slot and plug): an arbitrary identifier for content type.
-    #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
-    content: ocis-config
-    #? source (slot): allows multiple directories to be exposed separately rather than grouped together
-    source:
-      #? write (slot): read and write paths to be exposed to a consuming snap
-      write:
-        - $SNAP_DATA/etc/ocis
-        - $SNAP_USER_DATA/etc/ocis
-      #? read (slot): read-only paths to be exposed to a consuming snap
-      read:
-        - $SNAP/etc/ocis
+# slots:
+#   ocis-config:
+#     interface: content
+#     #? content (slot and plug): an arbitrary identifier for content type.
+#     #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
+#     content: ocis-config
+#     #? source (slot): allows multiple directories to be exposed separately rather than grouped together
+#     source:
+#       #? write (slot): read and write paths to be exposed to a consuming snap
+#       write:
+#         - $SNAP_DATA/etc/ocis
+#         - $SNAP_USER_DATA/etc/ocis
+#       #? read (slot): read-only paths to be exposed to a consuming snap
+#       read:
+#         - $SNAP/etc/ocis
 
 #   ocis-base-data:
 #     interface: content
@@ -279,19 +279,19 @@ slots:
 #         - $SNAP_COMMON/var/lib/ocis
 #? Content plugs - CONSUMERS
 #? Reference: https://snapcraft.io/docs/content-interface#heading--read-only
-plugs:
-  ocis-config:
-    #? default-provider (plug): name of preferred producer snap (<SNAP>)
-    # default-provider: lib01604
-    interface: content
-    #? content (slot and plug): an arbitrary identifier for content type.
-    #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
-    content: ocis-config
-    #? target (plug): path in consuming snap to find producer snap’s files
-    target:
-      - $SNAP_DATA/etc/ocis
-      - $SNAP_USER_DATA/etc/ocis
-      - $SNAP/etc/ocis
+# plugs:
+#   ocis-config:
+#     #? default-provider (plug): name of preferred producer snap (<SNAP>)
+#     # default-provider: lib01604
+#     interface: content
+#     #? content (slot and plug): an arbitrary identifier for content type.
+#     #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
+#     content: ocis-config
+#     #? target (plug): path in consuming snap to find producer snap’s files
+#     target:
+#       - $SNAP_DATA/etc/ocis
+#       - $SNAP_USER_DATA/etc/ocis
+#       - $SNAP/etc/ocis
 #   ocis-base-data:
 #     interface: content
 #     content: ocis-base-data
@@ -318,7 +318,7 @@ apps:
       - network
       - network-bind
       - network-control
-      - ocis-config
+
   ocis-init:
     #? Daemons: https://snapcraft.io/docs/services-and-daemons
     #? simple: the command is the main process.
@@ -374,8 +374,6 @@ apps:
       # OCIS_INSECURE: "false" #* Certificates Signed by a Trusted CA
       # PROXY_TRANSPORT_TLS_KEY: ./certs/your-host.key
       # PROXY_TRANSPORT_TLS_CERT: ./certs/your-host.crt
-    slots:
-      - ocis-config
 
   ocis-server:
     #? Daemons: https://snapcraft.io/docs/services-and-daemons
@@ -427,12 +425,7 @@ apps:
     #     PROXY_TRANSPORT_TLS_CERT: ./certs/your-host.crt
     #* run with demo users
     # IDM_CREATE_DEMO_USERS: true
-    # slots:
-    #   - ocis-config
-    #   - ocis-base-data
     plugs:
-      - ocis-config
-      #   - ocis-base-data
       ## Network Access
       - network
       - network-bind
