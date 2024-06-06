@@ -3,8 +3,8 @@ name: CI
 #? Controls when the workflow will run
 on:
   #? Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: ["main"]
+  # push:
+  #   branches: ["main"]
   # pull_request:
   #   branches: ["main"]
   #? Listen to a repository dispatch event by the name of `dispatch-event`
@@ -65,7 +65,7 @@ jobs:
         # continue-on-error: true
         with:
           path: ocis
-          key: ${{ steps.check-action-context.outputs.CACHED_KEY }}-${{ matrix.platform }}-${{ hashFiles('ocis') }}
+          key: ${{ env.CACHED_KEY }}-${{ matrix.platform }}-${{ hashFiles('ocis') }}
           fail-on-cache-miss: true
           restore-keys: ocis-${{ env.RELEASE_VERSION }}-${{ runner.os }}-${{ matrix.platform }}-
 
