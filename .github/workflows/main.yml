@@ -114,7 +114,7 @@ jobs:
           # snapcraft-args: clean
       - uses: actions/upload-artifact@v4
         id: uploadErrArtifact
-        if: ${{ steps.snapcraft.conclusion != 'success'}}
+        if: ${{ steps.snapcraft.outcome != 'success' || failure()}}
         with:
           name: snap-${{ env.RELEASE_VERSION }}-log
           path: /root/.local/state/snapcraft/log/snapcraft-*.log
