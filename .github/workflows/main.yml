@@ -103,6 +103,7 @@ jobs:
         with:
           architecture: ${{ matrix.platform }}
           # --verbosity={quiet,brief,verbose}
+          #? Full execution log: '/root/.local/state/snapcraft/log/snapcraft-20240606-082202.271748.log'
           snapcraft-args: "--verbosity=verbose"
           # snapcraft-args: clean
 

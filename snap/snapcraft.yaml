@@ -93,7 +93,9 @@ parts:
       [ -f "$CRAFT_PART_BUILD/bin/ocis" ] && chmod +x "$CRAFT_PART_BUILD/bin/ocis" || echo "$CRAFT_PART_BUILD/bin/ocis does not exist."
       craftctl default
       ls -al $CRAFT_PART_BUILD
-      # ls -al $CRAFT_PART_INSTALL
+      ls -al $CRAFT_PART_INSTALL
+      ls -al $CRAFT_PART_INSTALL/bin
+
     #   mkdir -p $CRAFT_PART_INSTALL/$OCIS_CONFIG_DIR
     #   mkdir -p $CRAFT_PART_INSTALL/$OCIS_BASE_DATA_PATH
     #   # ls -al $CRAFT_PART_BUILD_WORK
