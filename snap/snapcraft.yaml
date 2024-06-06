@@ -87,16 +87,16 @@ parts:
 
     #? Overrides
     #? Reference: https://snapcraft.io/docs/overrides
-    override-build: |
-      echo "Starting OVERRIDE-STAGE in $CRAFT_STAGE"
-      # ls -al $CRAFT_PART_BUILD
-      [ -d "$CRAFT_PART_BUILD/$OCIS_CONFIG_DIR" ] && echo "$CRAFT_PART_BUILD/$OCIS_CONFIG_DIR exists." || mkdir -p "$CRAFT_PART_BUILD/$OCIS_CONFIG_DIR"
-      [ -d "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH" ] && echo "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH exists." || mkdir -p "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH"
-      [ -f "$CRAFT_PART_BUILD/bin/ocis" ] && chmod +x "$CRAFT_PART_BUILD/bin/ocis" || echo "$CRAFT_PART_BUILD/bin/ocis does not exist."
-      craftctl default
-      ls -al $CRAFT_PART_BUILD
-      # ls -al $CRAFT_PART_INSTALL
-      ls -al $CRAFT_PART_INSTALL/bin
+    # override-build: |
+    #   echo "Starting OVERRIDE-STAGE in $CRAFT_STAGE"
+    #   # ls -al $CRAFT_PART_BUILD
+    #   [ -d "$CRAFT_PART_BUILD/$OCIS_CONFIG_DIR" ] && echo "$CRAFT_PART_BUILD/$OCIS_CONFIG_DIR exists." || mkdir -p "$CRAFT_PART_BUILD/$OCIS_CONFIG_DIR"
+    #   [ -d "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH" ] && echo "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH exists." || mkdir -p "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH"
+    #   [ -f "$CRAFT_PART_BUILD/bin/ocis" ] && chmod +x "$CRAFT_PART_BUILD/bin/ocis" || echo "$CRAFT_PART_BUILD/bin/ocis does not exist."
+    #   craftctl default
+    #   ls -al $CRAFT_PART_BUILD
+    #   # ls -al $CRAFT_PART_INSTALL
+    #   ls -al $CRAFT_PART_INSTALL/bin
 
     #   mkdir -p $CRAFT_PART_INSTALL/$OCIS_CONFIG_DIR
     #   mkdir -p $CRAFT_PART_INSTALL/$OCIS_BASE_DATA_PATH
@@ -107,7 +107,8 @@ parts:
     override-stage: |
       echo "Starting OVERRIDE-STAGE in $CRAFT_STAGE"
       ls -al $CRAFT_STAGE
-      [ -f "$CRAFT_STAGE/bin/ocis" ] && echo "$CRAFT_STAGE/bin/ocis exists." || craftctl default; ls -al $CRAFT_STAGE
+      craftctl default
+      [ -f "$CRAFT_STAGE/bin/ocis" ] && chmod +x "$CRAFT_STAGE/bin/ocis" || echo "$CRAFT_STAGE/bin/ocis does not exist." ls -al $CRAFT_STAGE/bin
       [ -d "$CRAFT_STAGE/$OCIS_CONFIG_DIR" ] && echo "$CRAFT_STAGE/$OCIS_CONFIG_DIR exists." || mkdir -p "$CRAFT_STAGE/$OCIS_CONFIG_DIR"
       [ -d "$CRAFT_STAGE/$OCIS_BASE_DATA_PATH" ] && echo "$CRAFT_STAGE/$OCIS_BASE_DATA_PATH exists." || mkdir -p "$CRAFT_STAGE/$OCIS_BASE_DATA_PATH"
       ls -al $CRAFT_STAGE/bin
@@ -118,7 +119,6 @@ parts:
       # [ -f "$CRAFT_PRIME/bin/ocis" ] && echo "$CRAFT_PRIME/bin/ocis exists." || cp -r "$CRAFT_PRIME/usr/bin" "$CRAFT_PRIME"; ls -al "$CRAFT_PRIME"
       ls -al $CRAFT_PRIME
 
-#? Reference: https://github.com/OpenPrinting/cups-snap/blob/master/snapcraft.yaml
 # System user for filters and backends to drop privileges, "lp" is not
 # available in a Snap
 #? See: https://forum.snapcraft.io/t/system-usernames/
@@ -128,8 +128,9 @@ parts:
 #   #? From snapd 2.61 onwards, snap_daemon is being deprecated and replaced with _daemon_ (with underscores), which now possesses a UID of 584792.
 #   # _daemon_: ocis
 
-# Layouts are transparently supported by Snapcraft when using a base snap (e.g. base: core22).
+#? Layouts are transparently supported by Snapcraft when using a base snap (e.g. base: core22).
 #? Reference: https://snapcraft.io/docs/snap-layouts
+#? Example: https://github.com/OpenPrinting/cups-snap/blob/master/snapcraft.yaml
 # As a simple example, consider an application you want to snap that:
 #   - stores all data in /var/lib/foo
 #   - has a configuration file in /etc/foo.conf
