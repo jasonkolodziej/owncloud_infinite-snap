@@ -68,8 +68,8 @@ parts:
     organize:
       bin/: usr/bin/
     stage:
-      # - etc/*
-      # - var/*
+      - etc/*
+      - var/*
       - bin/*
       - usr/bin/*
     prime:
