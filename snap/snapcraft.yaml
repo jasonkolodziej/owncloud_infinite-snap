@@ -71,9 +71,9 @@ parts:
       # - etc/*
       # - var/*
       - usr/bin/*
-      - -usr/bin/.gitkeep
     prime:
-      - usr/bin
+      - usr/bin/*
+      - -usr/bin/.gitkeep
       - bin/*
       - etc/*
       - var/*
