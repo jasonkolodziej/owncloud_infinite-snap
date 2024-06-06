@@ -66,14 +66,16 @@ parts:
     #? the value represents how the file is going to be staged.
     #> renames built files in CRAFT_PART_INSTALL
     organize:
-      bin/: usr/bin/
+      bin/*: usr/bin/
+      bin/yq: bin/yq
 
     stage:
+      - bin/*
       - usr/bin/*
       - -usr/bin/.gitkeep
 
-    prime:
-      - usr/bin/*
+    # prime:
+    #   - usr/bin/*
 
     stage-snaps:
       - yq
@@ -97,7 +99,7 @@ parts:
     override-stage: |
       echo "Starting OVERRIDE-STAGE in $PWD"
       craftctl default
-
+      ls -al
 # System user for filters and backends to drop privileges, "lp" is not
 # available in a Snap
 #? See: https://forum.snapcraft.io/t/system-usernames/
