@@ -400,6 +400,14 @@ plugs:
 ## ref: https://snapcraft.io/docs/snapcraft-app-and-service-metadata
 apps:
   ocis:
+    #? Snapcraft normally creates a wrapper holding common environment variables.
+    #? Disabling this could be useful for minimal base snaps without a shell,
+    #? and for statically linked binaries with no use for an environment.
+    #* none - (Disables the creation of an env variable wrapper.)
+    #* defaults to: full
+    # adapter: full
+    # WORKAROUND: Snapcraft impose too much restrictions to the command format
+    # https://bugs.launchpad.net/snapcraft/+bug/1820055
     command: /bin/ocis
     plugs:
       - network
@@ -465,14 +473,6 @@ apps:
       - ocis-config
 
   ocis-server:
-    #? Snapcraft normally creates a wrapper holding common environment variables.
-    #? Disabling this could be useful for minimal base snaps without a shell,
-    #? and for statically linked binaries with no use for an environment.
-    #* none - (Disables the creation of an env variable wrapper.)
-    #* defaults to: full
-    adapter: full
-    # WORKAROUND: Snapcraft impose too much restrictions to the command format
-    # https://bugs.launchpad.net/snapcraft/+bug/1820055
     #? Daemons: https://snapcraft.io/docs/services-and-daemons
     #? simple: the command is the main process.
     #? oneshot: the configured command will exit after completion
