@@ -93,7 +93,7 @@ parts:
       if [ -d "$CRAFT_PART_INSTALL/usr/bin" ]; then
         ls -al $CRAFT_PART_INSTALL/usr/bin
       fi
-    
+
     stage-snaps:
       - yq
 
@@ -105,9 +105,6 @@ parts:
       echo "PRIME Override ($CRAFT_PRIME):"
       craftctl default
       cp --archive --link --no-dereference -v $CRAFT_PRIME/usr/bin $CRAFT_PRIME
-    
-
-
 
 # System user for filters and backends to drop privileges, "lp" is not
 # available in a Snap
@@ -138,9 +135,9 @@ parts:
 #* type: tmpfs: mount a private temporary in-memory filesystem
 layout:
   /bin:
-    symlink: $SNAP/bin
+    bind: $SNAP/bin
   /usr/bin:
-    symlink: $SNAP/usr/bin
+    bind: $SNAP/usr/bin
     # bind: $SNAP/usr/bin/ocis
 
   #* Path to system relevant data.
