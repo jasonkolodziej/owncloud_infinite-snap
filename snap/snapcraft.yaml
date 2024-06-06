@@ -215,12 +215,6 @@ parts:
 #* bind-file: <source-path>: bind-mount a file
 #* type: tmpfs: mount a private temporary in-memory filesystem
 layout:
-  # /bin:
-  #   bind: $SNAP/bin
-  # /usr/bin:
-  #   bind: $SNAP/usr/bin
-  # bind: $SNAP/usr/bin/ocis
-
   #* Path to system relevant data.
   #* Because Infinite Scale does not use a database for storing information like users, groups, spaces, internal data, etc.,
   #* it saves all this data to a permanent file location. Depending on the system setup, the base directory contains not
@@ -244,9 +238,6 @@ layout:
 
 #? Global environment variables
 environment:
-  # CUPS_SERVERROOT: /var/snap/cups/common/etc/cups
-  # CUPS_DATADIR: /snap/cups/current/share/cups
-  # CUPS_SERVERBIN: /snap/cups/current/lib/cups
   #? `$SNAP_USER_COMMON`
   #? Directory for user data that is common across revisions of a snap.
   #? Unlike `$SNAP_USER_DATA`, data present in this directory is not backed up or restored across snap refresh
@@ -340,9 +331,6 @@ apps:
     #* defaults to: enable
     install-mode: enable
     command: bin/ocis init
-    before:
-      - "ocis-server"
-      - "ocis"
     slots:
       - "configuration"
     #? Runs a command from inside the snap after a service stops.
@@ -394,6 +382,8 @@ apps:
     #? forking: the configured command calls fork() as part of its start-up. The parent process is then expected to exit when start-up is complete
     #? notify: the command configured will send a signal to systemd to indicate that it’s running.
     daemon: simple
+    after:
+      - "ocis-init"
     #? Defines whether a freshly installed daemon is started automatically,
     #? or whether startup control is deferred to the snap.
     #? If a snap was installed prior to the daemon component being added,
