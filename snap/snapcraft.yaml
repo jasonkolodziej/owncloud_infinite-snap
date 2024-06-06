@@ -265,10 +265,11 @@ slots:
     source:
       #? write (slot): read and write paths to be exposed to a consuming snap
       write:
-        - $OCIS_CONFIG_DIR
+        - $SNAP_DATA/etc/ocis
+        - $SNAP_USER_DATA/etc/ocis
       #? read (slot): read-only paths to be exposed to a consuming snap
-      # read:
-      #   - $SNAP/etc/ocis
+      read:
+        - $SNAP/etc/ocis
 
 #   ocis-base-data:
 #     interface: content
@@ -288,7 +289,9 @@ plugs:
     content: ocis-config
     #? target (plug): path in consuming snap to find producer snap’s files
     target:
-      - $OCIS_CONFIG_DIR
+      - $SNAP_DATA/etc/ocis
+      - $SNAP_USER_DATA/etc/ocis
+      - $SNAP/etc/ocis
 #   ocis-base-data:
 #     interface: content
 #     content: ocis-base-data
