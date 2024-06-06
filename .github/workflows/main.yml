@@ -49,7 +49,7 @@ jobs:
         run: |
           echo "MANUAL_EVENT='true'" >> $GITHUB_ENV
           echo "IS_NEW='false'" >> $GITHUB_ENV
-
+          echo "${{github.repository}}"
           echo "RELEASE_VERSION=$(gh api \
           -H "Accept: application/vnd.github+json" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
