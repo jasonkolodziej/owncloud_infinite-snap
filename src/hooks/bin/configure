@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh -e
 #? Reference: https://snapcraft.io/docs/adding-snap-configuration#heading--interpreting
 
 DEFAULT_OCIS_CONFIG_FILE_LOCATION="$OCIS_CONFIG_DIR/ocis.yaml"
@@ -214,8 +214,8 @@ check_first_time() {
 
 # #? if the default config hasn't been created
 
-if ! [ -f "$DEFAULT_OCIS_CONFIG_FILE_LOCATION" ]; then
-    snapctl set-health blocked "usr: $(whoami) conf: ${OCIS_CONFIG_DIR} was not able to detect file"
+if ![ -f "$DEFAULT_OCIS_CONFIG_FILE_LOCATION" ]; then
+    snapctl set-health blocked "usr: $(whoami) conf: ${DEFAULT_OCIS_CONFIG_FILE_LOCATION} was not able to detect file"
 fi
 
 if [ "$(check_first_time)" == 'true' ]; then
@@ -230,3 +230,5 @@ if [ "$(check_first_time)" == 'true' ]; then
 fi
 
 # DEFAULT_OCIS_CONFIG_FILE_LOCATION="../../ocis/config/ocis.example.yaml"
+
+exec "$@"
