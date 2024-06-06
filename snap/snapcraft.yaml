@@ -150,7 +150,7 @@ layout:
   #*   - For binary releases => `$HOME/.ocis/`
   /var/lib/ocis:
     # bind: $SNAP_DATA/var/lib/ocis
-    bind: $SNAP_COMMON/var/lib/ocis
+    symlink: $SNAP_COMMON/var/lib/ocis
   # /usr/share/foo:
   #   bind: $SNAP/usr/share/foo
   #* Path to config files.
@@ -159,7 +159,7 @@ layout:
   #*  - For binary releases => `$HOME/.ocis/config/`
   #?    OCIS_CONFIG_DIR: $SNAP_USER_DATA/etc/ocis
   /etc/ocis:
-    bind: $SNAP_DATA/etc/ocis
+    symlink: $SNAP_DATA/etc/ocis
 
 #? Global environment variables
 environment:
