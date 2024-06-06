@@ -144,7 +144,7 @@ parts:
 #* type: tmpfs: mount a private temporary in-memory filesystem
 layout:
   /bin/ocis:
-    symlink: $SNAP/usr/bin/ocis
+    bind-file: $SNAP/usr/bin/ocis
 
   #* Path to system relevant data.
   #* Because Infinite Scale does not use a database for storing information like users, groups, spaces, internal data, etc.,
