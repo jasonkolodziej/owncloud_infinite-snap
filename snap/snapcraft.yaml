@@ -68,10 +68,8 @@ parts:
     organize:
       bin/: usr/bin/
     stage:
-      - bin/*
       - usr/bin/*
     prime:
-      - bin/*
       - usr/bin/*
       - -usr/bin/.gitkeep
     stage-snaps:
