@@ -114,6 +114,7 @@ parts:
 
     override-prime: |
       echo "Starting OVERRIDE-PRIME in $CRAFT_PRIME"
+      echo "project dir is: $CRAFT_PROJECT_DIR"
       craftctl default
       # [ -f "$CRAFT_PRIME/bin/ocis" ] && echo "$CRAFT_PRIME/bin/ocis exists." || cp -r "$CRAFT_PRIME/usr/bin" "$CRAFT_PRIME"; ls -al "$CRAFT_PRIME"
       ls -al $CRAFT_PRIME
