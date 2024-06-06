@@ -68,16 +68,12 @@ parts:
     organize:
       bin/: usr/bin/
     stage:
-      - etc/*
-      - var/*
       - bin/*
       - usr/bin/*
     prime:
+      - bin/*
       - usr/bin/*
       - -usr/bin/.gitkeep
-      - bin/*
-      - etc/*
-      - var/*
     stage-snaps:
       - yq
 
@@ -106,19 +102,19 @@ parts:
 
     override-stage: |
       echo "Starting OVERRIDE-STAGE in $CRAFT_STAGE"
-      ls -al $CRAFT_STAGE
       craftctl default
       [ -f "$CRAFT_STAGE/usr/bin/ocis" ] && chmod +x "$CRAFT_STAGE/usr/bin/ocis" || echo "$CRAFT_STAGE/bin/ocis does not exist." ls -al $CRAFT_STAGE/usr/bin
-      [ -d "$CRAFT_STAGE/$OCIS_CONFIG_DIR" ] && echo "$CRAFT_STAGE/$OCIS_CONFIG_DIR exists." || mkdir -p "$CRAFT_STAGE/$OCIS_CONFIG_DIR"
-      [ -d "$CRAFT_STAGE/$OCIS_BASE_DATA_PATH" ] && echo "$CRAFT_STAGE/$OCIS_BASE_DATA_PATH exists." || mkdir -p "$CRAFT_STAGE/$OCIS_BASE_DATA_PATH"
+      #[ -d "$CRAFT_STAGE/$OCIS_CONFIG_DIR" ] && echo "$CRAFT_STAGE/$OCIS_CONFIG_DIR exists." || mkdir -p "$CRAFT_STAGE/$OCIS_CONFIG_DIR"
+      #[ -d "$CRAFT_STAGE/$OCIS_BASE_DATA_PATH" ] && echo "$CRAFT_STAGE/$OCIS_BASE_DATA_PATH exists." || mkdir -p "$CRAFT_STAGE/$OCIS_BASE_DATA_PATH"
+      ls -al $CRAFT_STAGE
       ls -al $CRAFT_STAGE/usr/bin
 
-    override-prime: |
-      echo "Starting OVERRIDE-PRIME in $CRAFT_PRIME"
-      echo "project dir is: $CRAFT_PROJECT_DIR"
-      craftctl default
-      # [ -f "$CRAFT_PRIME/bin/ocis" ] && echo "$CRAFT_PRIME/bin/ocis exists." || cp -r "$CRAFT_PRIME/usr/bin" "$CRAFT_PRIME"; ls -al "$CRAFT_PRIME"
-      ls -al $CRAFT_PRIME
+    # override-prime: |
+    #   echo "Starting OVERRIDE-PRIME in $CRAFT_PRIME"
+    #   echo "project dir is: $CRAFT_PROJECT_DIR"
+    #   craftctl default
+    #   # [ -f "$CRAFT_PRIME/bin/ocis" ] && echo "$CRAFT_PRIME/bin/ocis exists." || cp -r "$CRAFT_PRIME/usr/bin" "$CRAFT_PRIME"; ls -al "$CRAFT_PRIME"
+    #   ls -al $CRAFT_PRIME
 
 # System user for filters and backends to drop privileges, "lp" is not
 # available in a Snap
