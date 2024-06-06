@@ -63,11 +63,6 @@ parts:
     # https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-arm64
     source: src/ocis/
 
-    stage:
-      - bin/*
-      - -bin/.gitkeep
-      - usr/bin/*
-      # - -usr/bin/.gitkeep
     #? In the key/value pair, the key represents the path of a file inside the part and
     #? the value represents how the file is going to be staged.
     #> renames built files in CRAFT_PART_INSTALL
@@ -78,23 +73,21 @@ parts:
     stage-snaps:
       - yq
 
+    stage:
+      - bin/*
+      - -bin/.gitkeep
+      - usr/bin/*
+      # - -usr/bin/.gitkeep
+
     build-environment:
       - OCIS_CONFIG_DIR: etc/ocis
       - OCIS_BASE_DATA_PATH: var/lib/ocis
 
-    #? Overrides
-    #? Reference: https://snapcraft.io/docs/overrides
-    override-build: |
-      echo "Starting OVERRIDE-BUILD in $PWD"
-      # from repo folder
-      chmod +x "$CRAFT_PART_BUILD/bin/ocis"
-      craftctl default
-
     override-prime: |
-      echo "Starting OVERRIDE-PRIME in $PWD"
-      snapcraftctl prime
-      [ -d "$CRAFT_PRIME/usr/bin" ] && ls -al "$CRAFT_PRIME/usr/bin"
-      [ -d "$CRAFT_PRIME/bin" ] && ls -al "$CRAFT_PRIME/bin"
+      ls -al
+      [-f "$CRAFT_PRIME/bin/ocis"] && ls -al "$CRAFT_PRIME/bin" || craftctl default
+      [-f "$CRAFT_PRIME/usr/bin/ocis"] && ls -al "$CRAFT_PRIME/usr/bin" || ls -al "$CRAFT_PRIME/bin"
+
 # System user for filters and backends to drop privileges, "lp" is not
 # available in a Snap
 #? See: https://forum.snapcraft.io/t/system-usernames/

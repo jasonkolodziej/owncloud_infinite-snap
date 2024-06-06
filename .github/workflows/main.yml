@@ -93,7 +93,13 @@ jobs:
           echo "Files at ===> main.workflow.job['build'].steps['status']"
           ls -al
           echo "Moving cached binary to their src folder"
-          cp ./ocis ./src/ocis/bin/ocis
+          cp -p ./ocis ./src/ocis/bin/ocis
+          if [ -x "./src/ocis/bin/ocis" ]; then
+            echo "File is executable"
+          else
+            echo "File is being made executable"
+            chmod +x ./src/ocis/bin/ocis
+          fi
 
       - uses: docker/setup-qemu-action@v1
       #? https://github.com/marketplace/actions/snapcraft-multiarch-build#action-inputs
