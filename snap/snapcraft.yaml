@@ -66,11 +66,11 @@ parts:
     #? the value represents how the file is going to be staged.
     #> renames built files in CRAFT_PART_INSTALL
     organize:
-      bin/*: bin/
+      bin/ocis: bin/ocis
 
     stage:
       - bin/*
-      - -bin/.gitkeep
+      # - -bin/.gitkeep
       # - usr/bin/*
       # - -usr/bin/.gitkeep
 
@@ -93,13 +93,14 @@ parts:
       # [ -d "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH" ] && echo "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH exists." || mkdir -p "$CRAFT_PART_BUILD/$OCIS_BASE_DATA_PATH"
       [ -f "$CRAFT_PART_BUILD/bin/ocis" ] && chmod +x "$CRAFT_PART_BUILD/bin/ocis" || echo "$CRAFT_PART_BUILD/bin/ocis does not exist."
       craftctl default
-      ls -al $CRAFT_PART_BUILD
-      ls -al $CRAFT_PART_INSTALL
+      [ -f "$CRAFT_PART_INSTALL/bin/ocis" ] && echo "$CRAFT_PART_INSTALL/bin/ocis exists." || echo "$CRAFT_PART_BUILD/bin/ocis does not exist."
+      ls -al "$CRAFT_PART_INSTALL/bin"
 
     override-stage: |
       echo "Starting OVERRIDE-STAGE in $PWD"
       craftctl default
-      ls -al
+      [ -f "$CRAFT_STAGE/bin/ocis" ] && echo "$CRAFT_STAGE/bin/ocis exists." || echo "$CRAFT_STAGE/bin/ocis does not exist."; ls -al
+      ls -al "$CRAFT_STAGE/bin"
 # System user for filters and backends to drop privileges, "lp" is not
 # available in a Snap
 #? See: https://forum.snapcraft.io/t/system-usernames/
