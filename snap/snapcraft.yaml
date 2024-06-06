@@ -75,7 +75,7 @@ parts:
       # - usr/bin/*
       # - -usr/bin/.gitkeep
     prime:
-      - usr/bin/*
+      - bin/*
       - etc/*
       - var/*
     stage-snaps:
@@ -95,7 +95,7 @@ parts:
       [ -f "$CRAFT_PART_BUILD/bin/ocis" ] && chmod +x "$CRAFT_PART_BUILD/bin/ocis" || echo "$CRAFT_PART_BUILD/bin/ocis does not exist."
       craftctl default
       ls -al $CRAFT_PART_BUILD
-      ls -al $CRAFT_PART_INSTALL
+      # ls -al $CRAFT_PART_INSTALL
       ls -al $CRAFT_PART_INSTALL/bin
 
     #   mkdir -p $CRAFT_PART_INSTALL/$OCIS_CONFIG_DIR
