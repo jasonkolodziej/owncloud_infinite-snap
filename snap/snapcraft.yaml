@@ -86,16 +86,17 @@ parts:
     #? Reference: https://snapcraft.io/docs/overrides
     override-build: |
       echo "Starting OVERRIDE-BUILD in $PWD"
-      [ -f "$CRAFT_PART_BUILD/bin" ] && chmod +x "$CRAFT_PART_BUILD/bin/ocis"; echo "Binary Found $CRAFT_PART_BUILD/bin/ocis" || ls -al "$CRAFT_PART_BUILD"
+      # from repo folder
+      chmod +x "$CRAFT_PART_BUILD/bin/ocis"
       craftctl default
+      ![ -x "$CRAFT_PART_INSTALL/bin/ocis" ] && chmod +x "$CRAFT_PART_INSTALL/bin/ocis"
       ls -al $CRAFT_PART_INSTALL/bin
-      [ -d "$CRAFT_PART_INSTALL/usr/bin" ] && ls -al "$CRAFT_PART_INSTALL/usr/bin" || echo "No usr/bin directory in $CRAFT_PART_INSTALL"; exit 0
 
     override-prime: |
       echo "Starting OVERRIDE-PRIME in $PWD"
       snapcraftctl prime
-      [ -d "$CRAFT_PRIME/usr/bin" ] && ls -al "$CRAFT_PRIME/usr/bin" || echo "No bin directory in $CRAFT_PRIME"; ls -al "$CRAFT_PRIME"
-      [ -d "$CRAFT_PRIME/bin" ] && ls -al "$CRAFT_PRIME/bin" || echo "No bin directory in $CRAFT_PRIME"; ls -al "$CRAFT_PRIME"
+      [ -d "$CRAFT_PRIME/usr/bin" ] && ls -al "$CRAFT_PRIME/usr/bin"
+      [ -d "$CRAFT_PRIME/bin" ] && ls -al "$CRAFT_PRIME/bin"
 # System user for filters and backends to drop privileges, "lp" is not
 # available in a Snap
 #? See: https://forum.snapcraft.io/t/system-usernames/
