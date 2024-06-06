@@ -66,13 +66,14 @@ parts:
     stage:
       - bin/*
       - -bin/.gitkeep
-      # - usr/bin/*
+      - usr/bin/*
       # - -usr/bin/.gitkeep
     #? In the key/value pair, the key represents the path of a file inside the part and
     #? the value represents how the file is going to be staged.
     #> renames built files in CRAFT_PART_INSTALL
     organize:
-      bin/: usr/bin/
+      bin/*: bin/
+      bin/ocis: usr/bin/
     # prime:
     #   - usr/bin/*
 
@@ -88,8 +89,10 @@ parts:
     override-stage: |
       echo "Starting OVERRIDE-STAGE in $PWD"
       craftctl default
-      [ -f "$CRAFT_STAGE/bin/ocis" ] && chmod +x "$CRAFT_STAGE/bin/ocis" || [ -f "$CRAFT_STAGE/usr/bin/ocis" ] && chmod +x "$CRAFT_STAGE/bin/ocis" || echo "No ocis binary found"
-      [ -d "$CRAFT_STAGE/bin" ] && ls -al "$CRAFT_STAGE/bin" || [ -d "$CRAFT_STAGE/usr/bin" ] && ls -al "$CRAFT_STAGE/usr/bin" || echo "No bin directory found"
+      [[ -d "$CRAFT_STAGE/bin" ] && [ -f "$CRAFT_STAGE/bin/ocis" ]] && chmod +x "$CRAFT_STAGE/bin/ocis"; echo "Binary Found "$CRAFT_STAGE/bin/ocis" || echo "No binary in "$CRAFT_STAGE/bin" 
+      [[ -d "$CRAFT_STAGE/usr/bin" ] && [ -f "$CRAFT_STAGE/usr/bin/ocis" ]] && chmod +x "$CRAFT_STAGE/usr/bin/ocis"; echo "Binary Found "$CRAFT_STAGE/usr/bin/ocis" || echo "No binary in "$CRAFT_STAGE/usr/bin"
+      [ -d "$CRAFT_STAGE/usr/bin" ] && ls -al "$CRAFT_STAGE/usr/bin" || echo "No bin directory in $CRAFT_STAGE"; ls -al "$CRAFT_STAGE"
+      [ -d "$CRAFT_STAGE/bin" ] && ls -al "$CRAFT_STAGE/bin" || echo "No bin directory in $CRAFT_STAGE"; ls -al "$CRAFT_STAGE"
 # System user for filters and backends to drop privileges, "lp" is not
 # available in a Snap
 #? See: https://forum.snapcraft.io/t/system-usernames/
