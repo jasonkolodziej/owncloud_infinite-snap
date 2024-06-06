@@ -89,8 +89,8 @@ parts:
     override-build: |
       echo "Starting OVERRIDE-STAGE in $PWD"
       [ -d "$CRAFT_PART_BUILD/bin" ] && echo "$CRAFT_PART_BUILD/bin exists." || ls -al "$CRAFT_PART_BUILD"
-      [[ -f "$CRAFT_PART_BUILD/bin/ocis" ] && ![ -x "$CRAFT_PART_BUILD/bin/ocis" ]] && chmod +x "$CRAFT_PART_BUILD/bin/ocis" || echo "No binary in "$CRAFT_PART_BUILD/bin"
       craftctl default
+
     override-stage: |
       echo "Starting OVERRIDE-STAGE in $PWD"
       craftctl default
