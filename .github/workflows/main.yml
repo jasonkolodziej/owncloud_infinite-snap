@@ -44,8 +44,8 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Check action context
-        id: check-action-context
         if: ${{ env.RELEASE_VERSION == '' && env.MANUAL_EVENT != 'repository_dispatch' }}
+        id: check-action-context
         run: |
           echo "MANUAL_EVENT='true'" >> $GITHUB_ENV
           echo "IS_NEW='false'" >> $GITHUB_ENV
