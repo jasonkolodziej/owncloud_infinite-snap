@@ -66,15 +66,14 @@ parts:
     #? the value represents how the file is going to be staged.
     #> renames built files in CRAFT_PART_INSTALL
     organize:
-      bin/: bin/
+      bin/: usr/bin/
     stage:
-      - etc/*
-      - var/*
-      - bin/*
-      # - -bin/.gitkeep
-      # - usr/bin/*
-      # - -usr/bin/.gitkeep
+      # - etc/*
+      # - var/*
+      - usr/bin/*
+      - -usr/bin/.gitkeep
     prime:
+      - usr/bin
       - bin/*
       - etc/*
       - var/*
@@ -108,10 +107,10 @@ parts:
       echo "Starting OVERRIDE-STAGE in $CRAFT_STAGE"
       ls -al $CRAFT_STAGE
       craftctl default
-      [ -f "$CRAFT_STAGE/bin/ocis" ] && chmod +x "$CRAFT_STAGE/bin/ocis" || echo "$CRAFT_STAGE/bin/ocis does not exist." ls -al $CRAFT_STAGE/bin
+      [ -f "$CRAFT_STAGE/usr/bin/ocis" ] && chmod +x "$CRAFT_STAGE/usr/bin/ocis" || echo "$CRAFT_STAGE/bin/ocis does not exist." ls -al $CRAFT_STAGE/usr/bin
       [ -d "$CRAFT_STAGE/$OCIS_CONFIG_DIR" ] && echo "$CRAFT_STAGE/$OCIS_CONFIG_DIR exists." || mkdir -p "$CRAFT_STAGE/$OCIS_CONFIG_DIR"
       [ -d "$CRAFT_STAGE/$OCIS_BASE_DATA_PATH" ] && echo "$CRAFT_STAGE/$OCIS_BASE_DATA_PATH exists." || mkdir -p "$CRAFT_STAGE/$OCIS_BASE_DATA_PATH"
-      ls -al $CRAFT_STAGE/bin
+      ls -al $CRAFT_STAGE/usr/bin
 
     override-prime: |
       echo "Starting OVERRIDE-PRIME in $CRAFT_PRIME"
@@ -147,8 +146,8 @@ parts:
 #* bind-file: <source-path>: bind-mount a file
 #* type: tmpfs: mount a private temporary in-memory filesystem
 layout:
-  /usr/bin:
-    bind: $SNAP/bin
+  /bin/ocis:
+    symlink: $SNAP/usr/bin/ocis
     # bind: $SNAP/usr/bin/ocis
 
   #* Path to system relevant data.
