@@ -58,7 +58,7 @@ grade: devel # must be 'stable' to release into candidate/stable channels
 # The same can be done for particular files, if desired, but it requires a pair of interfaces for each file and is more cumbersome.
 slots:
   #? See: https://snapcraft.io/docs/auto-connection-mechanism
-  ocis-config:
+  ocis-configure:
     allow-auto-connection:
       plug-publisher-id:
         - $SLOT_PUBLISHER_ID
@@ -84,9 +84,9 @@ slots:
 #* Plugs
 #? Reference: https://snapcraft.io/docs/slots-and-plugs
 plugs:
-  ocis-configure:
+  ocis-config:
     #? default-provider (plug): name of preferred producer snap (<SNAP>)
-    default-provider: $SLOT_PUBLISHER_ID # owncloud-infinite
+    default-provider: owncloud-infinite # owncloud-infinite
     #? snapd interface name (must be interface: content)
     interface: content
     #? content (slot and plug): an arbitrary identifier for content type.
@@ -319,7 +319,7 @@ apps:
     # # See https://forum.snapcraft.io/t/2261
     # completer: <path to file>
     plugs:
-      - ocis-config
+      - ocis-configure
       - network
       - network-bind
       - network-control
@@ -340,7 +340,7 @@ apps:
     install-mode: disable
     command: bin/ocis init
     slots:
-      - ocis-config
+      - ocis-configure
     #? Runs a command from inside the snap after a service stops.
     # post-stop-command:
     #? Controls how the daemon or app should be treated during a snap refresh.
