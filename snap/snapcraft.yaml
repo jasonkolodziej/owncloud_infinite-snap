@@ -61,7 +61,7 @@ slots:
     #? https://snapcraft.io/docs/content-interface#heading--read-only
     #? content (slot and plug): an arbitrary identifier for content type.
     #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
-    #* content: ocis-config
+    content: config
     #? snapd interface name (must be interface: content)
     interface: content
     #? source (slot): allows multiple directories to be exposed separately rather than grouped together
@@ -78,25 +78,25 @@ slots:
 #* Plugs
 #? Reference: https://snapcraft.io/docs/slots-and-plugs
 plugs:
-  configuration-read:
-    #? default-provider (plug): name of preferred producer snap (<SNAP>)
-    # default-provider: configuration
-    #? snapd interface name (must be interface: content)
-    interface: content
-    #? content (slot and plug): an arbitrary identifier for content type.
-    #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
-    #* content: ocis-config
-    #? target (plug): path in consuming snap to find producer snap’s files
-    target: "$SNAP/configuration" #* Read-only path
+  # configuration-read:
+  #   #? default-provider (plug): name of preferred producer snap (<SNAP>)
+  #   default-provider: configuration
+  #   #? snapd interface name (must be interface: content)
+  #   interface: content
+  #   #? content (slot and plug): an arbitrary identifier for content type.
+  #   #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
+  #   #* content: ocis-config
+  #   #? target (plug): path in consuming snap to find producer snap’s files
+  #   target: "$SNAP/configuration" #* Read-only path
 
-  configuration-rw:
+  configuration:
     #? default-provider (plug): name of preferred producer snap (<SNAP>)
-    # default-provider: configuration
+    default-provider: owncloud-infinite:configuration
     #? snapd interface name (must be interface: content)
     interface: content
     #? content (slot and plug): an arbitrary identifier for content type.
     #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
-    content: configuration
+    content: config
     #? target (plug): path in consuming snap to find producer snap’s files
     target: "$SNAP/configuration/etc"
     #* Read-only path
