@@ -73,6 +73,7 @@ slots:
     #? source (slot): allows multiple directories to be exposed separately rather than grouped together
     source:
       #? write (slot): read and write paths to be exposed to a consuming snap
+      #? Reference: https://forum.snapcraft.io/t/the-content-interface/1074
       write:
         - $SNAP_COMMON/etc/ocis #! Hopefully just temporary path
         - $SNAP_DATA/etc/ocis #* root/daemon read+write path
@@ -93,7 +94,7 @@ plugs:
     #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
     content: configuration
     #? target (plug): path in consuming snap to find producer snap’s files
-    target: "$SNAP/configuration/etc"
+    target: "$SNAP/configuration"
     #* Read-only path
     # - $SNAP_COMMON/etc #! Hopefully just temporary path
     # - $SNAP_DATA/etc #* root/daemon read+write path
@@ -245,7 +246,7 @@ environment:
   #* The configuration directory has a default location for config files, which must be on a POSIX storage:
   #*  - For container images (inside the container) => `/etc/ocis/`
   #*  - For binary releases => `$HOME/.ocis/config/`
-  OCIS_CONFIG_DIR: $SNAP_DATA/etc/ocis
+  OCIS_CONFIG_DIR: $SNAP/configuration # _DATA/etc/ocis
 
   #* Path to system relevant data.
   #* Because Infinite Scale does not use a database for storing information like users, groups, spaces, internal data, etc.,
