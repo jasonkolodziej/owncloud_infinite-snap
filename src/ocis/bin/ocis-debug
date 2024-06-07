@@ -1,0 +1,26 @@
+#/bin/sh -e
+#? Reference: https://owncloud.dev/ocis/development/debugging/
+LOG_LEVEL="debug"
+
+bin/ocis --log-level=$LOG_LEVEL micro &
+
+bin/ocis --log-level=$LOG_LEVEL glauth &
+bin/ocis --log-level=$LOG_LEVEL graph &
+#bin/ocis --log-level=$LOG_LEVEL hello &
+bin/ocis --log-level=$LOG_LEVEL idp &
+#bin/ocis --log-level=$LOG_LEVEL ocs &
+bin/ocis --log-level=$LOG_LEVEL web &
+bin/ocis --log-level=$LOG_LEVEL reva-auth-basic &
+bin/ocis --log-level=$LOG_LEVEL reva-auth-bearer &
+bin/ocis --log-level=$LOG_LEVEL reva-frontend &
+bin/ocis --log-level=$LOG_LEVEL reva-gateway &
+bin/ocis --log-level=$LOG_LEVEL reva-sharing &
+bin/ocis --log-level=$LOG_LEVEL reva-storage-home &
+bin/ocis --log-level=$LOG_LEVEL reva-storage-home-data &
+bin/ocis --log-level=$LOG_LEVEL reva-storage-oc &
+bin/ocis --log-level=$LOG_LEVEL reva-storage-oc-data &
+bin/ocis --log-level=$LOG_LEVEL reva-storage-root &
+bin/ocis --log-level=$LOG_LEVEL reva-users &
+#bin/ocis --log-level=$LOG_LEVEL webdav
+
+bin/ocis --log-level=$LOG_LEVEL proxy &

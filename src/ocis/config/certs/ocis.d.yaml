@@ -1,0 +1,10 @@
+#? Global config
+#? Reference: https://owncloud.dev/ocis/config/
+log:
+  #* file: [ path/to/log/file ] #! MUST not be used with pretty = true
+  level: info #* [ error | warning | info | debug ]
+  pretty: true #* [ true | false ]
+  color: true #* [ true | false ]
+proxy:
+  http:
+    addr: ${PROXY_HTTP_ADDR|localhost:9200}
