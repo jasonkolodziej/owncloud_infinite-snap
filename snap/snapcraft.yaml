@@ -58,13 +58,12 @@ grade: devel # must be 'stable' to release into candidate/stable channels
 # The same can be done for particular files, if desired, but it requires a pair of interfaces for each file and is more cumbersome.
 slots:
   #? See: https://snapcraft.io/docs/auto-connection-mechanism
-  content:
+  ocis-config:
     allow-auto-connection:
       plug-publisher-id:
         - $SLOT_PUBLISHER_ID
       plug-attributes:
         content: $SLOT(content)
-  configuration:
     #? https://snapcraft.io/docs/content-interface#heading--read-only
     #? content (slot and plug): an arbitrary identifier for content type.
     #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
@@ -85,20 +84,9 @@ slots:
 #* Plugs
 #? Reference: https://snapcraft.io/docs/slots-and-plugs
 plugs:
-  # configuration-read:
-  #   #? default-provider (plug): name of preferred producer snap (<SNAP>)
-  #   default-provider: configuration
-  #   #? snapd interface name (must be interface: content)
-  #   interface: content
-  #   #? content (slot and plug): an arbitrary identifier for content type.
-  #   #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
-  #   #* content: ocis-config
-  #   #? target (plug): path in consuming snap to find producer snap’s files
-  #   target: "$SNAP/configuration" #* Read-only path
-
-  config:
+  ocis-configure:
     #? default-provider (plug): name of preferred producer snap (<SNAP>)
-    default-provider: $SLOT(configuration)
+    default-provider: owncloud-infinite:ocis-config
     #? snapd interface name (must be interface: content)
     interface: content
     #? content (slot and plug): an arbitrary identifier for content type.
@@ -331,7 +319,7 @@ apps:
     # # See https://forum.snapcraft.io/t/2261
     # completer: <path to file>
     plugs:
-      - configuration
+      - ocis-config
       - network
       - network-bind
       - network-control
@@ -352,7 +340,7 @@ apps:
     install-mode: disable
     command: bin/ocis init
     slots:
-      - "configuration"
+      - ocis-config
     #? Runs a command from inside the snap after a service stops.
     # post-stop-command:
     #? Controls how the daemon or app should be treated during a snap refresh.
@@ -422,7 +410,7 @@ apps:
     #* run with demo users
     # IDM_CREATE_DEMO_USERS: true
     plugs:
-      - configuration
+      - ocis-config
       ## Network Access
       - network
       - network-bind
