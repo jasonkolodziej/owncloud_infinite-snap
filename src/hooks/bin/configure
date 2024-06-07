@@ -1,10 +1,18 @@
 #!/bin/bash -e
 #? Reference: https://snapcraft.io/docs/adding-snap-configuration#heading--interpreting
 #? Reference: https://github.com/ubuntu-robotics/snap_configuration/blob/howto/content_sharing_configuration_snap/application_snap/snap/local/teleop_launcher.bash
+#? https://forum.snapcraft.io/t/using-the-snapctl-tool/15002
+CONFIG_PLUG="ocis-config"
+CONFIG_SLOT="ocis-configure"
+if ! snapctl is-connected ocis-config; then
+    echo >&2 "Plug '${CONFIG_PLUG}' isn't connected, \
+  please run: snap connect ${SNAP_NAME}:${CONFIG_PLUG} ${SNAP_NAME}:${CONFIG_SLOT}"
+    exit 0
+fi
 
-if ! snapctl is-connected configuration; then
-    echo >&2 "Plug 'configuration' isn't connected, \
-  please run: snap connect ${SNAP_NAME}:configuration PROVIDER_SNAP:configuration"
+if ! snapctl is-connected ocis-configure; then
+    echo >&2 "Slot '${CONFIG_SLOT}' isn't connected, \
+  please run: snap connect ${SNAP_NAME}:${CONFIG_PLUG} ${SNAP_NAME}:${CONFIG_SLOT}"
     exit 0
 fi
 

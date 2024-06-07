@@ -290,7 +290,7 @@ environment:
   # *    PROXY_TLS can be set to false if a reverse proxy is used and the https connection is terminated at the reverse proxy.
   # *      When setting to false, the communication between the reverse proxy and Infinite Scale is not secured.
   # *      If set to true, you must provide certificates.
-  PROXY_TLS: "true"
+  PROXY_TLS: "false"
   # OCIS_INSECURE: "false" #* Certificates Signed by a Trusted CA
   # PROXY_TRANSPORT_TLS_KEY: ./certs/your-host.key
   # PROXY_TRANSPORT_TLS_CERT: ./certs/your-host.crt
@@ -353,7 +353,7 @@ apps:
     #? Condition to restart the daemon under.
     #? Defaults to on-failure. Other values are [on-failure|on-success|on-abnormal|on-abort|always|never].
     #? Refer to systemd.service manual - https://www.freedesktop.org/software/systemd/man/systemd.service.html#Restart=
-    restart-condition: on-failure
+    restart-condition: never
     environment:
       #* ADMIN_PASSWORD or IDM_ADMIN_PASSWORD ==> --admin-password or -ap
       #? When running ocis init, a random admin password will be printed to the shell for first login.
