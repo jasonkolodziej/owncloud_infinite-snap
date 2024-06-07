@@ -86,7 +86,7 @@ slots:
 plugs:
   ocis-configure:
     #? default-provider (plug): name of preferred producer snap (<SNAP>)
-    default-provider: owncloud-infinite
+    default-provider: $SLOT_PUBLISHER_ID # owncloud-infinite
     #? snapd interface name (must be interface: content)
     interface: content
     #? content (slot and plug): an arbitrary identifier for content type.
