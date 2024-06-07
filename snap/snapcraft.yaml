@@ -168,6 +168,7 @@ parts:
 
     stage-snaps:
       - yq
+      - prometheus
 
     stage:
       - usr/bin/*
@@ -175,6 +176,7 @@ parts:
 
     override-prime: |
       echo "PRIME Override ($CRAFT_PRIME):"
+      ls -al $CRAFT_PRIME
       craftctl default
       cp --archive --link --no-dereference -v $CRAFT_PRIME/usr/bin $CRAFT_PRIME
 
@@ -301,6 +303,19 @@ environment:
 #? APPS
 ## ref: https://snapcraft.io/docs/snapcraft-app-and-service-metadata
 apps:
+  ocis-monitor:
+    #? Snapcraft normally creates a wrapper holding common environment variables.
+    #? Disabling this could be useful for minimal base snaps without a shell,
+    #? and for statically linked binaries with no use for an environment.
+    #* none - (Disables the creation of an env variable wrapper.)
+    #* defaults to: full
+    # adapter: full
+    daemon: simple
+    command: bin/prometheus
+    plugs:
+      # - ocis-config
+      - network
+      - network-bind
   ocis:
     #? Snapcraft normally creates a wrapper holding common environment variables.
     #? Disabling this could be useful for minimal base snaps without a shell,
