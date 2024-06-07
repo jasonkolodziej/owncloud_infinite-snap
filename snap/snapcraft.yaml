@@ -44,35 +44,6 @@ confinement: strict # use 'strict' once you have the right plugs and slots
 ## A snap of type app (default) cannot be set to stable if the base is not on a stable channel.
 grade: devel # must be 'stable' to release into candidate/stable channels
 
-#* Plugs
-#? Reference: https://snapcraft.io/docs/slots-and-plugs
-plugs:
-  configuration-read:
-    #? default-provider (plug): name of preferred producer snap (<SNAP>)
-    default-provider: configuration
-    #? snapd interface name (must be interface: content)
-    interface: content
-    #? content (slot and plug): an arbitrary identifier for content type.
-    #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
-    #* content: ocis-config
-    #? target (plug): path in consuming snap to find producer snap’s files
-    target: "$SNAP/configuration" #* Read-only path
-
-  configuration-rw:
-    #? default-provider (plug): name of preferred producer snap (<SNAP>)
-    default-provider: configuration
-    #? snapd interface name (must be interface: content)
-    interface: content
-    #? content (slot and plug): an arbitrary identifier for content type.
-    #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
-    #* content: ocis-config
-    #? target (plug): path in consuming snap to find producer snap’s files
-    target: "$SNAP/configuration/etc"
-    #* Read-only path
-    # - $SNAP_COMMON/etc #! Hopefully just temporary path
-    # - $SNAP_DATA/etc #* root/daemon read+write path
-    # - $SNAP_USER_DATA/etc #* user read+write path
-
 #* Slots
 #? Reference: https://snapcraft.io/docs/slots-and-plugs
 #? Example Code: https://github.com/ubuntu-robotics/snap_configuration/blob/howto/content_sharing_configuration_snap/configuration_snap/snap/snapcraft.yaml
@@ -102,6 +73,35 @@ slots:
       #? read (slot): read-only paths to be exposed to a consuming snap
       read:
         - $SNAP/etc #* Read-only path
+
+#* Plugs
+#? Reference: https://snapcraft.io/docs/slots-and-plugs
+plugs:
+  configuration-read:
+    #? default-provider (plug): name of preferred producer snap (<SNAP>)
+    default-provider: configuration
+    #? snapd interface name (must be interface: content)
+    interface: content
+    #? content (slot and plug): an arbitrary identifier for content type.
+    #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
+    #* content: ocis-config
+    #? target (plug): path in consuming snap to find producer snap’s files
+    target: "$SNAP/configuration" #* Read-only path
+
+  configuration-rw:
+    #? default-provider (plug): name of preferred producer snap (<SNAP>)
+    default-provider: configuration
+    #? snapd interface name (must be interface: content)
+    interface: content
+    #? content (slot and plug): an arbitrary identifier for content type.
+    #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
+    #* content: ocis-config
+    #? target (plug): path in consuming snap to find producer snap’s files
+    target: "$SNAP/configuration/etc"
+    #* Read-only path
+    # - $SNAP_COMMON/etc #! Hopefully just temporary path
+    # - $SNAP_DATA/etc #* root/daemon read+write path
+    # - $SNAP_USER_DATA/etc #* user read+write path
 
 #* PARTS
 #? Reference: https://snapcraft.io/docs/snapcraft-parts-metadata
