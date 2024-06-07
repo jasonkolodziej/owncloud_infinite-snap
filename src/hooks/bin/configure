@@ -4,22 +4,25 @@
 #? https://forum.snapcraft.io/t/using-the-snapctl-tool/15002
 CONFIG_PLUG="ocis-config"
 CONFIG_SLOT="ocis-configure"
+
 if ! snapctl is-connected ocis-config; then
     echo >&2 "Plug '${CONFIG_PLUG}' isn't connected, \
   please run: snap connect ${SNAP_NAME}:${CONFIG_PLUG} ${SNAP_NAME}:${CONFIG_SLOT}"
-    exit 0
+    exit 1
+else
+    READ_SOURCES=$(snapctl get --slot ":${CONFIG_SLOT}" source.read)
 fi
 
 if ! snapctl is-connected ocis-configure; then
     echo >&2 "Slot '${CONFIG_SLOT}' isn't connected, \
   please run: snap connect ${SNAP_NAME}:${CONFIG_PLUG} ${SNAP_NAME}:${CONFIG_SLOT}"
-    exit 0
+    exit 1
 fi
 
-if [ -z "$OCIS_CONFIG_DIR" ]; then
-    snapctl set-health blocked "usr: $(whoami) variable 'OCIS_CONFIG_DIR' not set"
-    echo >&2 "Environment variable 'OCIS_CONFIG_DIR' isn't set"
-    exit 1
+if ![ -d "${SNAP}/configure" ]; then
+    snapctl set-health blocked "usr: $(whoami) variable 'OCIS_CONFIG_DIR' cannot be updated set"
+    echo >&2 "Plug target: (${SNAP}/configure) cannot be found or does not exist"
+    exit 2
 fi
 
 DEFAULT_OCIS_CONFIG_FILE_LOCATION="$OCIS_CONFIG_DIR/ocis.yaml"

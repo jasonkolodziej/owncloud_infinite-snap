@@ -395,7 +395,7 @@ apps:
     #? notify: the command configured will send a signal to systemd to indicate that it’s running.
     daemon: simple
     environment:
-      OCIS_CONFIG_DIR: $SNAP/configuration
+      OCIS_CONFIG_DIR: $SNAP/configuration/ocis-3
     after:
       - "ocis-init"
     #? Defines whether a freshly installed daemon is started automatically,

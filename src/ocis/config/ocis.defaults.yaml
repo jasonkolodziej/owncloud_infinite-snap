@@ -2,9 +2,18 @@
 #? Reference: https://owncloud.dev/ocis/config/
 log:
   #* file: [ path/to/log/file ] #! MUST not be used with pretty = true
-  level: info #* [ error | warning | info | debug ]
+  level: debug #* [ error | warning | info | debug ]
   pretty: true #* [ true | false ]
   color: true #* [ true | false ]
 proxy:
+  debug:
+    addr: 127.0.0.1:9205
+    token: ""
+    pprof: false
+    zpages: false
   http:
     addr: ${PROXY_HTTP_ADDR|localhost:9200}
+    # root: /
+    # tls_cert: /var/lib/ocis/proxy/server.crt
+    # tls_key: /var/lib/ocis/proxy/server.key
+    tls: true
