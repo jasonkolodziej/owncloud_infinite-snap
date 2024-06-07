@@ -74,19 +74,19 @@ slots:
     source:
       #? write (slot): read and write paths to be exposed to a consuming snap
       write:
-        - $SNAP_COMMON/etc #! Hopefully just temporary path
-        - $SNAP_DATA/etc #* root/daemon read+write path
-        - $SNAP_USER_DATA/etc #* user read+write path
+        - $SNAP_COMMON/etc/ocis #! Hopefully just temporary path
+        - $SNAP_DATA/etc/ocis #* root/daemon read+write path
+        - $SNAP_USER_DATA/etc/ocis #* user read+write path
       #? read (slot): read-only paths to be exposed to a consuming snap
       read:
-        - $SNAP/etc #* Read-only path
+        - $SNAP/etc/ocis #* Read-only path
 
 #* Plugs
 #? Reference: https://snapcraft.io/docs/slots-and-plugs
 plugs:
   ocis-configure:
     #? default-provider (plug): name of preferred producer snap (<SNAP>)
-    default-provider: owncloud-infinite:ocis-config
+    default-provider: owncloud-infinite
     #? snapd interface name (must be interface: content)
     interface: content
     #? content (slot and plug): an arbitrary identifier for content type.
