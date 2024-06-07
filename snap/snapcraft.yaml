@@ -72,15 +72,15 @@ slots:
     interface: content
     #? source (slot): allows multiple directories to be exposed separately rather than grouped together
     source:
+      #? read (slot): read-only paths to be exposed to a consuming snap
+      read:
+        - $SNAP/etc/ocis #* Read-only path
       #? write (slot): read and write paths to be exposed to a consuming snap
       #? Reference: https://forum.snapcraft.io/t/the-content-interface/1074
       write:
         - $SNAP_COMMON/etc/ocis #! Hopefully just temporary path
         - $SNAP_DATA/etc/ocis #* root/daemon read+write path
         - $SNAP_USER_DATA/etc/ocis #* user read+write path
-      #? read (slot): read-only paths to be exposed to a consuming snap
-      read:
-        - $SNAP/etc/ocis #* Read-only path
 
 #* Plugs
 #? Reference: https://snapcraft.io/docs/slots-and-plugs
