@@ -5,7 +5,7 @@
 if ! snapctl is-connected configuration; then
     echo >&2 "Plug 'configuration' isn't connected, \
   please run: snap connect ${SNAP_NAME}:configuration PROVIDER_SNAP:configuration"
-    exit 1
+    exit 0
 fi
 
 if [ -z "$OCIS_CONFIG_DIR" ]; then

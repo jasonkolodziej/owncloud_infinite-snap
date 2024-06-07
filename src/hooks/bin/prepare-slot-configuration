@@ -1,0 +1,15 @@
+#!/bin/bash -e
+
+#? Reference: https://snapcraft.io/docs/interface-hooks
+#? Attributes can only be created in prepare- hooks, and only as long as their names do not clash with attributes already
+#? defined statically in snap.yaml for the given plug/slot. This means overwriting or overloading statically defined attributes
+#? is not allowed.
+
+# When executed by slot hooks:
+# snapctl get :<slotname> <attribute name> to read attributes of the local slot
+# snapctl get --plug :<slotname> <attribute name> to read attributes of the plug
+snapctl set :configuration \ 
+snapname="${SNAP_NAME}" #? to create an attribute for the plug side <plugname >plugattribute=value
+
+CONSUMER_ATTRIBUTES=$(snapctl get --plug :configuration snapname)
+echo "${CONSUMER_ATTRIBUTES}"
