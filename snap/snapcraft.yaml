@@ -105,7 +105,7 @@ parts:
     organize:
       #? In the key/value pair, the key represents the path of a file inside the part and
       #? the value represents how the file is going available to those using the slot?
-      "*/*.yaml": etc/ocis/
+      "*.yaml": etc/ocis/
 
   # certificates:
   #   plugin: dump
