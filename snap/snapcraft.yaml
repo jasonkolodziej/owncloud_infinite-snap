@@ -350,7 +350,6 @@ apps:
       #* ADMIN_PASSWORD or IDM_ADMIN_PASSWORD ==> --admin-password or -ap
       #? When running ocis init, a random admin password will be printed to the shell for first login.
       #? Though the password can be changed afterwards in the UI, it is possible to define it right from the start when initializing.
-      OCIS_CONFIG_DIR: $SNAP/configuration
       ADMIN_PASSWORD: "changeme"
       IDM_ADMIN_PASSWORD: "changeme"
       #? If using this setting, the environment variable MUST be used when starting `ocis server`.
@@ -372,6 +371,8 @@ apps:
     #? forking: the configured command calls fork() as part of its start-up. The parent process is then expected to exit when start-up is complete
     #? notify: the command configured will send a signal to systemd to indicate that it’s running.
     daemon: simple
+    environment:
+      OCIS_CONFIG_DIR: $SNAP/configuration
     after:
       - "ocis-init"
     #? Defines whether a freshly installed daemon is started automatically,
