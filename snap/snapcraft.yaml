@@ -274,7 +274,17 @@ environment:
   # PROXY_HTTP_ADDR: "0.0.0.0:9200"
   #* This causes Infinite Scale to only bind to the local network interface.
   PROXY_HTTP_ADDR: "0.0.0.0:9200"
-
+  OCIS_INSECURE: "false" #* Embedded Self-Signed Certificates
+  # *    If no reverse proxy is set up, the PROXY_TLS environment variable must be set to true because the embedded libreConnect
+  # *      shipped with the IDP service has a hard check if the connection is on TLS and uses the HTTPS protocol.
+  # *      If this mismatches, an error will be logged and no connection from the client can be established.
+  # *    PROXY_TLS can be set to false if a reverse proxy is used and the https connection is terminated at the reverse proxy.
+  # *      When setting to false, the communication between the reverse proxy and Infinite Scale is not secured.
+  # *      If set to true, you must provide certificates.
+  PROXY_TLS: "false"
+  # OCIS_INSECURE: "false" #* Certificates Signed by a Trusted CA
+  # PROXY_TRANSPORT_TLS_KEY: ./certs/your-host.key
+  # PROXY_TRANSPORT_TLS_CERT: ./certs/your-host.crt
 # #? HOOKS
 # hooks:
 #   configure:
@@ -353,17 +363,6 @@ apps:
       #? Useful with self-signed certificates to avoid certificate warnings.
       #? If set, the value will also be written to the config file. In such a case, when calling `ocis server`,
       #? it is not necessary to set the environment variable again with each start.
-      OCIS_INSECURE: "true" #* Embedded Self-Signed Certificates
-      # *    If no reverse proxy is set up, the PROXY_TLS environment variable must be set to true because the embedded libreConnect
-      # *      shipped with the IDP service has a hard check if the connection is on TLS and uses the HTTPS protocol.
-      # *      If this mismatches, an error will be logged and no connection from the client can be established.
-      # *    PROXY_TLS can be set to false if a reverse proxy is used and the https connection is terminated at the reverse proxy.
-      # *      When setting to false, the communication between the reverse proxy and Infinite Scale is not secured.
-      # *      If set to true, you must provide certificates.
-      PROXY_TLS: "true"
-      # OCIS_INSECURE: "false" #* Certificates Signed by a Trusted CA
-      # PROXY_TRANSPORT_TLS_KEY: ./certs/your-host.key
-      # PROXY_TRANSPORT_TLS_CERT: ./certs/your-host.crt
 
   ocis-server:
     #? Daemons: https://snapcraft.io/docs/services-and-daemons
