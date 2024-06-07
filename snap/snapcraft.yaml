@@ -47,16 +47,27 @@ grade: devel # must be 'stable' to release into candidate/stable channels
 #* Plugs
 #? Reference: https://snapcraft.io/docs/slots-and-plugs
 plugs:
-  configuration:
+  configuration-read:
     #? default-provider (plug): name of preferred producer snap (<SNAP>)
-    #* default-provider: lib01604
+    default-provider: configuration
     #? snapd interface name (must be interface: content)
     interface: content
     #? content (slot and plug): an arbitrary identifier for content type.
     #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
     #* content: ocis-config
     #? target (plug): path in consuming snap to find producer snap’s files
-    target: "$SNAP/configuration"
+    target: "$SNAP/configuration" #* Read-only path
+
+  configuration-rw:
+    #? default-provider (plug): name of preferred producer snap (<SNAP>)
+    default-provider: configuration
+    #? snapd interface name (must be interface: content)
+    interface: content
+    #? content (slot and plug): an arbitrary identifier for content type.
+    #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
+    #* content: ocis-config
+    #? target (plug): path in consuming snap to find producer snap’s files
+    target: "$SNAP/configuration/etc"
     #* Read-only path
     # - $SNAP_COMMON/etc #! Hopefully just temporary path
     # - $SNAP_DATA/etc #* root/daemon read+write path
