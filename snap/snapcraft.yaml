@@ -36,7 +36,7 @@ lint:
 ## snaps must be set to strict confinement before they can be published as “stable” in the Snap Store.
 ## Once an app is working well in devmode, you can review confinement violations,
 ## add appropriate interfaces, and switch to strict confinement.
-confinement: devmode # use 'strict' once you have the right plugs and slots
+confinement: strict # use 'strict' once you have the right plugs and slots
 ## Defines the quality grade of the snap.
 ## Can be either devel (i.e. a development version of the snap,
 ## so not to be published to the stable or candidate channels) or
@@ -57,10 +57,10 @@ plugs:
     #* content: ocis-config
     #? target (plug): path in consuming snap to find producer snap’s files
     target:
-      - $SNAP/etc/ocis #* Read-only path
-      - $SNAP_COMMON/etc/ocis #! Hopefully just temporary path
-      # - $SNAP_DATA/configuration #* root/daemon read+write path
-      # - $SNAP_USER_DATA/configuration #* user read+write path
+      - $SNAP/configuration #* Read-only path
+      - $SNAP_COMMON/configuration #! Hopefully just temporary path
+      - $SNAP_DATA/configuration #* root/daemon read+write path
+      - $SNAP_USER_DATA/configuration #* user read+write path
 
 #* Slots
 #? Reference: https://snapcraft.io/docs/slots-and-plugs
@@ -86,8 +86,8 @@ slots:
       #? write (slot): read and write paths to be exposed to a consuming snap
       write:
         - $SNAP_COMMON/etc/ocis #! Hopefully just temporary path
-        # - $SNAP_DATA/etc/ocis #* root/daemon read+write path
-        # - $SNAP_USER_DATA/etc/ocis #* user read+write path
+        - $SNAP_DATA/etc/ocis #* root/daemon read+write path
+        - $SNAP_USER_DATA/etc/ocis #* user read+write path
       #? read (slot): read-only paths to be exposed to a consuming snap
       read:
         - $SNAP/etc/ocis #* Read-only path
@@ -103,7 +103,9 @@ parts:
     plugin: dump
     source: src/ocis/config
     organize:
-      "*.yaml": etc/ocis/
+      #? In the key/value pair, the key represents the path of a file inside the part and
+      #? the value represents how the file is going available to those using the slot?
+      "*/*.yaml": etc/ocis/
 
   # certificates:
   #   plugin: dump
@@ -280,7 +282,7 @@ environment:
   # *    PROXY_TLS can be set to false if a reverse proxy is used and the https connection is terminated at the reverse proxy.
   # *      When setting to false, the communication between the reverse proxy and Infinite Scale is not secured.
   # *      If set to true, you must provide certificates.
-  PROXY_TLS: "false"
+  PROXY_TLS: "true"
   # OCIS_INSECURE: "false" #* Certificates Signed by a Trusted CA
   # PROXY_TRANSPORT_TLS_KEY: ./certs/your-host.key
   # PROXY_TRANSPORT_TLS_CERT: ./certs/your-host.crt
@@ -328,7 +330,7 @@ apps:
     #? install-mode will determine whether or not the daemon is started automatically
     #? when the component is delivered via a snap update.
     #* defaults to: enable
-    install-mode: enable
+    install-mode: disable
     command: bin/ocis init
     slots:
       - "configuration"
@@ -348,7 +350,7 @@ apps:
       #* ADMIN_PASSWORD or IDM_ADMIN_PASSWORD ==> --admin-password or -ap
       #? When running ocis init, a random admin password will be printed to the shell for first login.
       #? Though the password can be changed afterwards in the UI, it is possible to define it right from the start when initializing.
-      OCIS_CONFIG_DIR: $SNAP_DATA/etc/ocis
+      OCIS_CONFIG_DIR: $SNAP/configuration
       ADMIN_PASSWORD: "changeme"
       IDM_ADMIN_PASSWORD: "changeme"
       #? If using this setting, the environment variable MUST be used when starting `ocis server`.
@@ -378,7 +380,7 @@ apps:
     #? install-mode will determine whether or not the daemon is started automatically
     #? when the component is delivered via a snap update.
     #* defaults to: enable
-    install-mode: enable
+    install-mode: disable
     #? Runs a command from inside the snap after a service stops.
     # post-stop-command:
     #? Controls how the daemon or app should be treated during a snap refresh.
