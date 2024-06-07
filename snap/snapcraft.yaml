@@ -56,11 +56,11 @@ plugs:
     #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
     #* content: ocis-config
     #? target (plug): path in consuming snap to find producer snap’s files
-    target:
-      - $SNAP/etc #* Read-only path
-      - $SNAP_COMMON/etc #! Hopefully just temporary path
-      - $SNAP_DATA/etc #* root/daemon read+write path
-      - $SNAP_USER_DATA/etc #* user read+write path
+    target: "$SNAP/configuration"
+    #* Read-only path
+    # - $SNAP_COMMON/etc #! Hopefully just temporary path
+    # - $SNAP_DATA/etc #* root/daemon read+write path
+    # - $SNAP_USER_DATA/etc #* user read+write path
 
 #* Slots
 #? Reference: https://snapcraft.io/docs/slots-and-plugs
