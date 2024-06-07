@@ -79,7 +79,7 @@ slots:
 plugs:
   configuration-read:
     #? default-provider (plug): name of preferred producer snap (<SNAP>)
-    default-provider: configuration
+    # default-provider: configuration
     #? snapd interface name (must be interface: content)
     interface: content
     #? content (slot and plug): an arbitrary identifier for content type.
@@ -90,7 +90,7 @@ plugs:
 
   configuration-rw:
     #? default-provider (plug): name of preferred producer snap (<SNAP>)
-    default-provider: configuration
+    # default-provider: configuration
     #? snapd interface name (must be interface: content)
     interface: content
     #? content (slot and plug): an arbitrary identifier for content type.
