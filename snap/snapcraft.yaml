@@ -49,6 +49,7 @@ grade: devel # must be 'stable' to release into candidate/stable channels
 #? Example Code: https://github.com/ubuntu-robotics/snap_configuration/blob/howto/content_sharing_configuration_snap/configuration_snap/snap/snapcraft.yaml
 #? Tutorial: https://ubuntu.com/robotics/docs/configure-a-snap-using-a-content-snap
 #? Dynamic Slots: https://forum.snapcraft.io/t/dynamically-define-slot-content/19526/2
+#? Easy: https://github.com/chirag-jn/snap-int/blob/master/snap-b/snap/snapcraft.yaml
 #? Slots are the way a snap provides access to its services or data to other snaps.
 # By default, the AppArmor sandbox allows writes to $SNAP_DATA and reads from $SNAP (see Environment variables for details).
 # The content interface takes advantage of this feature to map data from other locations to either $SNAP or $SNAP_DATA.
@@ -95,7 +96,7 @@ plugs:
     interface: content
     #? content (slot and plug): an arbitrary identifier for content type.
     #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
-    #* content: ocis-config
+    content: configuration
     #? target (plug): path in consuming snap to find producer snap’s files
     target: "$SNAP/configuration/etc"
     #* Read-only path
