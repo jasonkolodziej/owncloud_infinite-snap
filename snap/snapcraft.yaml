@@ -18,6 +18,15 @@ website: https://owncloud.dev/ocis/
 # icon: <icon path?>
 license: MIT
 
+# plugs:                 #? <map from [interface] to plug side rules>
+# configuration:     #? <optional plug side rules for [interface]>
+# allow-installation:     true
+# deny-installation:      <true|false>
+# allow-connection:       <true|false>
+# deny-connection:        <true|false>
+# allow-auto-connection:  true
+# deny-auto-connection:   <true|false>
+
 # ARCHITECTURES
 ## builds a snap to run on the same architecture as the build environment.
 ## ref: https://snapcraft.io/docs/architectures
@@ -60,8 +69,8 @@ slots:
   #? See: https://snapcraft.io/docs/auto-connection-mechanism
   ocis-configure:
     allow-auto-connection:
-      plug-publisher-id:
-        - $SLOT_PUBLISHER_ID
+      # plug-publisher-id:
+      #   - $SLOT_PUBLISHER_ID
       plug-attributes:
         content: $SLOT(content)
     #? https://snapcraft.io/docs/content-interface#heading--read-only
@@ -86,6 +95,7 @@ slots:
 #? Reference: https://snapcraft.io/docs/slots-and-plugs
 plugs:
   ocis-config:
+    allow-auto-connection: true
     #? default-provider (plug): name of preferred producer snap (<SNAP>)
     default-provider: owncloud-infinite:ocis-configure
     #? snapd interface name (must be interface: content)
