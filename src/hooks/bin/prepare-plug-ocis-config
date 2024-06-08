@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+# snapctl set :<plugname> plugattribute=value to create an attribute for the plug side
+
+#? to read attributes of local plug
+LOC_PLUG_DEFAULT="$(snapctl get :ocis-config default-provider)"
+
+echo $LOC_PLUG_DEFAULT
+
+SLOT_ATTR="$(snapctl get --slot :ocis-configure content)" # to read attributes of the slot
+
+echo $SLOT_ATTR
+
+echo $(env)
