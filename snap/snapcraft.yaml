@@ -335,7 +335,7 @@ apps:
     # # See https://forum.snapcraft.io/t/2261
     # completer: <path to file>
     plugs:
-      - ocis-configure
+      - ocis-config
       - network
       - network-bind
       - network-control
@@ -395,7 +395,9 @@ apps:
     #? notify: the command configured will send a signal to systemd to indicate that it’s running.
     daemon: simple
     environment:
-      OCIS_CONFIG_DIR: $SNAP/configuration/ocis-3
+      OCIS_CONFIG_DIR: $SNAP/configuration
+      # #* run with demo users
+      # IDM_CREATE_DEMO_USERS: 'true'
     after:
       - "ocis-init"
     #? Defines whether a freshly installed daemon is started automatically,
@@ -422,14 +424,11 @@ apps:
     #? the shell gets disconnected (SIGHUP), use the following command:
     #* ocis server & disown -h
     command: bin/ocis server
-    # environment:
-    #* run with demo users
-    # IDM_CREATE_DEMO_USERS: true
     plugs:
       - ocis-config
-      ## Network Access
+      ##? Network Access
       - network
       - network-bind
-      ## Removeable Devices
+      ##? Removeable Devices
       ##? removable-media allows read/write access to mounted removable storage in `/media`, `/run/media` and `/mnt`.
       - removable-media
