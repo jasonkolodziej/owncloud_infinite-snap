@@ -5,45 +5,46 @@
 CONFIG_PLUG="ocis-config"
 CONFIG_SLOT="ocis-configure"
 
-echo "$(env)"
+# echo "$(env)"
 
-if [-z "$OCIS_CONFIG_DIR" ]; then
-    echo >&2 "OCIS_CONFIG_DIR is not set"
-    exit 1
-fi
+# if [[ -z "$OCIS_CONFIG_DIR" ]]; then
+#     echo >&2 "OCIS_CONFIG_DIR is not set, $OCIS_CONFIG_DIR" \
+#         exit 1
+# fi
 DEFAULT_OCIS_CONFIG_FILE_LOCATION="$OCIS_CONFIG_DIR/ocis.yaml"
 
-if ![ -f "$DEFAULT_OCIS_CONFIG_FILE_LOCATION" ]; then
+#? if the default config hasn't been created
+if ! [ -f "$DEFAULT_OCIS_CONFIG_FILE_LOCATION" ]; then
     snapctl set-health waiting "usr: $(whoami) conf: ocis.yaml not a file, has ocis init been run?"
-fi
-
-if snapctl is-connected ocis-config; then
-    snapctl set-health waiting "usr: $(whoami) finding ocis.yaml"
-    local config_dir="$(find ${SNAP}/configure -type f -name 'ocis.yaml')"
-    snapctl set-health waiting "usr: $(whoami) found: ${config_dir}"
-    echo $config_dir
-    export OCIS_CONFIG_DIR="${SNAP}/configure"
-    snapctl set-health okay
-fi
-
-if ! snapctl is-connected ocis-config; then
-    echo >&2 "Plug '${CONFIG_PLUG}' isn't connected, \
-  please run: snap connect ${SNAP_NAME}:${CONFIG_PLUG} ${SNAP_NAME}:${CONFIG_SLOT}"
-    exit 1
-fi
-
-if ![ -d "${SNAP}/configure" ]; then
-    snapctl set-health blocked "usr: $(whoami) variable 'OCIS_CONFIG_DIR' cannot be updated set"
-    echo >&2 "Plug target: (${SNAP}/configure) cannot be found or does not exist"
+    echo >&2 "Config file: ${DEFAULT_OCIS_CONFIG_FILE_LOCATION} cannot be found or does not exist"
     exit 2
+else
+    # connected="$(snapctl is-connected ocis-config)"
+    if snapctl is-connected ocis-config; then
+        snapctl set-health waiting "usr: $(whoami) finding ocis.yaml"
+        local config_dir="$(find ${SNAP}/configuration -type f -name 'ocis.yaml')"
+        config_dir="${config_dir//'/ocis.yaml'/ }"
+        snapctl set-health waiting "usr: $(whoami) found: ${config_dir}"
+        echo $config_dir
+        export OCIS_CONFIG_DIR="${config_dir}"
+        snapctl set-health okay
+        if ! [ -d "${SNAP}/configuration" ]; then
+            snapctl set-health blocked "usr: $(whoami) variable 'OCIS_CONFIG_DIR' cannot be updated set"
+            echo >&2 "Plug target: (${SNAP}/configure) cannot be found or does not exist"
+            exit 2
+        fi
+    else
+        echo "Config dir found $OCIS_CONFIG_DIR"
+        snapctl set-health okay
+        # snapctl set-health blocked "usr: $(whoami) config: please connect the 'ocis-config' plug"
+    fi
 fi
 
-# #? if the default config hasn't been created
-if ![ -f "$DEFAULT_OCIS_CONFIG_FILE_LOCATION" ]; then
-    snapctl set-health blocked "usr: $(whoami) conf: ocis.yaml not a file, has ocis init been run?"
-    echo >&2 "usr: $(whoami) conf: ocis.yaml not a file, has 'ocis init' ran?"
-    exit 3
-fi
+# if ! snapctl is-connected ocis-config; then
+#     echo >&2 "Plug '${CONFIG_PLUG}' isn't connected, \
+#   please run: snap connect ${SNAP_NAME}:${CONFIG_PLUG} ${SNAP_NAME}:${CONFIG_SLOT}"
+#     exit 1
+# fi
 
 # export NEXTCLOUD_CONFIG_DIR="$SNAP_DATA/nextcloud/config"
 # export NEXTCLOUD_DATA_DIR="$SNAP_COMMON/nextcloud/data"
