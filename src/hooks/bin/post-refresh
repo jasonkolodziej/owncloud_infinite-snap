@@ -5,6 +5,11 @@
 # It’s also a good place to test whether a refresh has succeeded, because if the test causes the hook to fail,
 # the refresh will be rolled-back and the original state of the snap restored.
 
+echo $SNAP
+echo $APP
+
+echo "$(snapctl services ${SNAP_NAME}.ocis-monitor)"
+
 if [-z "$OCIS_CONFIG_DIR" ]; then
     echo >&2 "OCIS_CONFIG_DIR is not set"
     exit 1
