@@ -10,6 +10,8 @@
 echo $SNAP
 echo $APP
 
+echo "$(snapctl services ${SNAP_NAME}.ocis-monitor)"
+
 if [-z "$OCIS_CONFIG_DIR" ]; then
     echo >&2 "OCIS_CONFIG_DIR is not set"
     exit 1
