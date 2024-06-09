@@ -68,6 +68,7 @@ grade: devel # must be 'stable' to release into candidate/stable channels
 slots:
   #? See: https://snapcraft.io/docs/auto-connection-mechanism
   ocis-configure:
+    allow-installation: true
     allow-auto-connection:
       # plug-publisher-id:
       #   - $SLOT_PUBLISHER_ID
@@ -95,6 +96,7 @@ slots:
 #? Reference: https://snapcraft.io/docs/slots-and-plugs
 plugs:
   ocis-config:
+    allow-installation: true
     allow-auto-connection:
       plug-attributes:
         content: $PLUG(content)
