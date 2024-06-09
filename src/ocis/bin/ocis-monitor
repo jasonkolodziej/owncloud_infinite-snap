@@ -1,9 +1,8 @@
 #!/bin/bash -e
 
-echo "Starting prometheus at ${PROXY_DEBUG_ADDR}"
-export OCIS_LOG_LEVEL='debug'
-
-echo "$(snapctl services ${SNAP_NAME}.ocis-server)"
-echo "$(snapctl services ${SNAP_NAME}.ocis-server.is-active)"
-
-exec "${SNAP}/bin/prometheus" --config.file=${SNAP}/etc/ocis/prometheus.yml
+# snapctl stop owncloud-infinite.ocis-server
+export PROXY_DEBUG_ADDR=${PROXY_DEBUG_ADDR}
+export OCIS_LOG_LEVEL=${PROXY_DEBUG_ADDR}
+echo "Starting prometheus at ${PROXY_DEBUG_ADDR} with log level:${OCIS_LOG_LEVEL}"
+snapctl refresh ocis-server
+exec "${SNAP}/bin/prometheus" --config.file=${SNAP}/prometheus.yml
