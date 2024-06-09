@@ -1,0 +1,25 @@
+#!/bin/bash -e
+# The post-refresh hook is similar to pre-refresh (above) in that it is called whenever the snap gets refreshed.
+# This hook is executed for the newly installed snap, before starting new services (if applicable).
+# This hook is a good place for any extra actions that need to be performed for the new revision of the snap.
+# It’s also a good place to test whether a refresh has succeeded, because if the test causes the hook to fail,
+# the refresh will be rolled-back and the original state of the snap restored.
+
+if [-z "$OCIS_CONFIG_DIR" ]; then
+    echo >&2 "OCIS_CONFIG_DIR is not set"
+    exit 1
+fi
+DEFAULT_OCIS_CONFIG_FILE_LOCATION="$OCIS_CONFIG_DIR/ocis.yaml"
+
+if ![ -f "$DEFAULT_OCIS_CONFIG_FILE_LOCATION" ]; then
+    snapctl set-health waiting "usr: $(whoami) conf: ocis.yaml not a file, has ocis init been run?"
+fi
+
+if snapctl is-connected ocis-config; then
+    snapctl set-health waiting "usr: $(whoami) finding ocis.yaml"
+    local config_dir="$(find ${SNAP}/configure -type f -name 'ocis.yaml')"
+    snapctl set-health waiting "usr: $(whoami) found: ${config_dir}"
+    echo $config_dir
+    export OCIS_CONFIG_DIR="${SNAP}/configure"
+    snapctl set-health okay
+fi

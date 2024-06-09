@@ -95,7 +95,10 @@ slots:
 #? Reference: https://snapcraft.io/docs/slots-and-plugs
 plugs:
   ocis-config:
-    allow-auto-connection: true
+    allow-auto-connection:
+      plug-attributes:
+        content: $PLUG(content)
+    # allow-auto-connection: true
     #? default-provider (plug): name of preferred producer snap (<SNAP>)
     default-provider: owncloud-infinite:ocis-configure
     #? snapd interface name (must be interface: content)
@@ -258,7 +261,7 @@ environment:
   #* The configuration directory has a default location for config files, which must be on a POSIX storage:
   #*  - For container images (inside the container) => `/etc/ocis/`
   #*  - For binary releases => `$HOME/.ocis/config/`
-  OCIS_CONFIG_DIR: $SNAP/configuration # _DATA/etc/ocis
+  OCIS_CONFIG_DIR: $SNAP_DATA/etc/ocis
 
   #* Path to system relevant data.
   #* Because Infinite Scale does not use a database for storing information like users, groups, spaces, internal data, etc.,
@@ -321,9 +324,15 @@ apps:
     #* defaults to: full
     # adapter: full
     daemon: simple
-    command: bin/prometheus
+    install-mode: disable
+    after:
+      - "ocis-server"
+    command: bin/prometheus --config.file=etc/prometheus.yml
+    environment:
+      #? OCIS proxy debug environment variable -- the proxy service is configured to bind on all interfaces.
+      PROXY_DEBUG_ADDR: 0.0.0.0:9205
     plugs:
-      # - ocis-config
+      - ocis-config
       - network
       - network-bind
   ocis:
@@ -336,6 +345,7 @@ apps:
     # WORKAROUND: Snapcraft impose too much restrictions to the command format
     # https://bugs.launchpad.net/snapcraft/+bug/1820055
     command: usr/bin/ocis
+
     # # An identifier to a desktop-id within an external appstream file.
     # # See https://docs.snapcraft.io/using-external-metadata
     # common-id: <desktop file id>
@@ -363,7 +373,7 @@ apps:
     #? install-mode will determine whether or not the daemon is started automatically
     #? when the component is delivered via a snap update.
     #* defaults to: enable
-    install-mode: disable
+    install-mode: enable
     command: bin/ocis init
     slots:
       - ocis-configure
@@ -396,7 +406,6 @@ apps:
       #? Useful with self-signed certificates to avoid certificate warnings.
       #? If set, the value will also be written to the config file. In such a case, when calling `ocis server`,
       #? it is not necessary to set the environment variable again with each start.
-
   ocis-server:
     #? Daemons: https://snapcraft.io/docs/services-and-daemons
     #? simple: the command is the main process.
@@ -404,10 +413,10 @@ apps:
     #? forking: the configured command calls fork() as part of its start-up. The parent process is then expected to exit when start-up is complete
     #? notify: the command configured will send a signal to systemd to indicate that it’s running.
     daemon: simple
-    environment:
-      OCIS_CONFIG_DIR: $SNAP/configuration
-      # #* run with demo users
-      # IDM_CREATE_DEMO_USERS: 'true'
+    # environment:
+    #   OCIS_CONFIG_DIR: $SNAP/configuration
+    # #* run with demo users
+    # IDM_CREATE_DEMO_USERS: 'true'
     after:
       - "ocis-init"
     #? Defines whether a freshly installed daemon is started automatically,

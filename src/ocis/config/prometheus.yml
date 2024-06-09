@@ -3,4 +3,5 @@ global:
 scrape_configs:
   - job_name: ocis_proxy
     static_configs:
-      - targets: ["ocis:9205"]
+      - targets: ["localhost:9205"]
+      # - targets: ["ocis:9205"]

@@ -5,16 +5,29 @@
 CONFIG_PLUG="ocis-config"
 CONFIG_SLOT="ocis-configure"
 
-if ! snapctl is-connected ocis-config; then
-    echo >&2 "Plug '${CONFIG_PLUG}' isn't connected, \
-  please run: snap connect ${SNAP_NAME}:${CONFIG_PLUG} ${SNAP_NAME}:${CONFIG_SLOT}"
+echo "$(env)"
+
+if [-z "$OCIS_CONFIG_DIR" ]; then
+    echo >&2 "OCIS_CONFIG_DIR is not set"
     exit 1
-else
-    READ_SOURCES=$(snapctl get --slot ":${CONFIG_SLOT}" source.read)
+fi
+DEFAULT_OCIS_CONFIG_FILE_LOCATION="$OCIS_CONFIG_DIR/ocis.yaml"
+
+if ![ -f "$DEFAULT_OCIS_CONFIG_FILE_LOCATION" ]; then
+    snapctl set-health waiting "usr: $(whoami) conf: ocis.yaml not a file, has ocis init been run?"
 fi
 
-if ! snapctl is-connected ocis-configure; then
-    echo >&2 "Slot '${CONFIG_SLOT}' isn't connected, \
+if snapctl is-connected ocis-config; then
+    snapctl set-health waiting "usr: $(whoami) finding ocis.yaml"
+    local config_dir="$(find ${SNAP}/configure -type f -name 'ocis.yaml')"
+    snapctl set-health waiting "usr: $(whoami) found: ${config_dir}"
+    echo $config_dir
+    export OCIS_CONFIG_DIR="${SNAP}/configure"
+    snapctl set-health okay
+fi
+
+if ! snapctl is-connected ocis-config; then
+    echo >&2 "Plug '${CONFIG_PLUG}' isn't connected, \
   please run: snap connect ${SNAP_NAME}:${CONFIG_PLUG} ${SNAP_NAME}:${CONFIG_SLOT}"
     exit 1
 fi
@@ -24,8 +37,6 @@ if ![ -d "${SNAP}/configure" ]; then
     echo >&2 "Plug target: (${SNAP}/configure) cannot be found or does not exist"
     exit 2
 fi
-
-DEFAULT_OCIS_CONFIG_FILE_LOCATION="$OCIS_CONFIG_DIR/ocis.yaml"
 
 # #? if the default config hasn't been created
 if ![ -f "$DEFAULT_OCIS_CONFIG_FILE_LOCATION" ]; then

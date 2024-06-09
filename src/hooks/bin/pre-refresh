@@ -1,0 +1,34 @@
+#!/bin/bash -e
+#? The pre-refresh hook is called whenever the snap gets refreshed.
+#? This hook is executed for the already installed revision of the snap with its services still running
+#? (if the snap has any services) and before switching to the newly installed revision.
+#? This hook is a good place for any maintenance or
+#? cleanup actions that prepare the snap for switching to the new revision.
+#? It’s also a good place to test whether a refresh will succeed,
+#? because if the test causes the hook to fail, the refresh will not proceed.
+
+if [-z "$OCIS_CONFIG_DIR" ]; then
+    echo >&2 "OCIS_CONFIG_DIR is not set"
+    exit 1
+fi
+DEFAULT_OCIS_CONFIG_FILE_LOCATION="$OCIS_CONFIG_DIR/ocis.yaml"
+
+if ![ -f "$DEFAULT_OCIS_CONFIG_FILE_LOCATION" ]; then
+    snapctl set-health waiting "usr: $(whoami) conf: ocis.yaml not a file, has ocis init been run?"
+fi
+
+if snapctl is-connected ocis-config; then
+    snapctl set-health waiting "usr: $(whoami) finding ocis.yaml"
+    local config_dir="$(find ${SNAP}/configure -type f -name 'ocis.yaml')"
+    snapctl set-health waiting "usr: $(whoami) found: ${config_dir}"
+    echo $config_dir
+    export OCIS_CONFIG_DIR="${SNAP}/configure"
+    snapctl set-health okay
+fi
+
+if ! snapctl is-connected ocis-config; then
+    snapctl set-health waiting "usr: $(whoami) finding ocis.yaml"
+    export OCIS_CONFIG_DIR="${SNAP_DATA}/etc/ocis"
+    echo $OCIS_CONFIG_DIR
+    snapctl set-health okay
+fi
