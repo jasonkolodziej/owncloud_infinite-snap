@@ -7,6 +7,9 @@
 #? It’s also a good place to test whether a refresh will succeed,
 #? because if the test causes the hook to fail, the refresh will not proceed.
 
+echo $SNAP
+echo $APP
+
 if [-z "$OCIS_CONFIG_DIR" ]; then
     echo >&2 "OCIS_CONFIG_DIR is not set"
     exit 1
