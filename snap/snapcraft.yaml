@@ -110,10 +110,6 @@ plugs:
     content: configuration
     #? target (plug): path in consuming snap to find producer snap’s files
     target: "$SNAP/configuration"
-    #* Read-only path
-    # - $SNAP_COMMON/etc #! Hopefully just temporary path
-    # - $SNAP_DATA/etc #* root/daemon read+write path
-    # - $SNAP_USER_DATA/etc #* user read+write path
 
 #* PARTS
 #? Reference: https://snapcraft.io/docs/snapcraft-parts-metadata
