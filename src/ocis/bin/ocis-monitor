@@ -1,0 +1,9 @@
+#!/bin/bash -e
+
+echo "Starting prometheus at ${PROXY_DEBUG_ADDR}"
+export OCIS_LOG_LEVEL='debug'
+
+echo "$(snapctl services ${SNAP_NAME}.ocis-server)"
+echo "$(snapctl services ${SNAP_NAME}.ocis-server.is-active)"
+
+exec "${SNAP}/bin/prometheus" --config.file=${SNAP}/etc/ocis/prometheus.yml

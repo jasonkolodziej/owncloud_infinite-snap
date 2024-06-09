@@ -327,7 +327,7 @@ apps:
     install-mode: disable
     after:
       - "ocis-server"
-    command: bin/prometheus --config.file=etc/prometheus.yml
+    command: bin/prometheus-wrapper
     environment:
       #? OCIS proxy debug environment variable -- the proxy service is configured to bind on all interfaces.
       PROXY_DEBUG_ADDR: 0.0.0.0:9205

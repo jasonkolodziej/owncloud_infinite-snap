@@ -1,27 +1,48 @@
 #/bin/sh -e
 #? Reference: https://owncloud.dev/ocis/development/debugging/
 
-LOG_LEVEL="debug"
+export OCIS_LOG_LEVEL='debug'
 
-bin/ocis --log-level=${LOG_LEVEL} micro &
+exec "${SNAP}/bin/ocis" micro &
+exec "${SNAP}/bin/ocis" glauth &
+exec "${SNAP}/bin/ocis" graph &
+# exec "${SNAP}/bin/ocis"   hello &
+exec "${SNAP}/bin/ocis" idp &
+# exec "${SNAP}/bin/ocis"   ocs &
+exec "${SNAP}/bin/ocis" web &
+exec "${SNAP}/bin/ocis" reva-auth-basic &
+exec "${SNAP}/bin/ocis" reva-auth-bearer &
+exec "${SNAP}/bin/ocis" reva-frontend &
+exec "${SNAP}/bin/ocis" reva-gateway &
+exec "${SNAP}/bin/ocis" reva-sharing &
+exec "${SNAP}/bin/ocis" reva-storage-home &
+exec "${SNAP}/bin/ocis" reva-storage-home-data &
+exec "${SNAP}/bin/ocis" reva-storage-oc &
+exec "${SNAP}/bin/ocis" reva-storage-oc-data &
+exec "${SNAP}/bin/ocis" reva-storage-root &
+exec "${SNAP}/bin/ocis" reva-users &
+# exec "${SNAP}/bin/ocis"   webdav
+exec "${SNAP}/bin/ocis" proxy &
 
-bin/ocis --log-level=${LOG_LEVEL} glauth &
-bin/ocis --log-level=${LOG_LEVEL} graph &
-#bin/ocis --log-level=${LOG_LEVEL} hello &
-bin/ocis --log-level=${LOG_LEVEL} idp &
-#bin/ocis --log-level=${LOG_LEVEL} ocs &
-bin/ocis --log-level=${LOG_LEVEL} web &
-bin/ocis --log-level=${LOG_LEVEL} reva-auth-basic &
-bin/ocis --log-level=${LOG_LEVEL} reva-auth-bearer &
-bin/ocis --log-level=${LOG_LEVEL} reva-frontend &
-bin/ocis --log-level=${LOG_LEVEL} reva-gateway &
-bin/ocis --log-level=${LOG_LEVEL} reva-sharing &
-bin/ocis --log-level=${LOG_LEVEL} reva-storage-home &
-bin/ocis --log-level=${LOG_LEVEL} reva-storage-home-data &
-bin/ocis --log-level=${LOG_LEVEL} reva-storage-oc &
-bin/ocis --log-level=${LOG_LEVEL} reva-storage-oc-data &
-bin/ocis --log-level=${LOG_LEVEL} reva-storage-root &
-bin/ocis --log-level=${LOG_LEVEL} reva-users &
-#bin/ocis --log-level=${LOG_LEVEL} webdav
+# exec "${SNAP}/bin/ocis" --log-level=${LOG_LEVEL} micro &
 
-bin/ocis --log-level=${LOG_LEVEL} proxy &
+# exec "${SNAP}/bin/ocis" --log-level=${LOG_LEVEL} glauth &
+# exec "${SNAP}/bin/ocis" --log-level=${LOG_LEVEL} graph &
+# #exec "${SNAP}/bin/ocis"  --log-level=${LOG_LEVEL} hello &
+# exec "${SNAP}/bin/ocis" --log-level=${LOG_LEVEL} idp &
+# #exec "${SNAP}/bin/ocis"  --log-level=${LOG_LEVEL} ocs &
+# exec "${SNAP}/bin/ocis" --log-level=${LOG_LEVEL} web &
+# exec "${SNAP}/bin/ocis" --log-level=${LOG_LEVEL} reva-auth-basic &
+# exec "${SNAP}/bin/ocis" --log-level=${LOG_LEVEL} reva-auth-bearer &
+# exec "${SNAP}/bin/ocis" --log-level=${LOG_LEVEL} reva-frontend &
+# exec "${SNAP}/bin/ocis" --log-level=${LOG_LEVEL} reva-gateway &
+# exec "${SNAP}/bin/ocis" --log-level=${LOG_LEVEL} reva-sharing &
+# exec "${SNAP}/bin/ocis" --log-level=${LOG_LEVEL} reva-storage-home &
+# exec "${SNAP}/bin/ocis" --log-level=${LOG_LEVEL} reva-storage-home-data &
+# exec "${SNAP}/bin/ocis" --log-level=${LOG_LEVEL} reva-storage-oc &
+# exec "${SNAP}/bin/ocis" --log-level=${LOG_LEVEL} reva-storage-oc-data &
+# exec "${SNAP}/bin/ocis" --log-level=${LOG_LEVEL} reva-storage-root &
+# exec "${SNAP}/bin/ocis" --log-level=${LOG_LEVEL} reva-users &
+# #exec "${SNAP}/bin/ocis"  --log-level=${LOG_LEVEL} webdav
+
+# exec "${SNAP}/bin/ocis" --log-level=${LOG_LEVEL} proxy &
