@@ -121,7 +121,7 @@ plugs:
     #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
     content: traefik-provider
     #? target (plug): path in consuming snap to find producer snap’s files
-    target: "$SNAP/traefik/provider"
+    target: "$SNAP/traefik"
 
 #* PARTS
 #? Reference: https://snapcraft.io/docs/snapcraft-parts-metadata
