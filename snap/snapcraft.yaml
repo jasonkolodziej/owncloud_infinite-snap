@@ -91,6 +91,21 @@ slots:
         - $SNAP_COMMON/etc/ocis #! Hopefully just temporary path
         - $SNAP_DATA/etc/ocis #* root/daemon read+write path
         - $SNAP_USER_DATA/etc/ocis #* user read+write path
+  traefik-configure:
+    interface: content
+    content: traefik-provider
+    allow-installation: true
+    allow-auto-connection:
+      plug-attributes:
+        content: $SLOT(content)
+    source:
+      #? read (slot): read-only paths to be exposed to a consuming snap
+      read:
+        - $SNAP/etc/traefik #* Read-only path
+      #? write (slot): read and write paths to be exposed to a consuming snap
+      #? Reference: https://forum.snapcraft.io/t/the-content-interface/1074
+      write:
+        - $SNAP_COMMON/etc/traefik/providers #! Hopefully just temporary path
 
 #* Plugs
 #? Reference: https://snapcraft.io/docs/slots-and-plugs
@@ -148,22 +163,6 @@ parts:
       #? In the key/value pair, the key represents the path of a file inside the part and
       #? the value represents how the file is going available to those using the slot?
       "*.yaml": etc/traefik/
-    slots:
-      traefik-configure:
-        interface: content
-        content: traefik-provider
-        allow-installation: true
-        allow-auto-connection:
-          plug-attributes:
-            content: $SLOT(content)
-        source:
-          #? read (slot): read-only paths to be exposed to a consuming snap
-          read:
-            - $SNAP/etc/traefik #* Read-only path
-          #? write (slot): read and write paths to be exposed to a consuming snap
-          #? Reference: https://forum.snapcraft.io/t/the-content-interface/1074
-          write:
-            - $SNAP_COMMON/etc/traefik/providers #! Hopefully just temporary path
 
     stage:
       - "etc/traefik/*"
