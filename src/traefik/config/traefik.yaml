@@ -32,13 +32,13 @@ accessLog:
 # - "--certificatesResolvers.http.acme.email=${TRAEFIK_ACME_MAIL:-example@example.org}"
 # - "--certificatesResolvers.http.acme.storage=/certs/acme.json"
 # - "--certificatesResolvers.http.acme.httpChallenge.entryPoint=http"
-certificatesResolvers:
-  http:
-    acme:
-      storage: "${SNAP_COMMON}/certs/acme.json"
-      httpChallenge:
-        entryPoint: http
-      # email:
+# certificatesResolvers:
+#   http:
+#     acme:
+#       storage: "${SNAP_COMMON}/certs/acme.json"
+#       httpChallenge:
+#         entryPoint: http
+#       # email:
 #? enable dashboard
 # - "--api.dashboard=true"
 api:

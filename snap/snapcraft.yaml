@@ -194,8 +194,7 @@ parts:
     # https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-arm64
     source: src/ocis/
     after:
-      - "traefik-config"
-      - "traefik"
+      - "traefik-configure"
     #? In the key/value pair, the key represents the path of a file inside the part and
     #? the value represents how the file is going to be staged.
     #> renames built files in CRAFT_PART_INSTALL
@@ -419,8 +418,9 @@ apps:
     environment:
       TRAEFIK_LOG_LEVEL: debug
 
+    slots:
+      - traefik-configure
     plugs:
-      - traefik-provider
       - network
       - network-bind
       - network-control
