@@ -4,24 +4,12 @@
 # - "--accessLog=true"
 # - "--accessLog.format=json"
 # - "--accessLog.fields.headers.names.X-Request-Id=keep"
-
 accessLog:
   format: json
   fields:
     headers:
       names:
         X-Request-Id: keep
-
-# - "traefik.enable=${TRAEFIK_DASHBOARD:-false}"
-# - "traefik.http.middlewares.traefik-auth.basicauth.users=${TRAEFIK_BASIC_AUTH_USERS:-admin:$$apr1$$4vqie50r$$YQAmQdtmz5n9rEALhxJ4l.}" # defaults to admin:admin
-# - "traefik.http.routers.traefik.entrypoints=https"
-# - "traefik.http.routers.traefik.rule=Host(`${TRAEFIK_DOMAIN:-traefik.owncloud.test}`)"
-# - "traefik.http.routers.traefik.middlewares=traefik-auth"
-# - "traefik.http.routers.traefik.tls.certresolver=http"
-# - "traefik.http.routers.traefik.service=api@internal"
-
-enable: true
-
 certificatesResolvers:
   myResolver:
     acme:
@@ -32,7 +20,14 @@ certificatesResolvers:
         entryPoint: web
       dnsChallenge:
         provider: ${TRAEFIK_PROVIDER_NAME:-cloudflare}
-
+# - "traefik.enable=${TRAEFIK_DASHBOARD:-false}"
+# - "traefik.http.middlewares.traefik-auth.basicauth.users=${TRAEFIK_BASIC_AUTH_USERS:-admin:$$apr1$$4vqie50r$$YQAmQdtmz5n9rEALhxJ4l.}" # defaults to admin:admin
+# - "traefik.http.routers.traefik.entrypoints=https"
+# - "traefik.http.routers.traefik.rule=Host(`${TRAEFIK_DOMAIN:-traefik.owncloud.test}`)"
+# - "traefik.http.routers.traefik.middlewares=traefik-auth"
+# - "traefik.http.routers.traefik.tls.certresolver=http"
+# - "traefik.http.routers.traefik.service=api@internal"
+enable: true
 http:
   middlewares:
     traefik-auth:
@@ -51,6 +46,21 @@ http:
         #? will terminate the TLS request
         #! tls: {}
         certResolver: myResolver
+    # - "traefik.http.routers.ocis.entrypoints=https"
+    ocis:
+      entryPoints:
+        - "https"
+      rule: "Host(`${OCIS_DOMAIN:-ocis.owncloud.test}`)"
+      service: "ocis"
+      tls:
+        certResolver: myResolver
+      loadBalancer:
+        server:
+          port: ${"${POR//*?:/}":-800}
+  # - "traefik.http.routers.ocis.rule=Host(`${OCIS_DOMAIN:-ocis.owncloud.test}`)"
+  # - "traefik.http.routers.ocis.tls.certresolver=http"
+  # - "traefik.http.routers.ocis.service=ocis"
+  # - "traefik.http.services.ocis.loadbalancer.server.port=9200"
 # http:
 #   routers:
 #     # Define a connection between requests and services

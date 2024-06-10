@@ -156,18 +156,20 @@ parts:
 
   traefik-configure:
     plugin: dump
-    source: src/traefik/config
+    source: src/traefik
     after:
       - "traefik"
     organize:
       #? In the key/value pair, the key represents the path of a file inside the part and
       #? the value represents how the file is going available to those using the slot?
-      "*.yaml": etc/traefik/
       "certs/*": etc/traefik/certs/
+      "*.yaml": etc/traefik/
+      "bin/*": bin/
 
     stage:
       - "etc/traefik/*"
       - "usr/bin/*"
+      - "bin/*"
 
   traefik:
     plugin: dump
