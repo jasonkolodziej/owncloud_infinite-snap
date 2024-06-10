@@ -158,8 +158,6 @@ parts:
   traefik-configure:
     plugin: dump
     source: src/traefik/config
-    after:
-      - "traefik"
     organize:
       #? In the key/value pair, the key represents the path of a file inside the part and
       #? the value represents how the file is going available to those using the slot?
@@ -173,14 +171,6 @@ parts:
       - "usr/bin/*"
       # - "bin/*"
 
-  traefik:
-    plugin: dump
-    source: https://github.com/traefik/traefik/releases/download/v3.0.1/traefik_v3.0.1_linux_arm64.tar.gz
-    source-type: tar
-    organize:
-      "traefik": usr/bin/
-    stage:
-      - "usr/bin/*"
   # certificates:
   #   plugin: dump
   #   source: src/ocis/config
@@ -236,6 +226,7 @@ parts:
     stage-snaps:
       - yq
       - prometheus
+      - traefik
 
     stage:
       - usr/bin/*
