@@ -84,13 +84,13 @@ slots:
     source:
       #? read (slot): read-only paths to be exposed to a consuming snap
       read:
-        - $SNAP/etc/ocis #* Read-only path
+        - ${SNAP}/etc/ocis #* Read-only path
       #? write (slot): read and write paths to be exposed to a consuming snap
       #? Reference: https://forum.snapcraft.io/t/the-content-interface/1074
       write:
-        - $SNAP_COMMON/etc/ocis #! Hopefully just temporary path
-        - $SNAP_DATA/etc/ocis #* root/daemon read+write path
-        - $SNAP_USER_DATA/etc/ocis #* user read+write path
+        - ${SNAP_COMMON}/etc/ocis #! Hopefully just temporary path
+        - ${SNAP_DATA}/etc/ocis #* root/daemon read+write path
+        - ${SNAP_USER_DATA}/etc/ocis #* user read+write path
   traefik-configure:
     interface: content
     content: traefik-provider
@@ -101,12 +101,12 @@ slots:
     source:
       #? read (slot): read-only paths to be exposed to a consuming snap
       read:
-        - $SNAP/etc/traefik #* Read-only path
+        - ${SNAP}/etc/traefik #* Read-only path
       #? write (slot): read and write paths to be exposed to a consuming snap
       #? Reference: https://forum.snapcraft.io/t/the-content-interface/1074
       write:
-        - $SNAP_COMMON/etc/traefik/providers
-        - $SNAP_COMMON/etc/traefik/certs #! Hopefully just temporary path
+        - ${SNAP_COMMON}/etc/traefik/providers
+        - ${SNAP_COMMON}/etc/traefik/certs #! Hopefully just temporary path
 
 #* Plugs
 #? Reference: https://snapcraft.io/docs/slots-and-plugs
@@ -125,7 +125,7 @@ plugs:
     #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
     content: configuration
     #? target (plug): path in consuming snap to find producer snap’s files
-    target: "$SNAP/configuration"
+    target: "${SNAP}/configuration"
 
   traefik-provider:
     # default-provider: traefik:etc-traefik
@@ -138,7 +138,7 @@ plugs:
     #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
     content: traefik-provider
     #? target (plug): path in consuming snap to find producer snap’s files
-    target: "$SNAP/traefik-providers"
+    target: "${SNAP}/traefik-providers"
 
 #* PARTS
 #? Reference: https://snapcraft.io/docs/snapcraft-parts-metadata
@@ -286,10 +286,10 @@ layout:
   #*  - For binary releases => `$HOME/.ocis/config/`
   #?    OCIS_CONFIG_DIR: $SNAP_USER_DATA/etc/ocis
   /etc/ocis:
-    symlink: $SNAP_DATA/etc/ocis
+    symlink: ${SNAP_DATA}/etc/ocis
 
   /etc/traefik:
-    symlink: $SNAP_DATA/etc/traefik
+    symlink: ${SNAP}/etc/traefik
 
 #? Global environment variables
 environment:
@@ -310,7 +310,7 @@ environment:
   #* The configuration directory has a default location for config files, which must be on a POSIX storage:
   #*  - For container images (inside the container) => `/etc/ocis/`
   #*  - For binary releases => `$HOME/.ocis/config/`
-  OCIS_CONFIG_DIR: $SNAP_DATA/etc/ocis
+  OCIS_CONFIG_DIR: ${SNAP_DATA}/etc/ocis
 
   #* Path to system relevant data.
   #* Because Infinite Scale does not use a database for storing information like users, groups, spaces, internal data, etc.,
@@ -320,7 +320,7 @@ environment:
   #* If not otherwise defined when using S3, it is also used to store blobs using that path:
   #*   - For container images (inside the container) => `/var/lib/ocis`
   #*   - For binary releases => `$HOME/.ocis/`
-  OCIS_BASE_DATA_PATH: $SNAP_COMMON/var/lib/ocis
+  OCIS_BASE_DATA_PATH: ${SNAP_COMMON}/var/lib/ocis
 
   #* Path to blobs and metadata if POSIX is used.
   #* Derives from `OCIS_BASE_DATA_PATH` if not set otherwise.
@@ -415,14 +415,15 @@ apps:
     daemon: simple
     # install-mode: disable
     command: bin/traefik
-    # environment:
+    environment:
+      XDG_CONFIG_HOME: $SNAP_COMMON
     #   TRAEFIK_LOG_LEVEL: debug
     #   TRAEFIK_DOMAIN: "0.0.0.0"
     #   TRAEFIK_API_DASHBOARD: "true"
 
     plugs:
-      - etc-traefik
-      # - traefik-provider
+      # - etc-traefik
+      - traefik-provider
       - network
       - network-bind
       - network-control
