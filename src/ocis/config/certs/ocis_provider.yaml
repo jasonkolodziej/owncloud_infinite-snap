@@ -3,6 +3,7 @@
 # - "--accessLog=true"
 # - "--accessLog.format=json"
 # - "--accessLog.fields.headers.names.X-Request-Id=keep"
+
 accessLog:
   format: json
   fields:
@@ -10,53 +11,88 @@ accessLog:
       names:
         X-Request-Id: keep
 
+# - "traefik.enable=${TRAEFIK_DASHBOARD:-false}"
+# - "traefik.http.middlewares.traefik-auth.basicauth.users=${TRAEFIK_BASIC_AUTH_USERS:-admin:$$apr1$$4vqie50r$$YQAmQdtmz5n9rEALhxJ4l.}" # defaults to admin:admin
+# - "traefik.http.routers.traefik.entrypoints=https"
+# - "traefik.http.routers.traefik.rule=Host(`${TRAEFIK_DOMAIN:-traefik.owncloud.test}`)"
+# - "traefik.http.routers.traefik.middlewares=traefik-auth"
+# - "traefik.http.routers.traefik.tls.certresolver=http"
+# - "traefik.http.routers.traefik.service=api@internal"
+
+enable: true
+
+certificatesResolvers:
+  ocisResolver:
+    acme:
+      email: your-email@example.com
+      storage: $SNAP/traefik-providers/certs/acme.json
+      httpChallenge:
+        # used during the challenge
+        entryPoint: web
+      dnsChallenge:
+        provider: cloudflare
+
 http:
+  middlewares:
+    traefik-auth:
+      basicAuth:
+        users: #? defaults to admin:admin
+          - "admin:$apr1$4vqie50r$YQAmQdtmz5n9rEALhxJ4l."
   routers:
-    # Define a connection between requests and services
-    to-router1:
-      rule: "Host(`project-name.net`)"
+    traefik:
       entryPoints:
         - "https"
+      rule: "Host(`${TRAEFIK_DOMAIN:-traefik.owncloud.test}`)"
+      service: "api@internal"
       middlewares:
-        - "cors"
-      service: service1
+        - "traefik-auth"
       tls:
-        options: default
-
-middlewares:
-  cors:
-    headers:
-      accessControlAllowMethods:
-        - "GET"
-        - "OPTIONS"
-        - "PUT"
-        - "POST"
-        - "DELETE"
-        - "PATCH"
-      accessControlAllowHeaders: "*"
-      accessControlAllowOriginList: "*"
-      accessControlMaxAge: 100
-      addVaryHeader: true
-
-services:
-  # Define how to reach an existing service on our infrastructure
-  service1:
-    loadBalancer:
-      passHostHeader: true
-      servers:
-        - url: "http://10.0.0.170"
-
-tls:
-  stores:
-    default:
-      defaultCertificate:
-        certFile: /etc/ssl/project-name.net
-        keyFile: /etc/ssl/project-name.net.key
-
-  options:
-    default:
-      minVersion: VersionTLS12
-      clientAuth:
-        caFiles:
-          - /etc/ssl/ca.crt
-        clientAuthType: "RequireAndVerifyClientCert"
+        #? will terminate the TLS request
+        #! tls: {}
+        certResolver: ocisResolver
+# http:
+#   routers:
+#     # Define a connection between requests and services
+#     to-router1:
+#       rule: "Host(`project-name.net`)"
+#       entryPoints:
+#         - "https"
+#       middlewares:
+#         - "cors"
+#       service: service1
+#       tls:
+#         options: default
+# middlewares:
+#   cors:
+#     headers:
+#       accessControlAllowMethods:
+#         - "GET"
+#         - "OPTIONS"
+#         - "PUT"
+#         - "POST"
+#         - "DELETE"
+#         - "PATCH"
+#       accessControlAllowHeaders: "*"
+#       accessControlAllowOriginList: "*"
+#       accessControlMaxAge: 100
+#       addVaryHeader: true
+# services:
+#   # Define how to reach an existing service on our infrastructure
+#   service1:
+#     loadBalancer:
+#       passHostHeader: true
+#       servers:
+#         - url: "http://10.0.0.170"
+# tls:
+#   stores:
+#     default:
+#       defaultCertificate:
+#         certFile: /etc/ssl/project-name.net
+#         keyFile: /etc/ssl/project-name.net.key
+#   options:
+#     default:
+#       minVersion: VersionTLS12
+#       clientAuth:
+#         caFiles:
+#           - /etc/ssl/ca.crt
+#         clientAuthType: "RequireAndVerifyClientCert"

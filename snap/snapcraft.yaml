@@ -289,10 +289,11 @@ layout:
   #*  - For container images (inside the container) => `/etc/ocis/`
   #*  - For binary releases => `$HOME/.ocis/config/`
   #?    OCIS_CONFIG_DIR: $SNAP_USER_DATA/etc/ocis
-  # /etc/ocis:
-  #   symlink: $SNAP_DATA/etc/ocis
-  /etc:
-    symlink: $SNAP_DATA/etc
+  /etc/ocis:
+    symlink: $SNAP_DATA/etc/ocis
+
+  /etc/traefik:
+    symlink: $SNAP_DATA/etc/treafik
 
 #? Global environment variables
 environment:
@@ -414,7 +415,7 @@ apps:
       - network-bind
       - network-control
 
-  reverse-proxy:
+  traefik:
     daemon: simple
     install-mode: disable
     command: bin/traefik
