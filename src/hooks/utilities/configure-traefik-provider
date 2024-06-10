@@ -1,5 +1,16 @@
 #!/bin/bash -e
 
+# TODO: add error handling
+# set -e
+# trap 'catch $? $LINENO' EXIT
+# catch() {
+#   echo "catching!"
+#   if [ "$1" != "0" ]; then
+#     # error handling goes here
+#     echo "Error $1 occurred on $2"
+#   fi
+# }
+
 TRAEFIK_CHALLENGE_PROVIDER="$(snapctl get traefik.challenge-provider.provider)"
 
 install_traefik_provider() {
@@ -26,7 +37,7 @@ lookup_challenge_provider() {
         exit 1
     else
         TRAEFIK_CHALLENGE_PROVIDER="$(yq '.certificatesResolvers.*.acme.dnsChallenge.provider | envsubst(nu,ff)' "${fpath}")"
-        snapctl set traefik.challenge-provider.provider "${TRAEFIK_CHALLENGE_PROVIDER}"
+        snapctl set traefik.challenge-provider.provider="${TRAEFIK_CHALLENGE_PROVIDER}"
     fi
 }
 

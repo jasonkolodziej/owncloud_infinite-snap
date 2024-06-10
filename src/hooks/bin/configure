@@ -5,6 +5,9 @@
 CONFIG_PLUG="ocis-config"
 CONFIG_SLOT="ocis-configure"
 
+# TODO: error: cannot perform the following tasks:
+# TODO: - Run configure hook of "owncloud-infinite" snap if present (run hook "configure": error: error running snapctl: can only be used from gate-auto-refresh hook)
+
 traefik_status="$(snapctl get private.services.traefik.active)"
 init_status="$(snapctl get private.services.ocis-init.onetimed)"
 

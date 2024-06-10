@@ -428,7 +428,7 @@ apps:
       # Serve Traefik dashboard. Defaults to "false".
       TRAEFIK_DASHBOARD: "true"
       # Domain of Traefik, where you can find the dashboard. Defaults to "traefik.owncloud.test"
-      # TRAEFIK_DOMAIN: ''
+      TRAEFIK_DOMAIN: "traefik.owncloud.test"
       # Basic authentication for the dashboard. Defaults to user "admin" and password "admin"
       # TRAEFIK_BASIC_AUTH_USERS: 'user:pw'
       # Email address for obtaining LetsEncrypt certificates, needs only be changed if this is a public facing server

@@ -1,34 +1,45 @@
-#!/bin/sh
+#!/bin/bash -e
 
-DEFAULT_MODE="production"
+DEFAULT_MODE="debug"
+#? Use:
+#? DEBUG echo "I am debugging"
+#? DEBUG set -x #turn on | +x # off
+function DEBUG() {
+	[ "$DEFAULT_MODE" == "on" ] && $@
+}
 
-debug_mode_enabled()
-{
+# Exit event handler
+function on_exit() {
+	tput cnorm # Show cursor. You need this if animation is used.
+	# i.e. clean-up code here
+	exit 0 # Exit gracefully.
+}
+
+# Put this line at the beginning of your script (after functions used by event handlers).
+# Register exit event handler.
+trap on_exit EXIT
+
+debug_mode_enabled() {
 	[ "$(_get_mode)" = "debug" ]
 }
 
-enable_debug_mode()
-{
+enable_debug_mode() {
 	_set_mode "debug"
 }
 
-production_mode_enabled()
-{
+production_mode_enabled() {
 	[ "$(_get_mode)" = "production" ]
 }
 
-enable_production_mode()
-{
+enable_production_mode() {
 	_set_mode "production"
 }
 
-mode_has_changed()
-{
+mode_has_changed() {
 	[ "$(_get_mode)" != "$(_get_previous_mode)" ]
 }
 
-_get_mode()
-{
+_get_mode() {
 	mode="$(snapctl get mode)"
 	if [ -z "$mode" ]; then
 		mode="$DEFAULT_MODE"
@@ -38,18 +49,15 @@ _get_mode()
 	echo "$mode"
 }
 
-_set_mode()
-{
+_set_mode() {
 	snapctl set mode="$1"
 	_set_previous_mode "$1"
 }
 
-_get_previous_mode()
-{
+_get_previous_mode() {
 	snapctl get private.mode
 }
 
-_set_previous_mode()
-{
+_set_previous_mode() {
 	snapctl set private.mode="$1"
 }
