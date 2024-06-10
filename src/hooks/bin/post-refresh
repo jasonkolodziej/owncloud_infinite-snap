@@ -1,4 +1,5 @@
 #!/bin/bash -e
+source ${SNAP}/utilities/configuration-utilities
 #? The post-refresh hook is similar to pre-refresh (above) in that it is called whenever the snap gets refreshed.
 #? This hook is executed for the newly installed snap, before starting new services (if applicable).
 #? This hook is a good place for any extra actions that need to be performed for the new revision of the snap.

@@ -2,6 +2,9 @@
 #? Reference: https://snapcraft.io/docs/adding-snap-configuration#heading--interpreting
 #? Reference: https://github.com/ubuntu-robotics/snap_configuration/blob/howto/content_sharing_configuration_snap/application_snap/snap/local/teleop_launcher.bash
 #? https://forum.snapcraft.io/t/using-the-snapctl-tool/15002
+
+source ${SNAP}/utilities/configuration-utilities
+
 CONFIG_PLUG="ocis-config"
 CONFIG_SLOT="ocis-configure"
 

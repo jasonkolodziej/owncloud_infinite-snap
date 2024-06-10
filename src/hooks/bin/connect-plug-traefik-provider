@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #? traefik-provider
-
+source ${SNAP}/utilities/configuration-utilities
 init_status="$(snapctl get private.services.ocis-init.onetimed)"
 traefik_status="$(snapctl get private.services.traefik.active)"
 if [ "$init_status" = "true" ]; then

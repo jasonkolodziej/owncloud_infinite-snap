@@ -1,5 +1,5 @@
 #!/bin/bash -e
-
+source ${SNAP}/utilities/configuration-utilities
 # TODO: add error handling
 # set -e
 # trap 'catch $? $LINENO' EXIT

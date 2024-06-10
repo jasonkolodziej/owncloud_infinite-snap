@@ -1,5 +1,6 @@
 #!/bin/bash -e
 #? traefik-configure
+source ${SNAP}/utilities/configuration-utilities
 
 init_status="$(snapctl get private.services.ocis-init.onetimed)"
 if [ "$init_status" = "true" ]; then

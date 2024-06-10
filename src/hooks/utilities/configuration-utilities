@@ -1,23 +1,43 @@
 #!/bin/bash -e
+# set -o errexit
+# set -o nounset
+# set -o pipefail
 
 DEFAULT_MODE="debug"
 #? Use:
 #? DEBUG echo "I am debugging"
 #? DEBUG set -x #turn on | +x # off
 function DEBUG() {
-	[ "$DEFAULT_MODE" == "on" ] && $@
+	[ "$DEFAULT_MODE" == "debug" ] && $@
+}
+
+function handle_error() {
+	local exit_code=$?
+	if [ $exit_code -gt 0 ]; then
+		echo "error[$exit_code] - line $LINENO: $BASH_COMMAND"
+		# Additional error handling logic can be added here
+		snapctl set-health blocked code=$exit_code message="line $LINENO: $BASH_COMMAND"
+		# exit $exit_code
+	fi
+	exit 0 # exit gracefully
 }
 
 # Exit event handler
 function on_exit() {
+	# echo >&2 "on_exit: $@"
+	handle_error $*
 	tput cnorm # Show cursor. You need this if animation is used.
 	# i.e. clean-up code here
+	# echo $? $LINENO
+	# echo "exit code at line $2"
 	exit 0 # Exit gracefully.
 }
 
+trap 'handle_error' ERR
+
 # Put this line at the beginning of your script (after functions used by event handlers).
 # Register exit event handler.
-trap on_exit EXIT
+trap 'on_exit' EXIT
 
 debug_mode_enabled() {
 	[ "$(_get_mode)" = "debug" ]
@@ -61,3 +81,6 @@ _get_previous_mode() {
 _set_previous_mode() {
 	snapctl set private.mode="$1"
 }
+
+# DEBUG
+$@

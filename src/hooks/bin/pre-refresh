@@ -1,4 +1,5 @@
 #!/bin/bash -e
+source ${SNAP}/utilities/configuration-utilities
 #? The pre-refresh hook is called whenever the snap gets refreshed.
 #? This hook is executed for the already installed revision of the snap with its services still running
 #? (if the snap has any services) and before switching to the newly installed revision.
