@@ -171,7 +171,14 @@ parts:
       - "etc/traefik/*"
       - "usr/bin/*"
       # - "bin/*"
-
+  traefik:
+    plugin: dump
+    source: https://github.com/traefik/traefik/releases/download/v3.0.1/traefik_v3.0.1_linux_arm64.tar.gz
+    source-type: tar
+    organize:
+      "traefik": usr/bin/
+    stage:
+      - "usr/bin/*"
   # certificates:
   #   plugin: dump
   #   source: src/ocis/config
@@ -190,6 +197,7 @@ parts:
     # https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-arm64
     source: src/ocis/
     after:
+      - "traefik"
       - "traefik-configure"
     #? In the key/value pair, the key represents the path of a file inside the part and
     #? the value represents how the file is going to be staged.
@@ -227,7 +235,7 @@ parts:
     stage-snaps:
       - yq
       - prometheus
-      - traefik
+      # - traefik
 
     stage:
       - usr/bin/*
