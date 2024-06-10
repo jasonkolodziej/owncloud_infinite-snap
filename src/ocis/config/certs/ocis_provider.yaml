@@ -1,4 +1,5 @@
 #? traefik provider configuration
+#? Reference: https://medium.com/@gembit.soultan/install-and-configure-traefik-proxy-from-binary-file-in-ubuntu-22-04-8ff85237fee3
 # # access log
 # - "--accessLog=true"
 # - "--accessLog.format=json"
@@ -22,7 +23,7 @@ accessLog:
 enable: true
 
 certificatesResolvers:
-  ocisResolver:
+  myResolver:
     acme:
       email: your-email@example.com
       storage: $SNAP/traefik-providers/certs/acme.json
@@ -30,7 +31,7 @@ certificatesResolvers:
         # used during the challenge
         entryPoint: web
       dnsChallenge:
-        provider: cloudflare
+        provider: ${TRAEFIK_PROVIDER_NAME:-cloudflare}
 
 http:
   middlewares:
@@ -49,7 +50,7 @@ http:
       tls:
         #? will terminate the TLS request
         #! tls: {}
-        certResolver: ocisResolver
+        certResolver: myResolver
 # http:
 #   routers:
 #     # Define a connection between requests and services

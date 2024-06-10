@@ -428,6 +428,18 @@ apps:
       - network-bind
       - network-control
 
+  reverse-proxy:
+    daemon: oneshot
+    install-mode: disable
+    command: bin/tr-provider
+    environment:
+      TRAEFIK_PROVIDER_NAME: "cloudflare"
+    slots:
+      - traefik-configure
+    plugs:
+      - network
+      - network-bind
+      - network-control
   ocis-init:
     #? Daemons: https://snapcraft.io/docs/services-and-daemons
     #? simple: the command is the main process.
@@ -435,6 +447,8 @@ apps:
     #? forking: the configured command calls fork() as part of its start-up. The parent process is then expected to exit when start-up is complete
     #? notify: the command configured will send a signal to systemd to indicate that it’s running.
     daemon: oneshot
+    # after:
+    #   - reverse-proxy
     #? Defines whether a freshly installed daemon is started automatically,
     #? or whether startup control is deferred to the snap.
     #? If a snap was installed prior to the daemon component being added,
@@ -488,6 +502,7 @@ apps:
     # IDM_CREATE_DEMO_USERS: 'true'
     after:
       - "ocis-init"
+      # - reverse-proxy
     #? Defines whether a freshly installed daemon is started automatically,
     #? or whether startup control is deferred to the snap.
     #? If a snap was installed prior to the daemon component being added,
