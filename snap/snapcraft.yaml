@@ -173,7 +173,7 @@ parts:
       # - "bin/*"
   traefik:
     plugin: dump
-    source: https://github.com/traefik/traefik/releases/download/v3.0.1/traefik_v3.0.1_linux_arm64.tar.gz
+    source: https://github.com/traefik/traefik/releases/download/v3.0.2/traefik_v3.0.2_linux_arm64.tar.gz
     source-type: tar
     organize:
       "traefik": usr/bin/
@@ -334,6 +334,7 @@ environment:
   #* Derives from `OCIS_BASE_DATA_PATH` if not set otherwise.
   #* Used if `STORAGE_USERS_DRIVER` is set to ocis
   # STORAGE_USERS_OCIS_ROOT: "/media"
+
   OCIS_LOG_LEVEL: ${OCIS_LOG_LEVEL:-debug}
   OCIS_LOG_COLOR: "${OCIS_LOG_COLOR:-false}"
   #* Path to metadata if S3 is used.
