@@ -334,7 +334,8 @@ environment:
   #* Derives from `OCIS_BASE_DATA_PATH` if not set otherwise.
   #* Used if `STORAGE_USERS_DRIVER` is set to ocis
   # STORAGE_USERS_OCIS_ROOT: "/media"
-
+  OCIS_LOG_LEVEL: ${OCIS_LOG_LEVEL:-debug}
+  OCIS_LOG_COLOR: "${OCIS_LOG_COLOR:-false}"
   #* Path to metadata if S3 is used.
   #* Derives from OCIS_BASE_DATA_PATH if not set otherwise.
   #* Used if STORAGE_USERS_DRIVER is set to s3ng.
@@ -343,15 +344,17 @@ environment:
   #*   storaing metadata in S3 is `STORAGE_USERS_S3NG_ROOT` and derives, if not otherwise defined, from the base directory
   #*   `OCIS_BASE_DATA_PATH`. For more details see the section Base Data Directory above.
   # STORAGE_USERS_S3NG_ROOT: xx
-  OCIS_INSECURE: "true" #* Embedded Self-Signed Certificates
+  _INSECURE: "true" #* needed if oCIS / Traefik is using self generated | Embedded Self-Signed Certificates
   # *    If no reverse proxy is set up, the PROXY_TLS environment variable must be set to true because the embedded libreConnect
   # *      shipped with the IDP service has a hard check if the connection is on TLS and uses the HTTPS protocol.
   # *      If this mismatches, an error will be logged and no connection from the client can be established.
   # *    PROXY_TLS can be set to false if a reverse proxy is used and the https connection is terminated at the reverse proxy.
   # *      When setting to false, the communication between the reverse proxy and Infinite Scale is not secured.
   # *      If set to true, you must provide certificates.
-  PROXY_TLS: "false"
-  # OCIS_INSECURE: "false" #* Certificates Signed by a Trusted CA
+  PROXY_TLS: "false" # do not use SSL between Traefik and oCIS
+  # basic auth (not recommended, but needed for eg. WebDav clients that do not support OpenID Connect)
+  PROXY_ENABLE_BASIC_AUTH: "${PROXY_ENABLE_BASIC_AUTH:-false}"
+  OCIS_INSECURE: "${_INSECURE:-false}" #* Certificates Signed by a Trusted CA
   # PROXY_TRANSPORT_TLS_KEY: ./certs/your-host.key
   # PROXY_TRANSPORT_TLS_CERT: ./certs/your-host.crt
   #* When accessing the server using the hostname or IP:
@@ -388,6 +391,7 @@ apps:
       #? OCIS proxy debug environment variable -- the proxy service is configured to bind on all interfaces.
       PROXY_DEBUG_ADDR: 0.0.0.0:9205
       OCIS_LOG_LEVEL: debug
+      OCIS_LOG_COLOR: "${OCIS_LOG_COLOR:-false}"
     slots:
       - traefik-configure
     plugs:
@@ -514,6 +518,8 @@ apps:
     #? notify: the command configured will send a signal to systemd to indicate that it’s running.
     daemon: simple
     # environment:
+    #   OCIS_LOG_LEVEL: "${OCIS_LOG_LEVEL:-info}"
+    #   OCIS_LOG_COLOR: "${OCIS_LOG_COLOR:-false}"
     #   OCIS_CONFIG_DIR: $SNAP/configuration
     # #* run with demo users
     # IDM_CREATE_DEMO_USERS: 'true'
