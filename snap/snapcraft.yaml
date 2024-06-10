@@ -91,7 +91,7 @@ slots:
         - $SNAP_COMMON/etc/ocis #! Hopefully just temporary path
         - $SNAP_DATA/etc/ocis #* root/daemon read+write path
         - $SNAP_USER_DATA/etc/ocis #* user read+write path
-  traefik-config:
+  traefik-configure:
     interface: content
     content: traefik-provider
     allow-installation: true
@@ -136,7 +136,7 @@ plugs:
     #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
     content: traefik-provider
     #? target (plug): path in consuming snap to find producer snap’s files
-    target: "$SNAP/traefik/etc"
+    target: "$SNAP/traefik-providers"
 
 #* PARTS
 #? Reference: https://snapcraft.io/docs/snapcraft-parts-metadata
@@ -383,6 +383,8 @@ apps:
       #? OCIS proxy debug environment variable -- the proxy service is configured to bind on all interfaces.
       PROXY_DEBUG_ADDR: 0.0.0.0:9205
       OCIS_LOG_LEVEL: debug
+    slots:
+      - traefik-configure
     plugs:
       - ocis-config
       - network
@@ -419,9 +421,8 @@ apps:
     environment:
       TRAEFIK_LOG_LEVEL: debug
 
-    slots:
-      - traefik-configure
     plugs:
+      - traefik-provider
       - network
       - network-bind
       - network-control
@@ -443,6 +444,7 @@ apps:
     command: bin/ocis init
     slots:
       - ocis-configure
+      - traefik-configure
     #? Runs a command from inside the snap after a service stops.
     # post-stop-command:
     #? Controls how the daemon or app should be treated during a snap refresh.
@@ -509,6 +511,8 @@ apps:
     #? the shell gets disconnected (SIGHUP), use the following command:
     #* ocis server & disown -h
     command: bin/ocis server
+    slots:
+      - traefik-configure
     plugs:
       - ocis-config
       ##? Network Access
