@@ -295,7 +295,7 @@ layout:
     symlink: $SNAP_DATA/etc/ocis
 
   /etc/traefik:
-    symlink: $SNAP_DATA/etc/treafik
+    symlink: $SNAP_DATA/etc/traefik
 
 #? Global environment variables
 environment:
