@@ -156,7 +156,7 @@ parts:
 
   traefik-configure:
     plugin: dump
-    source: src/traefik
+    source: src/traefik/config
     after:
       - "traefik"
     organize:
@@ -164,12 +164,12 @@ parts:
       #? the value represents how the file is going available to those using the slot?
       "certs/*": etc/traefik/certs/
       "*.yaml": etc/traefik/
-      "bin/*": bin/
+      # "bin/*": bin/
 
     stage:
       - "etc/traefik/*"
       - "usr/bin/*"
-      - "bin/*"
+      # - "bin/*"
 
   traefik:
     plugin: dump
@@ -430,18 +430,18 @@ apps:
       - network-bind
       - network-control
 
-  reverse-proxy:
-    daemon: oneshot
-    install-mode: disable
-    command: bin/tr-provider
-    environment:
-      TRAEFIK_PROVIDER_NAME: "cloudflare"
-    slots:
-      - traefik-configure
-    plugs:
-      - network
-      - network-bind
-      - network-control
+  # reverse-proxy:
+  #   daemon: oneshot
+  #   install-mode: disable
+  #   command: bin/tr-provider
+  #   environment:
+  #     TRAEFIK_PROVIDER_NAME: "cloudflare"
+  #   slots:
+  #     - traefik-configure
+  #   plugs:
+  #     - network
+  #     - network-bind
+  #     - network-control
   ocis-init:
     #? Daemons: https://snapcraft.io/docs/services-and-daemons
     #? simple: the command is the main process.
