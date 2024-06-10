@@ -1,0 +1,62 @@
+#? traefik provider configuration
+# # access log
+# - "--accessLog=true"
+# - "--accessLog.format=json"
+# - "--accessLog.fields.headers.names.X-Request-Id=keep"
+accessLog:
+  format: json
+  fields:
+    headers:
+      names:
+        X-Request-Id: keep
+
+http:
+  routers:
+    # Define a connection between requests and services
+    to-router1:
+      rule: "Host(`project-name.net`)"
+      entryPoints:
+        - "https"
+      middlewares:
+        - "cors"
+      service: service1
+      tls:
+        options: default
+
+middlewares:
+  cors:
+    headers:
+      accessControlAllowMethods:
+        - "GET"
+        - "OPTIONS"
+        - "PUT"
+        - "POST"
+        - "DELETE"
+        - "PATCH"
+      accessControlAllowHeaders: "*"
+      accessControlAllowOriginList: "*"
+      accessControlMaxAge: 100
+      addVaryHeader: true
+
+services:
+  # Define how to reach an existing service on our infrastructure
+  service1:
+    loadBalancer:
+      passHostHeader: true
+      servers:
+        - url: "http://10.0.0.170"
+
+tls:
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /etc/ssl/project-name.net
+        keyFile: /etc/ssl/project-name.net.key
+
+  options:
+    default:
+      minVersion: VersionTLS12
+      clientAuth:
+        caFiles:
+          - /etc/ssl/ca.crt
+        clientAuthType: "RequireAndVerifyClientCert"

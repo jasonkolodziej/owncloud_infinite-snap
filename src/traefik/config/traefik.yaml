@@ -18,31 +18,32 @@ entryPoints:
 # - "--log.level=${TRAEFIK_LOG_LEVEL:-ERROR}"
 log:
   level: "${TRAEFIK_LOG_LEVEL:-ERROR}"
-# # access log
-# - "--accessLog=true"
-# - "--accessLog.format=json"
-# - "--accessLog.fields.headers.names.X-Request-Id=keep"
-accessLog:
-  format: json
-  fields:
-    headers:
-      names:
-        X-Request-Id: keep
-# # letsencrypt configuration
-# - "--certificatesResolvers.http.acme.email=${TRAEFIK_ACME_MAIL:-example@example.org}"
-# - "--certificatesResolvers.http.acme.storage=/certs/acme.json"
-# - "--certificatesResolvers.http.acme.httpChallenge.entryPoint=http"
-# certificatesResolvers:
-#   http:
-#     acme:
-#       storage: "${SNAP_COMMON}/certs/acme.json"
-#       httpChallenge:
-#         entryPoint: http
-#       # email:
+
 #? enable dashboard
 # - "--api.dashboard=true"
 api:
   dashboard: true
+
+# # letsencrypt configuration
+# - "--certificatesResolvers.http.acme.email=${TRAEFIK_ACME_MAIL:-example@example.org}"
+# - "--certificatesResolvers.http.acme.storage=/certs/acme.json"
+# - "--certificatesResolvers.http.acme.httpChallenge.entryPoint=http"
+certificatesResolvers:
+  myresolver:
+    acme:
+      email: your-email@example.com
+      storage: ${SNAP_COMMON}/etc/traefik/certs/acme.json
+      httpChallenge:
+        # used during the challenge
+        entryPoint: http
+
+# - "traefik.enable=${TRAEFIK_DASHBOARD:-false}"
+# - "traefik.http.middlewares.traefik-auth.basicauth.users=${TRAEFIK_BASIC_AUTH_USERS:-admin:$$apr1$$4vqie50r$$YQAmQdtmz5n9rEALhxJ4l.}" # defaults to admin:admin
+# - "traefik.http.routers.traefik.entrypoints=https"
+# - "traefik.http.routers.traefik.rule=Host(`${TRAEFIK_DOMAIN:-traefik.owncloud.test}`)"
+# - "traefik.http.routers.traefik.middlewares=traefik-auth"
+# - "traefik.http.routers.traefik.tls.certresolver=http"
+# - "traefik.http.routers.traefik.service=api@internal"
 providers:
   # Enable the file provider to define routers / middlewares / services in file
   providers:
