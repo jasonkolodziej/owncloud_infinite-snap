@@ -25,7 +25,8 @@ http:
     traefik-auth:
       basicAuth:
         users: #? defaults to admin:admin
-          - "admin:$apr1$4vqie50r$YQAmQdtmz5n9rEALhxJ4l."
+          - "${TRAEFIK_BASIC_AUTH_USERS:-admin:$$apr1$$4vqie50r$$YQAmQdtmz5n9rEALhxJ4l.}" #? defaults to admin:admin
+
 
   # services:
   #   # Define how to reach an existing service on our infrastructure

@@ -1,0 +1,35 @@
+#!/bin/bash -e
+
+TRAEFIK_CHALLENGE_PROVIDER="$(snapctl get traefik.challenge-provider.provider)"
+# if [ -z "$TRAEFIK_CHALLENGE_PROVIDER" ]; then
+
+# fi
+
+case "${TRAEFIK_CHALLENGE_PROVIDER}" in
+"cloudflare")
+    # Environment Variable Name	Description
+    # CLOUDFLARE_HTTP_TIMEOUT	API request timeout
+    # CLOUDFLARE_POLLING_INTERVAL	Time between DNS propagation check
+    # CLOUDFLARE_PROPAGATION_TIMEOUT	Maximum waiting time for DNS propagation
+    # CLOUDFLARE_TTL	The TTL of the TXT record used for the DNS challenge
+    CF_API_EMAIL="$(snapctl get traefik.challenge-provider.cloudflare.email)"           #	Account email or CLOUDFLARE_EMAIL
+    CF_API_KEY="$(snapctl get traefik.challenge-provider.cloudflare.api-key)"           # or CLOUDFLARE_API_KEY, API key
+    CF_DNS_API_TOKEN="$(snapctl get traefik.challenge-provider.cloudflare.dns-token)"   #	or CLOUDFLARE_DNS_API_TOKEN, API token with DNS:Edit permission (since v3.1.0)
+    CF_ZONE_API_TOKEN="$(snapctl get traefik.challenge-provider.cloudflare.zone-token)" #	or CLOUDFLARE_ZONE_API_TOKEN, API token with Zone:Read permission (since v3.1.0)
+    PROVIDER="$(snapctl get traefik.challenge-provider.cloudflare)"
+    if [ -z "$PROVIDER" ]; then
+        echo >&2 "please set the following values: \
+        traefik.challenge-provider.cloudflare.email, \
+        traefik.challenge-provider.cloudflare.api-key, \
+        traefik.challenge-provider.cloudflare.dns-token \
+        and traefik.challenge-provider.cloudflare.zone-token"
+        exit 1
+    fi
+    ;;
+*)
+    echo >&2 "Define the provider you plan to use \
+    traefik.challenge-provider.<provider-name>, for more information
+    see: (https://doc.traefik.io/traefik/https/acme/#providers)."
+    exit 1
+    ;;
+esac

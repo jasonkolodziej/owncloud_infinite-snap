@@ -23,7 +23,7 @@ log:
 #? enable dashboard
 # - "--api.dashboard=true"
 api:
-  dashboard: ${TRAEFIK_API_DASHBOARD|false}
+  dashboard: true
 
 #? access log
 # - "--accessLog=true"

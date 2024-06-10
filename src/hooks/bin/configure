@@ -5,7 +5,9 @@
 CONFIG_PLUG="ocis-config"
 CONFIG_SLOT="ocis-configure"
 
-# echo "$(env)"
+echo "$SNAP_NAME"
+echo "$APP_NAME"
+echo "$DAEMON_NAME"
 
 # if [[ -z "$OCIS_CONFIG_DIR" ]]; then
 #     echo >&2 "OCIS_CONFIG_DIR is not set, $OCIS_CONFIG_DIR" \

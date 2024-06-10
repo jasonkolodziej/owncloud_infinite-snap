@@ -417,8 +417,16 @@ apps:
     command: bin/traefik
     environment:
       XDG_CONFIG_HOME: $SNAP_COMMON
-    #   TRAEFIK_LOG_LEVEL: debug
-    #   TRAEFIK_DOMAIN: "0.0.0.0"
+      ### Traefik settings ###
+      # Serve Traefik dashboard. Defaults to "false".
+      TRAEFIK_DASHBOARD: "true"
+      # Domain of Traefik, where you can find the dashboard. Defaults to "traefik.owncloud.test"
+      # TRAEFIK_DOMAIN: ''
+      # Basic authentication for the dashboard. Defaults to user "admin" and password "admin"
+      # TRAEFIK_BASIC_AUTH_USERS: 'user:pw'
+      # Email address for obtaining LetsEncrypt certificates, needs only be changed if this is a public facing server
+      # TRAEFIK_ACME_MAIL: jasonkolodziej97@gmail.com
+      TRAEFIK_LOG_LEVEL: debug
     #   TRAEFIK_API_DASHBOARD: "true"
 
     plugs:
@@ -478,6 +486,8 @@ apps:
       #? Though the password can be changed afterwards in the UI, it is possible to define it right from the start when initializing.
       ADMIN_PASSWORD: "changeme"
       IDM_ADMIN_PASSWORD: "changeme"
+      #? Domain of oCIS, where you can find the frontend. Defaults to "ocis.owncloud.test"
+      #* OCIS_DOMAIN: 192.168.2.180
       #? If using this setting, the environment variable MUST be used when starting `ocis server`.
       #* OCIS_FORCE_CONFIG_OVERWRITE ==> --force-overwrite or -f
       #? If you already have run `ocis init` and a config has been defined, a consecutive run will cause a warning

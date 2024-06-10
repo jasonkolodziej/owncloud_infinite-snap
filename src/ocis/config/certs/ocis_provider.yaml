@@ -30,7 +30,10 @@ certificatesResolvers:
         provider: ${TRAEFIK_DNS_PROVIDER:-false}
 http:
   routers:
-    # - "traefik.http.routers.ocis.entrypoints=https"
+    #* - "traefik.http.routers.ocis.entrypoints=https"
+    #* - "traefik.http.routers.ocis.rule=Host(`${OCIS_DOMAIN:-ocis.owncloud.test}`)"
+    #* - "traefik.http.routers.ocis.tls.certresolver=http"
+    #* - "traefik.http.routers.ocis.service=ocis"
     ocis:
       entryPoints:
         - websecure
@@ -38,13 +41,13 @@ http:
       service: "ocis"
       tls:
         certResolver: lece
+
+  services:
+    #* - "traefik.http.services.ocis.loadbalancer.server.port=9200"
+    ocis:
       loadBalancer:
         server:
           port: "${OCIS_DOMAIN//*?:/}"
-  # - "traefik.http.routers.ocis.rule=Host(`${OCIS_DOMAIN:-ocis.owncloud.test}`)"
-  # - "traefik.http.routers.ocis.tls.certresolver=http"
-  # - "traefik.http.routers.ocis.service=ocis"
-  # - "traefik.http.services.ocis.loadbalancer.server.port=9200"
 # http:
 #   routers:
 #     # Define a connection between requests and services
