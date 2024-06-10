@@ -1,0 +1,10 @@
+#!/bin/bash -e
+#? traefik-configure
+
+init_status="$(snapctl get private.services.ocis-init.onetimed)"
+if [ "$init_status" = "true" ]; then
+    echo "ocis-init already executed, skipping traefik-configure"
+    exit 0
+else
+    snapctl start ocis-init
+fi

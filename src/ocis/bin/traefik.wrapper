@@ -6,6 +6,16 @@
 #? Replace env vars through document
 # yq '(.. | select(tag == "!!str")) |= envsubst' #? file
 
+if ! snapctl is-connected traefik-provider; then
+    echo >&2 "The traefik-provider interface is not connected."
+    snapctl set-health blocked "snap user: please connect the traefik-provider interface"
+    exit 1
+fi
+
+if ! [ -d "$SNAP_COMMON/etc/traefik" ]; then
+    mkdir -p "$SNAP_COMMON/etc/traefik"
+fi
+
 yq '(.. | select(tag == "!!str")) |= envsubst(nu,ne)' $SNAP/etc/traefik/traefik.yaml >$SNAP_COMMON/etc/traefik/traefik.yaml
 exec "$SNAP/bin/traefik" --configFile="$SNAP_COMMON/etc/traefik/traefik.yaml"
 

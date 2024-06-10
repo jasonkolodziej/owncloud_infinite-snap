@@ -462,8 +462,8 @@ apps:
     #? forking: the configured command calls fork() as part of its start-up. The parent process is then expected to exit when start-up is complete
     #? notify: the command configured will send a signal to systemd to indicate that it’s running.
     daemon: oneshot
-    # after:
-    #   - reverse-proxy
+    after:
+      - traefik
     #? Defines whether a freshly installed daemon is started automatically,
     #? or whether startup control is deferred to the snap.
     #? If a snap was installed prior to the daemon component being added,
@@ -471,7 +471,7 @@ apps:
     #? when the component is delivered via a snap update.
     #* defaults to: enable
     install-mode: enable
-    command: bin/ocis init
+    command: bin/ocis-init.wrapper
     slots:
       - ocis-configure
       - traefik-configure

@@ -1,0 +1,14 @@
+#!/bin/bash -e
+source ${SNAP}/utilities/configure-traefik-provider.sh
+
+if ! snapctl is-connected traefik-configure; then
+    echo >&2 "The traefik-configure interface is not connected."
+    snapctl set-health blocked "snap user: please connect the traefik-configure interface"
+    exit 1
+fi
+
+install_traefik_provider "${SNAP}/certs/ocis_provider.yaml"
+
+exec "${SNAP}/bin/ocis" init
+
+snapctl set private.services.ocis-init.onetimed=true

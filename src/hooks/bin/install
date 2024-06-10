@@ -1,5 +1,11 @@
 #!/bin/bash -e
 
-echo >&2 "$@"
+if ! snapctl is-connected traefik-provider; then
+    echo "Please connect the traefik-provider snap to enable traefik provider"
+    snapctl stop ${SNAP_NAME}.ocis-init --disable
+    snapctl stop ${SNAP_NAME}.traefik --disable
+    snapctl set private.services.traefik.enabled=false
+    snapctl set private.services.traefik.active=false
+fi
 
 exec "$@"

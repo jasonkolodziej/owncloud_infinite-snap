@@ -5,12 +5,39 @@
 CONFIG_PLUG="ocis-config"
 CONFIG_SLOT="ocis-configure"
 
-# DEFAULT_COMMON_SCRIPT_INCLUDE_PATH="$SNAP/utilities"
+traefik_status="$(snapctl get private.services.traefik.active)"
+init_status="$(snapctl get private.services.ocis-init.onetimed)"
 
-if [ -z "$OCIS_CONFIG_DIR" ]; then
-    echo >&2 "OCIS_CONFIG_DIR is not set, $OCIS_CONFIG_DIR" \
-        exit 1
+if ! snapctl is-connected traefik-provider; then
+    if [ "$traefik_status" != "false" ]; then
+        echo "traefik is not inactive"
+        snapctl stop ${SNAP_NAME}.traefik --disable
+        snapctl set private.services.traefik.active=false
+        snapctl set private.services.traefik.enabled=false
+        snapctl set-health blocked "usr: $(whoami) config: traefik-provider is not connected"
+        exit 0
+    fi
+    # snap connect ${SNAP_NAME}:traefik-provider ${SNAP_NAME}:traefik-configure --no-wait
+    # snapctl refresh
+else
+    snapctl start ${SNAP_NAME}.traefik --enable
+    snapctl refresh ${SNAP_NAME}.traefik
 fi
+
+if ! snapctl is-connected traefik-provider; then
+    if [ "$traefik_status" != "false" ]; then
+        echo "traefik is not inactive"
+        snapctl stop ${SNAP_NAME}.traefik --disable
+        snapctl set private.services.traefik.active=false
+        snapctl set private.services.traefik.enabled=false
+        snapctl set-health blocked "usr: $(whoami) config: traefik-provider is not connected"
+        exit 0
+    fi
+else
+    snapctl start ${SNAP_NAME}.traefik --enable
+    snapctl refresh ${SNAP_NAME}.traefik
+fi
+
 DEFAULT_OCIS_CONFIG_FILE_LOCATION="$OCIS_CONFIG_DIR/ocis.yaml"
 
 #? if the default config hasn't been created

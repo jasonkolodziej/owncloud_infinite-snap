@@ -64,10 +64,10 @@ check_challenger_provider() {
     esac
 }
 
-if ! snapctl is-connected traefik-provider; then
-    echo >&2 "The traefik-provider interface is not connected."
-    snapctl set-health blocked "snap user: please connect the traefik-provider interface"
-    exit 1
-fi
+# if ! snapctl is-connected traefik-configure; then
+#     echo >&2 "The traefik-configure interface is not connected."
+#     snapctl set-health blocked "snap user: please connect the traefik-configure interface"
+#     exit 1
+# fi
 
 exec "$@"

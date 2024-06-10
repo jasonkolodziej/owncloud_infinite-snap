@@ -1,0 +1,17 @@
+#!/bin/bash -e
+#? traefik-provider
+
+init_status="$(snapctl get private.services.ocis-init.onetimed)"
+traefik_status="$(snapctl get private.services.traefik.active)"
+if [ "$init_status" = "true" ]; then
+    echo "ocis-init already executed, skipping traefik-provider"
+    exit 0
+else
+    snapctl set-health waiting "ocis-init not executed yet"
+fi
+if [ "$traefik_status" = "false" ]; then
+    snapctl start traefik --enable
+    exit 0
+fi
+
+snapctl refresh traefik
