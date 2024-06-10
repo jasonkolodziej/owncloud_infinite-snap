@@ -6,6 +6,8 @@
 # - "--entryPoints.https.address=:443"
 #? Reference: https://dev.to/bgalvao/traefik-lets-encrypt-cloudflare-36fj
 entryPoints:
+  dashboard:
+    address: ":8090"
   web:
     address: ":80"
     http:
@@ -24,6 +26,7 @@ log:
 # - "--api.dashboard=true"
 api:
   dashboard: true
+  insecure: true
 
 #? access log
 # - "--accessLog=true"
