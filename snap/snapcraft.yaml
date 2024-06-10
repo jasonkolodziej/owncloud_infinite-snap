@@ -128,6 +128,7 @@ plugs:
     target: "$SNAP/configuration"
 
   traefik-provider:
+    # default-provider: traefik:etc-traefik
     allow-installation: true
     allow-auto-connection:
       plug-attributes:
@@ -412,15 +413,16 @@ apps:
 
   traefik:
     daemon: simple
-    install-mode: disable
+    # install-mode: disable
     command: bin/traefik
-    environment:
-      TRAEFIK_LOG_LEVEL: debug
-      TRAEFIK_DOMAIN: "0.0.0.0"
-      TRAEFIK_API_DASHBOARD: "true"
+    # environment:
+    #   TRAEFIK_LOG_LEVEL: debug
+    #   TRAEFIK_DOMAIN: "0.0.0.0"
+    #   TRAEFIK_API_DASHBOARD: "true"
 
     plugs:
-      - traefik-provider
+      - etc-traefik
+      # - traefik-provider
       - network
       - network-bind
       - network-control

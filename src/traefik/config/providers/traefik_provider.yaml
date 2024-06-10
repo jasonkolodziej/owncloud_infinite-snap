@@ -27,9 +27,9 @@ http:
         users: #? defaults to admin:admin
           - "admin:$apr1$4vqie50r$YQAmQdtmz5n9rEALhxJ4l."
 
-  services:
-    # Define how to reach an existing service on our infrastructure
-    api@internal:
-      loadBalancer:
-        servers:
-          - url: http://localhost:9000/whoami-service
+  # services:
+  #   # Define how to reach an existing service on our infrastructure
+  #   internal:
+  #     loadBalancer:
+  #       servers:
+  #         - url: http://localhost:9000/whoami-service
