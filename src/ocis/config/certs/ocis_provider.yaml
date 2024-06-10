@@ -19,7 +19,7 @@ certificatesResolvers:
         # used during the challenge
         entryPoint: web
       dnsChallenge:
-        provider: ${TRAEFIK_PROVIDER_NAME:-cloudflare}
+        provider: "${TRAEFIK_PROVIDER_NAME:-unknown}"
 # - "traefik.enable=${TRAEFIK_DASHBOARD:-false}"
 # - "traefik.http.middlewares.traefik-auth.basicauth.users=${TRAEFIK_BASIC_AUTH_USERS:-admin:$$apr1$$4vqie50r$$YQAmQdtmz5n9rEALhxJ4l.}" # defaults to admin:admin
 # - "traefik.http.routers.traefik.entrypoints=https"
@@ -29,23 +29,7 @@ certificatesResolvers:
 # - "traefik.http.routers.traefik.service=api@internal"
 enable: true
 http:
-  middlewares:
-    traefik-auth:
-      basicAuth:
-        users: #? defaults to admin:admin
-          - "admin:$apr1$4vqie50r$YQAmQdtmz5n9rEALhxJ4l."
   routers:
-    traefik:
-      entryPoints:
-        - "https"
-      rule: "Host(`${TRAEFIK_DOMAIN:-traefik.owncloud.test}`)"
-      service: "api@internal"
-      middlewares:
-        - "traefik-auth"
-      tls:
-        #? will terminate the TLS request
-        #! tls: {}
-        certResolver: myResolver
     # - "traefik.http.routers.ocis.entrypoints=https"
     ocis:
       entryPoints:
@@ -56,7 +40,7 @@ http:
         certResolver: myResolver
       loadBalancer:
         server:
-          port: ${"${POR//*?:/}":-800}
+          port: "${OCIS_DOMAIN//*?:/}"
   # - "traefik.http.routers.ocis.rule=Host(`${OCIS_DOMAIN:-ocis.owncloud.test}`)"
   # - "traefik.http.routers.ocis.tls.certresolver=http"
   # - "traefik.http.routers.ocis.service=ocis"

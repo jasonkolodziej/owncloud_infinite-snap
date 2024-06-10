@@ -3,7 +3,10 @@
 echo "${TRAEFIK_PROVIDER_NAME}"
 echo $(env)
 
-find "${SNAP}/etc/traefik/provider/*.yaml"
+#? Replace env vars through document
+# yq '(.. | select(tag == "!!str")) |= envsubst' #? file
+
+find "${SNAP}/traefik-providers/providers/*.yaml"
 
 #? https://www.baeldung.com/linux/envsubst-command
 #? https://skofgar.ch/dev/2020/08/how-to-quickly-replace-environment-variables-in-a-file/

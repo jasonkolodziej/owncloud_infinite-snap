@@ -48,7 +48,7 @@ providers:
   # Enable the file provider to define routers / middlewares / services in file
   providers:
   file:
-    directory: $SNAP/traefik-providers/providers
+    directory: "${SNAP}/traefik-providers/providers"
     watch: true
   # file:
   #   directory: /etc/traefik/providers/project-name.yaml

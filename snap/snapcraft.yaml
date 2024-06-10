@@ -105,7 +105,8 @@ slots:
       #? write (slot): read and write paths to be exposed to a consuming snap
       #? Reference: https://forum.snapcraft.io/t/the-content-interface/1074
       write:
-        - $SNAP_COMMON/etc/traefik #! Hopefully just temporary path
+        - $SNAP_COMMON/etc/traefik/providers
+        - $SNAP_COMMON/etc/traefik/certs #! Hopefully just temporary path
 
 #* Plugs
 #? Reference: https://snapcraft.io/docs/slots-and-plugs
@@ -163,7 +164,8 @@ parts:
       #? In the key/value pair, the key represents the path of a file inside the part and
       #? the value represents how the file is going available to those using the slot?
       "certs/*": etc/traefik/certs/
-      "*.yaml": etc/traefik/
+      "providers/*.yaml": etc/traefik/providers/
+      "traefik.yaml": etc/traefik/
       # "bin/*": bin/
 
     stage:
@@ -423,6 +425,7 @@ apps:
     command: bin/traefik
     environment:
       TRAEFIK_LOG_LEVEL: debug
+      TRAEFIK_DOMAIN: "0.0.0.0"
 
     plugs:
       - traefik-provider
