@@ -1,12 +1,11 @@
 #!/bin/bash -e
-# The post-refresh hook is similar to pre-refresh (above) in that it is called whenever the snap gets refreshed.
-# This hook is executed for the newly installed snap, before starting new services (if applicable).
-# This hook is a good place for any extra actions that need to be performed for the new revision of the snap.
-# It’s also a good place to test whether a refresh has succeeded, because if the test causes the hook to fail,
-# the refresh will be rolled-back and the original state of the snap restored.
+#? The post-refresh hook is similar to pre-refresh (above) in that it is called whenever the snap gets refreshed.
+#? This hook is executed for the newly installed snap, before starting new services (if applicable).
+#? This hook is a good place for any extra actions that need to be performed for the new revision of the snap.
+#? It’s also a good place to test whether a refresh has succeeded, because if the test causes the hook to fail,
+#? the refresh will be rolled-back and the original state of the snap restored.
 
 echo $SNAP
-echo $APP
 
 echo "$(snapctl services ${SNAP_NAME}.ocis-monitor)"
 
@@ -28,3 +27,11 @@ if snapctl is-connected ocis-config; then
     export OCIS_CONFIG_DIR="${SNAP}/configure"
     snapctl set-health okay
 fi
+
+if ! snapctl is-connected traefik-provider; then
+    echo >&2 "The traefik-provider interface is not connected."
+    snapctl set-health blocked "snap user: please connect the traefik-provider interface"
+    exit 1
+fi
+
+exec "$@"

@@ -105,8 +105,8 @@ slots:
       #? write (slot): read and write paths to be exposed to a consuming snap
       #? Reference: https://forum.snapcraft.io/t/the-content-interface/1074
       write:
-        - $SNAP_COMMON/etc/traefik/providers
-        - $SNAP_COMMON/etc/traefik/certs #! Hopefully just temporary path
+        - $SNAP_COMMON/etc/traefik/certs
+        - $SNAP_COMMON/etc/traefik/providers #! Hopefully just temporary path
 
 #* Plugs
 #? Reference: https://snapcraft.io/docs/slots-and-plugs
@@ -421,8 +421,7 @@ apps:
 
   traefik:
     daemon: simple
-    # install-mode: disable
-    command: bin/traefik
+    command: bin/traefik.wrapper
     environment:
       XDG_CONFIG_HOME: $SNAP_COMMON
       ### Traefik settings ###

@@ -1,0 +1,13 @@
+#!/bin/bash -e
+
+# echo "${TRAEFIK_PROVIDER_NAME}"
+# echo $(env)
+
+#? Replace env vars through document
+# yq '(.. | select(tag == "!!str")) |= envsubst' #? file
+
+yq '(.. | select(tag == "!!str")) |= envsubst(nu,ne)' $SNAP/etc/traefik/traefik.yaml >$SNAP_COMMON/etc/traefik/traefik.yaml
+exec "$SNAP/bin/traefik" --configFile="$SNAP_COMMON/etc/traefik/traefik.yaml"
+
+snapctl set private.services.traefik.enabled=true
+snapctl set private.services.traefik.active=true

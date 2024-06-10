@@ -14,7 +14,7 @@ http:
       entryPoints:
         - websecure
       rule: "Host(`${TRAEFIK_DOMAIN:-traefik.owncloud.test}`)"
-      service: "api@internal"
+      service: "internal" # "internal@api"
       middlewares:
         - "traefik-auth"
       tls:
@@ -27,10 +27,9 @@ http:
         users: #? defaults to admin:admin
           - "${TRAEFIK_BASIC_AUTH_USERS:-admin:$$apr1$$4vqie50r$$YQAmQdtmz5n9rEALhxJ4l.}" #? defaults to admin:admin
 
-
-  # services:
-  #   # Define how to reach an existing service on our infrastructure
-  #   internal:
-  #     loadBalancer:
-  #       servers:
-  #         - url: http://localhost:9000/whoami-service
+  services:
+    # Define how to reach an existing service on our infrastructure
+    internal:
+      loadBalancer:
+        servers:
+          - url: http://127.0.0.1:8090
