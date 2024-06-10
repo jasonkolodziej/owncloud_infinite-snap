@@ -111,6 +111,18 @@ plugs:
     #? target (plug): path in consuming snap to find producer snap’s files
     target: "$SNAP/configuration"
 
+  traefik-provider:
+    allow-installation: true
+    allow-auto-connection:
+      plug-attributes:
+        content: $PLUG(content)
+    interface: content
+    #? content (slot and plug): an arbitrary identifier for content type.
+    #? Defaults to either local slot name or local plug name for slot/plug definitions respectively.
+    content: traefik-provider
+    #? target (plug): path in consuming snap to find producer snap’s files
+    target: "$SNAP/traefik/provider"
+
 #* PARTS
 #? Reference: https://snapcraft.io/docs/snapcraft-parts-metadata
 ##* are the raw building blocks of a snap, used to collect and build binaries and their dependencies.
@@ -118,7 +130,7 @@ plugs:
 ##* Parts can be anything: programs, libraries, or other needed assets.
 parts:
   #? For the content interface, the content keyword is used to define the content ID.
-  configuration:
+  ocis-configure:
     plugin: dump
     source: src/ocis/config
     organize:
@@ -127,6 +139,44 @@ parts:
       "*.yaml": etc/ocis/
       "prometheus.yml": etc/
 
+  traefik-configure:
+    plugin: dump
+    source: src/traefik/config
+    after:
+      - "traefik"
+    organize:
+      #? In the key/value pair, the key represents the path of a file inside the part and
+      #? the value represents how the file is going available to those using the slot?
+      "*.yaml": etc/traefik/
+    slots:
+      traefik-configure:
+        interface: content
+        content: traefik-provider
+        allow-installation: true
+        allow-auto-connection:
+          plug-attributes:
+            content: $SLOT(content)
+        source:
+          #? read (slot): read-only paths to be exposed to a consuming snap
+          read:
+            - $SNAP/etc/traefik #* Read-only path
+          #? write (slot): read and write paths to be exposed to a consuming snap
+          #? Reference: https://forum.snapcraft.io/t/the-content-interface/1074
+          write:
+            - $SNAP_COMMON/etc/traefik/providers #! Hopefully just temporary path
+
+    stage:
+      - "etc/traefik/*"
+      - "usr/bin/*"
+
+  traefik:
+    plugin: dump
+    source: https://github.com/traefik/traefik/releases/download/v3.0.1/traefik_v3.0.1_linux_arm64.tar.gz
+    source-type: tar
+    organize:
+      "traefik": usr/bin/
+    stage:
+      - "usr/bin/*"
   # certificates:
   #   plugin: dump
   #   source: src/ocis/config
@@ -144,7 +194,9 @@ parts:
     plugin: dump
     # https://download.owncloud.com/ocis/ocis/stable/5.0.5/ocis-5.0.5-linux-arm64
     source: src/ocis/
-
+    after:
+      - "traefik-config"
+      - "traefik"
     #? In the key/value pair, the key represents the path of a file inside the part and
     #? the value represents how the file is going to be staged.
     #> renames built files in CRAFT_PART_INSTALL
@@ -238,8 +290,10 @@ layout:
   #*  - For container images (inside the container) => `/etc/ocis/`
   #*  - For binary releases => `$HOME/.ocis/config/`
   #?    OCIS_CONFIG_DIR: $SNAP_USER_DATA/etc/ocis
-  /etc/ocis:
-    symlink: $SNAP_DATA/etc/ocis
+  # /etc/ocis:
+  #   symlink: $SNAP_DATA/etc/ocis
+  /etc:
+    symlink: $SNAP_DATA/etc
 
 #? Global environment variables
 environment:
@@ -355,6 +409,19 @@ apps:
     # completer: <path to file>
     plugs:
       - ocis-config
+      - network
+      - network-bind
+      - network-control
+
+  reverse-proxy:
+    daemon: simple
+    install-mode: disable
+    command: bin/traefik
+    environment:
+      TRAEFIK_LOG_LEVEL: debug
+
+    plugs:
+      - traefik-provider
       - network
       - network-bind
       - network-control
