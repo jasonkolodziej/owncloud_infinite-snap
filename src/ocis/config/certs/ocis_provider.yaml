@@ -4,22 +4,6 @@
 # - "--accessLog=true"
 # - "--accessLog.format=json"
 # - "--accessLog.fields.headers.names.X-Request-Id=keep"
-accessLog:
-  format: json
-  fields:
-    headers:
-      names:
-        X-Request-Id: keep
-certificatesResolvers:
-  myResolver:
-    acme:
-      email: your-email@example.com
-      storage: $SNAP/traefik-providers/certs/acme.json
-      httpChallenge:
-        # used during the challenge
-        entryPoint: web
-      dnsChallenge:
-        provider: "${TRAEFIK_PROVIDER_NAME:-unknown}"
 # - "traefik.enable=${TRAEFIK_DASHBOARD:-false}"
 # - "traefik.http.middlewares.traefik-auth.basicauth.users=${TRAEFIK_BASIC_AUTH_USERS:-admin:$$apr1$$4vqie50r$$YQAmQdtmz5n9rEALhxJ4l.}" # defaults to admin:admin
 # - "traefik.http.routers.traefik.entrypoints=https"
@@ -28,16 +12,32 @@ certificatesResolvers:
 # - "traefik.http.routers.traefik.tls.certresolver=http"
 # - "traefik.http.routers.traefik.service=api@internal"
 enable: true
+certificatesResolvers:
+  lece:
+    acme:
+      email: "${TRAEFIK_ACME_MAIL:-example@example.org}"
+      storage: $SNAP/traefik-providers/certs/acme.json
+      httpChallenge:
+        # used during the challenge
+        entryPoint: web
+      #? TLS challenge serves the certificates back to the CA in order to renew them
+      #     - '--certificatesresolvers.le.acme.tlschallenge=true'
+      tlsChallenge: {}
+      #? Optionally use the staging server to prevent exhausting rate limits
+      # - '--certificatesresolvers.le.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory'
+      caServer: "https://acme-staging-v02.api.letsencrypt.org/directory"
+      dnsChallenge:
+        provider: ${TRAEFIK_DNS_PROVIDER:-false}
 http:
   routers:
     # - "traefik.http.routers.ocis.entrypoints=https"
     ocis:
       entryPoints:
-        - "https"
+        - websecure
       rule: "Host(`${OCIS_DOMAIN:-ocis.owncloud.test}`)"
       service: "ocis"
       tls:
-        certResolver: myResolver
+        certResolver: lece
       loadBalancer:
         server:
           port: "${OCIS_DOMAIN//*?:/}"

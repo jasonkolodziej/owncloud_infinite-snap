@@ -426,6 +426,7 @@ apps:
     environment:
       TRAEFIK_LOG_LEVEL: debug
       TRAEFIK_DOMAIN: "0.0.0.0"
+      TRAEFIK_API_DASHBOARD: "true"
 
     plugs:
       - traefik-provider
